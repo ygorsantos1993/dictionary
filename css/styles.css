@@ -1,9 +1,10 @@
 :root {
-  --card: rgba(255, 255, 255, 0.92);
-  --text: #111827;
-  --muted: #6b7280;
-  --line: rgba(17, 24, 39, 0.12);
-  --accent: #111827;
+  --card: rgba(255, 248, 240, 0.92);
+  --text: #1f2937;
+  --muted: #64748b;
+  --line: rgba(148, 163, 184, 0.28);
+  --accent-1: #2563eb;
+  --accent-2: #7c3aed;
   --error: #b42318;
 }
 
@@ -34,9 +35,7 @@ body {
 }
 
 
-/* =========================
-   LOGIN PAGE
-   ========================= */
+/* LOGIN */
 
 .login-page {
   min-height: 100vh;
@@ -48,48 +47,63 @@ body {
   padding: 24px;
 
   background: url("../background.jpg");
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .card {
-  width: min(100%, 390px);
+  width: min(100%, 400px);
 
-  padding: 32px;
+  padding: 34px 30px;
 
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 24px;
 
   background: var(--card);
 
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
   box-shadow:
-    0 24px 70px
-    rgba(0, 0, 0, 0.22);
+    0 22px 70px rgba(15, 23, 42, 0.16);
 }
 
 .brand {
-  margin-bottom: 28px;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
-.brand h1 {
+.brand-title {
   margin: 0;
 
-  font-size: 27px;
+  font-size: 30px;
+  line-height: 1.1;
   letter-spacing: -0.04em;
+
+  color: #0f172a;
 }
 
-.brand p {
-  margin: 8px 0 0;
+.brand-flags {
+  margin-top: 14px;
 
-  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  font-size: 14px;
-  line-height: 1.5;
+  gap: 10px;
+}
+
+.brand-flags img {
+  width: 32px;
+  height: 21px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+
+  box-shadow:
+    0 3px 10px rgba(15, 23, 42, 0.14);
 }
 
 .field {
@@ -99,22 +113,24 @@ body {
 label {
   display: block;
 
-  margin-bottom: 7px;
+  margin-bottom: 8px;
 
   font-size: 13px;
-  font-weight: 650;
+  font-weight: 700;
+
+  color: #334155;
 }
 
 input {
   width: 100%;
-  height: 48px;
+  height: 50px;
 
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 14px;
 
   padding: 0 14px;
 
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.84);
 
   color: var(--text);
 
@@ -124,21 +140,17 @@ input {
 }
 
 input:focus {
-  border-color: rgba(17, 24, 39, 0.45);
+  border-color: rgba(37, 99, 235, 0.42);
 
   box-shadow:
-    0 0 0 4px
-    rgba(17, 24, 39, 0.07);
+    0 0 0 4px rgba(37, 99, 235, 0.10);
 }
 
 button {
-  height: 48px;
+  height: 50px;
 
   border: 0;
-  border-radius: 12px;
-
-  background: var(--accent);
-  color: white;
+  border-radius: 14px;
 
   font: inherit;
   font-weight: 700;
@@ -146,13 +158,25 @@ button {
   cursor: pointer;
 }
 
+.login-card button {
+  width: 100%;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent-1),
+      var(--accent-2)
+    );
+
+  color: white;
+
+  box-shadow:
+    0 10px 24px rgba(37, 99, 235, 0.18);
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: default;
-}
-
-.login-card button {
-  width: 100%;
 }
 
 .status {
@@ -172,9 +196,7 @@ button:disabled {
 }
 
 
-/* =========================
-   DICTIONARY PAGE
-   ========================= */
+/* DICTIONARY */
 
 .dictionary-page {
   min-height: 100vh;
@@ -183,7 +205,6 @@ button:disabled {
   padding: 24px;
 
   background: url("../background.jpg");
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -198,16 +219,15 @@ button:disabled {
 .app-card {
   padding: 28px;
 
-  border-radius: 22px;
+  border-radius: 24px;
 
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 250, 245, 0.93);
 
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
   box-shadow:
-    0 24px 70px
-    rgba(0, 0, 0, 0.22);
+    0 22px 70px rgba(15, 23, 42, 0.16);
 }
 
 .app-header {
@@ -222,6 +242,8 @@ button:disabled {
 .app-header h1,
 .app-header h2 {
   margin: 0;
+
+  color: #0f172a;
 }
 
 .user-email {
@@ -237,8 +259,17 @@ button:disabled {
 
   padding: 0 16px;
 
-  background: #eef0f3;
-  color: #111827;
+  background:
+    linear-gradient(
+      135deg,
+      #475569,
+      #1e293b
+    );
+
+  color: white;
+
+  box-shadow:
+    0 8px 18px rgba(30, 41, 59, 0.16);
 }
 
 .placeholder {
@@ -246,8 +277,10 @@ button:disabled {
 
   padding: 24px;
 
-  border: 1px dashed rgba(17, 24, 39, 0.2);
+  border: 1px dashed rgba(51, 65, 85, 0.18);
   border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.45);
 
   color: var(--muted);
 
@@ -255,9 +288,7 @@ button:disabled {
 }
 
 
-/* =========================
-   MOBILE
-   ========================= */
+/* MOBILE */
 
 @media (max-width: 480px) {
   .login-page,
@@ -269,6 +300,15 @@ button:disabled {
   .app-card {
     padding: 24px;
 
-    border-radius: 18px;
+    border-radius: 20px;
+  }
+
+  .brand-title {
+    font-size: 27px;
+  }
+
+  .brand-flags img {
+    width: 28px;
+    height: 18px;
   }
 }
