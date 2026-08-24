@@ -25,8 +25,8 @@ const languages = {
     flag: "../chinese-flag.png"
   },
 
-  arabic: {
-    name: "Arabic",
+  arabic_msa: {
+    name: "Modern Standard Arabic",
     flag: "../arabic-flag.png"
   },
 
@@ -37,9 +37,24 @@ const languages = {
 };
 
 
+let storedLanguage =
+  localStorage.getItem("dictionary_language");
+
+
+if (storedLanguage === "arabic") {
+  storedLanguage = "arabic_msa";
+
+  localStorage.setItem(
+    "dictionary_language",
+    "arabic_msa"
+  );
+}
+
+
 let currentLanguage =
-  localStorage.getItem("dictionary_language") ||
-  "chinese";
+  languages[storedLanguage]
+    ? storedLanguage
+    : "chinese";
 
 
 function updateLanguageUI() {
@@ -50,13 +65,11 @@ function updateLanguageUI() {
     return;
   }
 
-  if (currentLanguageFlag) {
-    currentLanguageFlag.src =
-      language.flag;
+  currentLanguageFlag.src =
+    language.flag;
 
-    currentLanguageFlag.alt =
-      language.name;
-  }
+  currentLanguageFlag.alt =
+    language.name;
 }
 
 
@@ -70,58 +83,36 @@ function setLanguage(languageKey) {
 
   localStorage.setItem(
     "dictionary_language",
-    currentLanguage
+    languageKey
   );
 
   updateLanguageUI();
 
   closeLanguageMenu();
-
-  /*
-    Depois vamos chamar aqui
-    a função que carrega o
-    dicionário correspondente.
-  */
 }
 
 
 function openLanguageMenu() {
-  if (!languageMenu) {
-    return;
-  }
-
   languageMenu.hidden = false;
 
-  if (languageButton) {
-    languageButton.setAttribute(
-      "aria-expanded",
-      "true"
-    );
-  }
+  languageButton.setAttribute(
+    "aria-expanded",
+    "true"
+  );
 }
 
 
 function closeLanguageMenu() {
-  if (!languageMenu) {
-    return;
-  }
-
   languageMenu.hidden = true;
 
-  if (languageButton) {
-    languageButton.setAttribute(
-      "aria-expanded",
-      "false"
-    );
-  }
+  languageButton.setAttribute(
+    "aria-expanded",
+    "false"
+  );
 }
 
 
 function toggleLanguageMenu() {
-  if (!languageMenu) {
-    return;
-  }
-
   if (languageMenu.hidden) {
     openLanguageMenu();
   } else {
@@ -153,16 +144,14 @@ async function requireSession() {
 }
 
 
-if (languageButton) {
-  languageButton.addEventListener(
-    "click",
-    (event) => {
-      event.stopPropagation();
+languageButton.addEventListener(
+  "click",
+  (event) => {
+    event.stopPropagation();
 
-      toggleLanguageMenu();
-    }
-  );
-}
+    toggleLanguageMenu();
+  }
+);
 
 
 languageOptions.forEach(
@@ -170,10 +159,9 @@ languageOptions.forEach(
     option.addEventListener(
       "click",
       () => {
-        const language =
-          option.dataset.language;
-
-        setLanguage(language);
+        setLanguage(
+          option.dataset.language
+        );
       }
     );
   }
@@ -184,8 +172,6 @@ document.addEventListener(
   "click",
   (event) => {
     if (
-      languageMenu &&
-      languageButton &&
       !languageMenu.contains(event.target) &&
       !languageButton.contains(event.target)
     ) {
@@ -205,17 +191,15 @@ document.addEventListener(
 );
 
 
-if (logoutButton) {
-  logoutButton.addEventListener(
-    "click",
-    async () => {
-      await supabase.auth.signOut();
+logoutButton.addEventListener(
+  "click",
+  async () => {
+    await supabase.auth.signOut();
 
-      window.location.href =
-        "../index.html";
-    }
-  );
-}
+    window.location.href =
+      "../index.html";
+  }
+);
 
 
 updateLanguageUI();
