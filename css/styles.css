@@ -1,10 +1,10 @@
 :root {
-  --card: rgba(255, 248, 240, 0.92);
-  --text: #1f2937;
-  --muted: #64748b;
-  --line: rgba(148, 163, 184, 0.28);
-  --accent-1: #2563eb;
-  --accent-2: #7c3aed;
+  --card: rgba(255, 255, 255, 0.88);
+  --text: #172033;
+  --muted: #667085;
+  --line: rgba(100, 116, 139, 0.22);
+  --accent-1: #3b82f6;
+  --accent-2: #2563eb;
   --error: #b42318;
 }
 
@@ -35,7 +35,9 @@ body {
 }
 
 
-/* LOGIN */
+/* =========================
+   LOGIN
+   ========================= */
 
 .login-page {
   min-height: 100vh;
@@ -57,16 +59,16 @@ body {
 
   padding: 34px 30px;
 
-  border: 1px solid rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 24px;
 
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.88);
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
   box-shadow:
-    0 22px 70px rgba(15, 23, 42, 0.16);
+    0 20px 60px rgba(31, 41, 55, 0.14);
 }
 
 .brand {
@@ -81,7 +83,7 @@ body {
   line-height: 1.1;
   letter-spacing: -0.04em;
 
-  color: #0f172a;
+  color: #172033;
 }
 
 .brand-flags {
@@ -91,16 +93,16 @@ body {
   align-items: center;
   justify-content: center;
 
-  gap: 10px;
+  gap: 12px;
 }
 
 .brand-flags img {
-  width: 32px;
-  height: 21px;
+  width: 46px;
+  height: 30px;
 
   object-fit: cover;
 
-  border-radius: 5px;
+  border-radius: 6px;
 
   box-shadow:
     0 3px 10px rgba(15, 23, 42, 0.14);
@@ -130,20 +132,31 @@ input {
 
   padding: 0 14px;
 
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.96);
 
   color: var(--text);
 
   font: inherit;
 
   outline: none;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+
+input:hover {
+  background: #ffffff;
 }
 
 input:focus {
-  border-color: rgba(37, 99, 235, 0.42);
+  border-color: rgba(37, 99, 235, 0.52);
 
   box-shadow:
     0 0 0 4px rgba(37, 99, 235, 0.10);
+
+  background: #ffffff;
 }
 
 button {
@@ -156,6 +169,15 @@ button {
   font-weight: 700;
 
   cursor: pointer;
+
+  transition:
+    transform 0.1s ease,
+    opacity 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+button:active {
+  transform: scale(0.99);
 }
 
 .login-card button {
@@ -171,12 +193,18 @@ button {
   color: white;
 
   box-shadow:
-    0 10px 24px rgba(37, 99, 235, 0.18);
+    0 10px 24px rgba(37, 99, 235, 0.22);
+}
+
+.login-card button:hover {
+  box-shadow:
+    0 12px 28px rgba(37, 99, 235, 0.28);
 }
 
 button:disabled {
   opacity: 0.6;
   cursor: default;
+  transform: none;
 }
 
 .status {
@@ -196,7 +224,9 @@ button:disabled {
 }
 
 
-/* DICTIONARY */
+/* =========================
+   DICTIONARY
+   ========================= */
 
 .dictionary-page {
   min-height: 100vh;
@@ -219,15 +249,16 @@ button:disabled {
 .app-card {
   padding: 28px;
 
+  border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 24px;
 
-  background: rgba(255, 250, 245, 0.93);
+  background: rgba(255, 255, 255, 0.90);
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 
   box-shadow:
-    0 22px 70px rgba(15, 23, 42, 0.16);
+    0 20px 60px rgba(31, 41, 55, 0.14);
 }
 
 .app-header {
@@ -243,7 +274,7 @@ button:disabled {
 .app-header h2 {
   margin: 0;
 
-  color: #0f172a;
+  color: #172033;
 }
 
 .user-email {
@@ -259,17 +290,15 @@ button:disabled {
 
   padding: 0 16px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #475569,
-      #1e293b
-    );
-
-  color: white;
+  background: #eef2f7;
+  color: #334155;
 
   box-shadow:
-    0 8px 18px rgba(30, 41, 59, 0.16);
+    0 6px 16px rgba(15, 23, 42, 0.08);
+}
+
+.logout-button:hover {
+  background: #e2e8f0;
 }
 
 .placeholder {
@@ -277,10 +306,10 @@ button:disabled {
 
   padding: 24px;
 
-  border: 1px dashed rgba(51, 65, 85, 0.18);
+  border: 1px dashed rgba(71, 85, 105, 0.22);
   border-radius: 14px;
 
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(248, 250, 252, 0.72);
 
   color: var(--muted);
 
@@ -288,7 +317,9 @@ button:disabled {
 }
 
 
-/* MOBILE */
+/* =========================
+   MOBILE
+   ========================= */
 
 @media (max-width: 480px) {
   .login-page,
@@ -307,8 +338,12 @@ button:disabled {
     font-size: 27px;
   }
 
+  .brand-flags {
+    gap: 10px;
+  }
+
   .brand-flags img {
-    width: 28px;
-    height: 18px;
+    width: 42px;
+    height: 27px;
   }
 }
