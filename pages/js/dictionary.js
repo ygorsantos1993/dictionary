@@ -1,4 +1,4 @@
-import { supabase } from "./supabase.js";
+=import { supabase } from "./supabase.js";
 
 const userEmail =
   document.getElementById("userEmail");
@@ -12,8 +12,7 @@ async function requireSession() {
   const {
     data,
     error
-  } =
-    await supabase.auth.getSession();
+  } = await supabase.auth.getSession();
 
 
   if (
