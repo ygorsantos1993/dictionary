@@ -1,14 +1,11 @@
 import { supabase } from "../../js/supabase.js";
 
 
-const logoutButton =
-  document.getElementById("logoutButton");
-
 const syncButton =
   document.getElementById("syncButton");
 
-const libraryButton =
-  document.getElementById("libraryButton");
+const syncToast =
+  document.getElementById("syncToast");
 
 const languageButton =
   document.getElementById("languageButton");
@@ -22,67 +19,51 @@ const currentLanguageFlag =
 const languageOptions =
   document.querySelectorAll(".language-option");
 
-const dictionaryTitle =
-  document.getElementById("dictionaryTitle");
+const logoutButton =
+  document.getElementById("logoutButton");
 
+const hubLanguageTitle =
+  document.getElementById("hubLanguageTitle");
 
 const onlineDirection =
   document.getElementById("onlineDirection");
 
-const onlineTargetFlag =
-  document.getElementById("onlineTargetFlag");
-
-const onlineSearchInput =
-  document.getElementById("onlineSearchInput");
-
-const onlineSearchForm =
-  document.getElementById("onlineSearchForm");
-
-
 const wiktionaryDirection =
   document.getElementById("wiktionaryDirection");
 
-const wiktionarySourceFlag =
-  document.getElementById("wiktionarySourceFlag");
+const onlineCard =
+  document.getElementById("onlineCard");
 
-const wiktionarySearchInput =
-  document.getElementById("wiktionarySearchInput");
+const wiktionaryCard =
+  document.getElementById("wiktionaryCard");
 
-const wiktionarySearchForm =
-  document.getElementById("wiktionarySearchForm");
+const dictionarySearchCard =
+  document.getElementById("dictionarySearchCard");
 
-
-const cacheTargetButton =
-  document.getElementById("cacheTargetButton");
-
-const cacheEnglishButton =
-  document.getElementById("cacheEnglishButton");
-
-const cacheSearchFlag =
-  document.getElementById("cacheSearchFlag");
-
-const cacheSearchInput =
-  document.getElementById("cacheSearchInput");
-
-const cacheSearchForm =
-  document.getElementById("cacheSearchForm");
+const libraryCard =
+  document.getElementById("libraryCard");
 
 
 const languages = {
+
   turkish: {
     name: "Turkish",
+    title: "TURKISH",
     flag: "../turkish-flag.png"
   },
 
   msa: {
     name: "Standard Arabic",
+    title: "STANDARD ARABIC",
     flag: "../arabic-flag.png"
   },
 
   chinese: {
     name: "Chinese",
+    title: "CHINESE",
     flag: "../chinese-flag.png"
   }
+
 };
 
 
@@ -93,12 +74,14 @@ let storedLanguage =
 
 
 if (storedLanguage === "arabic") {
+
   storedLanguage = "msa";
 
   localStorage.setItem(
     "dictionary_language",
     "msa"
   );
+
 }
 
 
@@ -108,17 +91,14 @@ let currentLanguage =
     : "turkish";
 
 
-let cacheSearchLanguage =
-  "target";
-
-
 function updateLanguageUI() {
+
   const language =
     languages[currentLanguage];
 
 
-  dictionaryTitle.textContent =
-    `${language.name} Dictionary`;
+  hubLanguageTitle.textContent =
+    language.title;
 
 
   currentLanguageFlag.src =
@@ -131,91 +111,23 @@ function updateLanguageUI() {
   onlineDirection.textContent =
     `English → ${language.name}`;
 
-  onlineTargetFlag.src =
-    language.flag;
-
-  onlineTargetFlag.alt =
-    language.name;
-
-  onlineSearchInput.placeholder =
-    "Type a word in English...";
-
 
   wiktionaryDirection.textContent =
     `${language.name} → English`;
 
-  wiktionarySourceFlag.src =
-    language.flag;
 
-  wiktionarySourceFlag.alt =
-    language.name;
-
-  wiktionarySearchInput.placeholder =
-    `Type a ${language.name} word...`;
+  document.title =
+    `${language.name} Dictionary`;
 
 
-  cacheTargetButton.textContent =
-    language.name;
+  document.body.dataset.language =
+    currentLanguage;
 
-
-  updateCacheSearchUI();
-}
-
-
-function updateCacheSearchUI() {
-  const language =
-    languages[currentLanguage];
-
-
-  if (cacheSearchLanguage === "target") {
-
-    cacheTargetButton.classList.add(
-      "active"
-    );
-
-    cacheEnglishButton.classList.remove(
-      "active"
-    );
-
-
-    cacheSearchFlag.src =
-      language.flag;
-
-    cacheSearchFlag.alt =
-      language.name;
-
-
-    cacheSearchInput.placeholder =
-      `Search ${language.name} words...`;
-
-  } else {
-
-    cacheTargetButton.classList.remove(
-      "active"
-    );
-
-    cacheEnglishButton.classList.add(
-      "active"
-    );
-
-
-    cacheSearchFlag.src =
-      "../english-flag.png";
-
-    cacheSearchFlag.alt =
-      "English";
-
-
-    cacheSearchInput.placeholder =
-      "Search English meanings...";
-  }
-
-
-  cacheSearchInput.value = "";
 }
 
 
 function setLanguage(languageKey) {
+
   if (!languages[languageKey]) {
     return;
   }
@@ -234,39 +146,47 @@ function setLanguage(languageKey) {
   closeLanguageMenu();
 
   updateLanguageUI();
+
 }
 
 
 function openLanguageMenu() {
+
   languageMenu.hidden = false;
 
   languageButton.setAttribute(
     "aria-expanded",
     "true"
   );
+
 }
 
 
 function closeLanguageMenu() {
+
   languageMenu.hidden = true;
 
   languageButton.setAttribute(
     "aria-expanded",
     "false"
   );
+
 }
 
 
 function toggleLanguageMenu() {
+
   if (languageMenu.hidden) {
     openLanguageMenu();
   } else {
     closeLanguageMenu();
   }
+
 }
 
 
 async function requireSession() {
+
   const {
     data,
     error
@@ -277,34 +197,60 @@ async function requireSession() {
     error ||
     !data.session
   ) {
+
     window.location.href =
       "../index.html";
 
-    return;
   }
+
+}
+
+
+function showSyncToast(message) {
+
+  syncToast.textContent =
+    message;
+
+  syncToast.hidden =
+    false;
+
+
+  window.setTimeout(
+    () => {
+      syncToast.hidden = true;
+    },
+    1800
+  );
+
 }
 
 
 languageButton.addEventListener(
   "click",
   (event) => {
+
     event.stopPropagation();
 
     toggleLanguageMenu();
+
   }
 );
 
 
 languageOptions.forEach(
   (option) => {
+
     option.addEventListener(
       "click",
       () => {
+
         setLanguage(
           option.dataset.language
         );
+
       }
     );
+
   }
 );
 
@@ -312,12 +258,16 @@ languageOptions.forEach(
 document.addEventListener(
   "click",
   (event) => {
+
     if (
       !languageMenu.contains(event.target) &&
       !languageButton.contains(event.target)
     ) {
+
       closeLanguageMenu();
+
     }
+
   }
 );
 
@@ -325,92 +275,117 @@ document.addEventListener(
 document.addEventListener(
   "keydown",
   (event) => {
+
     if (event.key === "Escape") {
+
       closeLanguageMenu();
+
     }
+
   }
 );
 
 
-cacheTargetButton.addEventListener(
-  "click",
-  () => {
-    cacheSearchLanguage =
-      "target";
-
-    updateCacheSearchUI();
-  }
-);
-
-
-cacheEnglishButton.addEventListener(
-  "click",
-  () => {
-    cacheSearchLanguage =
-      "english";
-
-    updateCacheSearchUI();
-  }
-);
-
-
-/*
-  FUTURE:
-  external translation API
-  English → selected dictionary language
-*/
-onlineSearchForm.addEventListener(
-  "submit",
-  (event) => {
-    event.preventDefault();
-  }
-);
-
-
-/*
-  FUTURE:
-  Wiktionary API
-  selected dictionary language → English
-*/
-wiktionarySearchForm.addEventListener(
-  "submit",
-  (event) => {
-    event.preventDefault();
-  }
-);
-
-
-/*
-  FUTURE:
-  IndexedDB search
-*/
-cacheSearchForm.addEventListener(
-  "submit",
-  (event) => {
-    event.preventDefault();
-  }
-);
-
-
-/*
-  FUTURE:
-  compare Supabase settings
-  with local IndexedDB cache.
-*/
 syncButton.addEventListener(
   "click",
-  () => {
+  async () => {
+
+    if (
+      syncButton.classList.contains(
+        "is-syncing"
+      )
+    ) {
+      return;
+    }
+
+
+    syncButton.classList.add(
+      "is-syncing"
+    );
+
+
+    /*
+      IndexedDB synchronization
+      will be implemented here.
+    */
+
+
+    await new Promise(
+      (resolve) => {
+        window.setTimeout(
+          resolve,
+          650
+        );
+      }
+    );
+
+
+    syncButton.classList.remove(
+      "is-syncing"
+    );
+
+
+    showSyncToast(
+      "Dictionary synchronized"
+    );
+
   }
 );
 
 
 /*
-  FUTURE:
-  open library.html
+  These pages will be created next.
+  For now the buttons are ready.
 */
-libraryButton.addEventListener(
+
+onlineCard.addEventListener(
   "click",
   () => {
+
+    /*
+    window.location.href =
+      "./online-search.html";
+    */
+
+  }
+);
+
+
+wiktionaryCard.addEventListener(
+  "click",
+  () => {
+
+    /*
+    window.location.href =
+      "./wiktionary-search.html";
+    */
+
+  }
+);
+
+
+dictionarySearchCard.addEventListener(
+  "click",
+  () => {
+
+    /*
+    window.location.href =
+      "./dictionary-search.html";
+    */
+
+  }
+);
+
+
+libraryCard.addEventListener(
+  "click",
+  () => {
+
+    /*
+    window.location.href =
+      "./library.html";
+    */
+
   }
 );
 
@@ -418,10 +393,12 @@ libraryButton.addEventListener(
 logoutButton.addEventListener(
   "click",
   async () => {
+
     await supabase.auth.signOut();
 
     window.location.href =
       "../index.html";
+
   }
 );
 
