@@ -8,9 +8,9 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
 
-  <meta name="theme-color" content="#111827" />
+  <meta name="theme-color" content="#64778a" />
 
-  <title>Dictionary</title>
+  <title>Turkish Dictionary</title>
 
   <link
     rel="stylesheet"
@@ -20,142 +20,167 @@
 
 <body class="dictionary-page">
 
+  <!-- TOP BAR -->
   <header class="dictionary-topbar">
 
-    <div class="topbar-left">
-
-      <button
-        id="syncButton"
-        class="sync-button"
-        type="button"
-        aria-label="Synchronize dictionary"
-        title="Sync dictionary"
+    <!-- SYNC -->
+    <button
+      id="syncButton"
+      class="hub-top-button sync-button"
+      type="button"
+      aria-label="Synchronize dictionaries"
+      title="Sync"
+    >
+      <svg
+        class="sync-icon"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
       >
-        <img
-          src="../sync.png"
-          alt=""
-          class="sync-icon-image"
+        <path
+          d="M20 7v5h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
         />
 
-        <span>Sync</span>
-      </button>
+        <path
+          d="M4 17v-5h5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
 
-    </div>
+        <path
+          d="M18.4 9A7 7 0 0 0 6.2 6.6L4 9"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <path
+          d="M5.6 15A7 7 0 0 0 17.8 17.4L20 15"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
 
 
-    <div class="topbar-center">
+    <!-- LANGUAGE MENU -->
+    <div class="language-selector">
 
       <button
-        id="libraryButton"
-        class="library-button"
+        id="languageButton"
+        class="hub-language-button"
         type="button"
-        aria-label="Open library"
-        title="My Dictionary"
+        aria-label="Open language menu"
+        aria-expanded="false"
       >
         <img
-          src="../library.png"
-          alt=""
-          class="library-top-image"
+          id="currentLanguageFlag"
+          class="hub-language-flag"
+          src="../turkish-flag.png"
+          alt="Turkish"
         />
+
+        <svg
+          class="language-chevron"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M6 9l6 6 6-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
       </button>
 
-    </div>
 
-
-    <div class="topbar-right">
-
-      <div class="language-selector">
+      <div
+        id="languageMenu"
+        class="language-menu"
+        hidden
+      >
 
         <button
-          id="languageButton"
-          class="language-button"
+          class="language-option"
           type="button"
-          aria-label="Open dictionary menu"
-          aria-expanded="false"
+          data-language="turkish"
         >
           <img
-            id="currentLanguageFlag"
-            class="current-language-flag"
             src="../turkish-flag.png"
-            alt="Turkish"
+            alt=""
           />
+
+          <span>Turkish</span>
         </button>
 
 
-        <div
-          id="languageMenu"
-          class="language-menu"
-          hidden
+        <button
+          class="language-option"
+          type="button"
+          data-language="msa"
         >
+          <img
+            src="../arabic-flag.png"
+            alt=""
+          />
 
-          <button
-            class="language-option"
-            type="button"
-            data-language="chinese"
+          <span>Standard Arabic</span>
+        </button>
+
+
+        <button
+          class="language-option"
+          type="button"
+          data-language="chinese"
+        >
+          <img
+            src="../chinese-flag.png"
+            alt=""
+          />
+
+          <span>Chinese</span>
+        </button>
+
+
+        <div class="language-menu-divider"></div>
+
+
+        <button
+          id="logoutButton"
+          class="menu-signout"
+          type="button"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
           >
-            <img
-              src="../chinese-flag.png"
-              alt=""
+            <path
+              d="M10 17l5-5-5-5M15 12H3M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             />
+          </svg>
 
-            <span>Chinese</span>
-          </button>
-
-
-          <button
-            class="language-option"
-            type="button"
-            data-language="msa"
-          >
-            <img
-              src="../arabic-flag.png"
-              alt=""
-            />
-
-            <span>Standard Arabic</span>
-          </button>
-
-
-          <button
-            class="language-option"
-            type="button"
-            data-language="turkish"
-          >
-            <img
-              src="../turkish-flag.png"
-              alt=""
-            />
-
-            <span>Turkish</span>
-          </button>
-
-
-          <div class="language-menu-divider"></div>
-
-
-          <button
-            id="logoutButton"
-            class="menu-signout"
-            type="button"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                d="M10 17l5-5-5-5M15 12H3M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-            <span>Sign out</span>
-          </button>
-
-        </div>
+          <span>Sign out</span>
+        </button>
 
       </div>
 
@@ -164,305 +189,246 @@
   </header>
 
 
-  <main class="dictionary-container">
+  <!-- MAIN -->
+  <main class="dictionary-hub">
 
-    <h1
-      id="dictionaryTitle"
-      class="dictionary-title"
-    >
-      Turkish Dictionary
-    </h1>
+    <!-- TITLE -->
+    <section class="hub-title-section">
 
+      <h1
+        id="hubLanguageTitle"
+        class="hub-language-title"
+      >
+        TURKISH
+      </h1>
 
-    <!-- SEARCH ONLINE -->
-
-    <section class="search-card">
-
-      <div class="card-title-area">
-
-        <div class="card-heading">
-
-          <span
-            class="online-icon"
-            aria-hidden="true"
-          >
-            🌐
-          </span>
-
-          <h2>
-            Search online
-          </h2>
-
-        </div>
-
-        <div
-          id="onlineDirection"
-          class="search-direction"
-        >
-          English → Turkish
-        </div>
-
+      <div class="hub-dictionary-label">
+        DICTIONARY
       </div>
 
-
-      <form
-        id="onlineSearchForm"
-        class="search-form"
-      >
-
-        <div class="search-language-flag">
-          <img
-            src="../english-flag.png"
-            alt="English"
-          />
-        </div>
-
-
-        <div class="search-field-wrap">
-
-          <svg
-            class="field-search-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-
-          <input
-            id="onlineSearchInput"
-            type="text"
-            autocomplete="off"
-            placeholder="Type a word in English..."
-          />
-
-        </div>
-
-
-        <div class="search-target-flag">
-          <img
-            id="onlineTargetFlag"
-            src="../turkish-flag.png"
-            alt="Turkish"
-          />
-        </div>
-
-
-        <button
-          class="search-submit-button"
-          type="submit"
-        >
-          Search
-        </button>
-
-      </form>
-
-
       <div
-        id="onlineResult"
-        class="result-area"
-        hidden
-      ></div>
+        class="hub-ornament"
+        aria-hidden="true"
+      >
+        <span></span>
+        <strong>◇</strong>
+        <span></span>
+      </div>
 
     </section>
 
 
-    <!-- SEARCH WIKTIONARY -->
+    <!-- MENU CARDS -->
+    <section class="hub-menu">
 
-    <section class="search-card">
+      <!-- SEARCH ONLINE -->
+      <button
+        id="onlineCard"
+        class="hub-card"
+        type="button"
+      >
 
-      <div class="card-title-area">
+        <div class="hub-card-icon-wrap">
+          <img
+            src="../globe.png"
+            alt=""
+            class="hub-card-icon"
+          />
+        </div>
 
-        <div class="card-heading">
+        <div class="hub-card-content">
 
+          <div class="hub-card-title">
+            Search online
+          </div>
+
+          <div
+            id="onlineDirection"
+            class="hub-card-subtitle"
+          >
+            English → Turkish
+          </div>
+
+        </div>
+
+        <svg
+          class="hub-card-arrow"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M9 5l7 7-7 7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+      </button>
+
+
+      <!-- WIKTIONARY -->
+      <button
+        id="wiktionaryCard"
+        class="hub-card"
+        type="button"
+      >
+
+        <div class="hub-card-icon-wrap">
           <img
             src="../wiktionary.png"
-            alt="Wiktionary"
-            class="service-logo wiktionary-logo"
+            alt=""
+            class="hub-card-icon"
           />
+        </div>
 
-          <h2>
+        <div class="hub-card-content">
+
+          <div class="hub-card-title">
             Search on Wiktionary
-          </h2>
+          </div>
+
+          <div
+            id="wiktionaryDirection"
+            class="hub-card-subtitle"
+          >
+            Turkish → English
+          </div>
 
         </div>
 
-        <div
-          id="wiktionaryDirection"
-          class="search-direction"
+        <svg
+          class="hub-card-arrow"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
         >
-          Turkish → English
-        </div>
+          <path
+            d="M9 5l7 7-7 7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
 
-      </div>
+      </button>
 
 
-      <form
-        id="wiktionarySearchForm"
-        class="search-form"
+      <!-- SEARCH MY DICTIONARY -->
+      <button
+        id="dictionarySearchCard"
+        class="hub-card"
+        type="button"
       >
 
-        <div class="search-language-flag">
+        <div class="hub-card-icon-wrap">
           <img
-            id="wiktionarySourceFlag"
-            src="../turkish-flag.png"
-            alt="Turkish"
+            src="../dictionary.png"
+            alt=""
+            class="hub-card-icon"
           />
         </div>
 
+        <div class="hub-card-content">
 
-        <div class="search-field-wrap">
+          <div class="hub-card-title">
+            Search in My Dictionary
+          </div>
 
-          <svg
-            class="field-search-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-
-          <input
-            id="wiktionarySearchInput"
-            type="text"
-            autocomplete="off"
-            placeholder="Type a Turkish word..."
-          />
+          <div class="hub-card-subtitle">
+            Search saved words
+          </div>
 
         </div>
 
-
-        <button
-          class="search-submit-button"
-          type="submit"
+        <svg
+          class="hub-card-arrow"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
         >
-          Search
-        </button>
+          <path
+            d="M9 5l7 7-7 7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
 
-      </form>
-
-
-      <div
-        id="wiktionaryResult"
-        class="result-area"
-        hidden
-      ></div>
-
-    </section>
+      </button>
 
 
-    <!-- SEARCH CACHE -->
+      <!-- LIBRARY -->
+      <button
+        id="libraryCard"
+        class="hub-card"
+        type="button"
+      >
 
-    <section class="search-card">
-
-      <div class="card-title-area">
-
-        <div class="card-heading">
-
+        <div class="hub-card-icon-wrap">
           <img
             src="../library.png"
             alt=""
-            class="service-logo library-card-logo"
+            class="hub-card-icon"
           />
+        </div>
 
-          <h2>
-            Search in cache
-          </h2>
+        <div class="hub-card-content">
+
+          <div class="hub-card-title">
+            Open Library
+          </div>
+
+          <div class="hub-card-subtitle">
+            Browse your collection
+          </div>
 
         </div>
 
-
-        <div class="cache-description">
-          Search words already saved in your library
-        </div>
-
-
-        <div class="cache-language-switch">
-
-          <button
-            id="cacheTargetButton"
-            class="cache-language-button active"
-            type="button"
-          >
-            Turkish
-          </button>
-
-          <button
-            id="cacheEnglishButton"
-            class="cache-language-button"
-            type="button"
-          >
-            English
-          </button>
-
-        </div>
-
-      </div>
-
-
-      <form
-        id="cacheSearchForm"
-        class="search-form cache-search-form"
-      >
-
-        <div class="search-language-flag">
-
-          <img
-            id="cacheSearchFlag"
-            src="../turkish-flag.png"
-            alt="Turkish"
+        <svg
+          class="hub-card-arrow"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M9 5l7 7-7 7"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
           />
+        </svg>
 
-        </div>
-
-
-        <div class="search-field-wrap">
-
-          <svg
-            class="field-search-icon"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
-
-          <input
-            id="cacheSearchInput"
-            type="text"
-            autocomplete="off"
-            placeholder="Search Turkish words..."
-          />
-
-        </div>
-
-      </form>
-
-
-      <div
-        id="cacheSuggestions"
-        class="cache-results"
-        hidden
-      ></div>
+      </button>
 
     </section>
 
+
+    <!-- BOTTOM ORNAMENT -->
+    <div
+      class="hub-bottom-ornament"
+      aria-hidden="true"
+    >
+      <span></span>
+      <strong>◇</strong>
+      <span></span>
+    </div>
+
   </main>
+
+
+  <div
+    id="syncToast"
+    class="sync-toast"
+    hidden
+  >
+    Dictionary synchronized
+  </div>
 
 
   <script
