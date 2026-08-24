@@ -2,11 +2,609 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <meta name="theme-color" content="#111827" />
+
   <title>Personal Dictionary</title>
+
+  <style>
+    :root {
+      --card: rgba(255, 255, 255, 0.92);
+      --text: #111827;
+      --muted: #6b7280;
+      --line: rgba(17, 24, 39, 0.12);
+      --accent: #111827;
+      --error: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      color: var(--text);
+    }
+
+    body {
+      min-height: 100vh;
+
+      display: grid;
+      place-items: center;
+
+      padding: 24px;
+
+      background:
+        linear-gradient(
+          rgba(15, 23, 42, 0.38),
+          rgba(15, 23, 42, 0.58)
+        ),
+        url("./background.jpg");
+
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .card {
+      width: min(100%, 390px);
+
+      padding: 32px;
+
+      border:
+        1px solid
+        rgba(255, 255, 255, 0.32);
+
+      border-radius: 22px;
+
+      background: var(--card);
+
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+
+      box-shadow:
+        0 24px 70px
+        rgba(0, 0, 0, 0.22);
+    }
+
+    .brand {
+      margin-bottom: 28px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      font-size: 27px;
+      letter-spacing: -0.04em;
+    }
+
+    .brand p {
+      margin: 8px 0 0;
+
+      color: var(--muted);
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    input {
+      width: 100%;
+      height: 48px;
+
+      border:
+        1px solid
+        var(--line);
+
+      border-radius: 12px;
+
+      padding: 0 14px;
+
+      background:
+        rgba(255, 255, 255, 0.9);
+
+      color: var(--text);
+
+      font: inherit;
+
+      outline: none;
+    }
+
+    input:focus {
+      border-color:
+        rgba(17, 24, 39, 0.45);
+
+      box-shadow:
+        0 0 0 4px
+        rgba(17, 24, 39, 0.07);
+    }
+
+    button {
+      width: 100%;
+      height: 48px;
+
+      margin-top: 5px;
+
+      border: 0;
+      border-radius: 12px;
+
+      background: var(--accent);
+      color: white;
+
+      font: inherit;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .status {
+      min-height: 20px;
+
+      margin-top: 14px;
+
+      font-size: 13px;
+
+      color: var(--muted);
+
+      text-align: center;
+    }
+
+    .status.error {
+      color: var(--error);
+    }
+
+    .app {
+      display: none;
+
+      width: min(100%, 680px);
+    }
+
+    .app-card {
+      padding: 28px;
+
+      border-radius: 22px;
+
+      background:
+        rgba(255, 255, 255, 0.94);
+
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+
+      box-shadow:
+        0 24px 70px
+        rgba(0, 0, 0, 0.22);
+    }
+
+    .app-header {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 16px;
+    }
+
+    .app-header h2 {
+      margin: 0;
+    }
+
+    .logout {
+      width: auto;
+      height: 40px;
+
+      margin: 0;
+
+      padding: 0 16px;
+
+      background: #eef0f3;
+      color: #111827;
+    }
+
+    .placeholder {
+      margin-top: 24px;
+
+      padding: 24px;
+
+      border:
+        1px dashed
+        rgba(17, 24, 39, 0.2);
+
+      border-radius: 14px;
+
+      color: var(--muted);
+
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 18px;
+      }
+
+      .card,
+      .app-card {
+        padding: 24px;
+        border-radius: 18px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Personal Dictionary</h1>
-  <p>Funcionando ✅</p>
+
+  <main
+    id="loginView"
+    class="card"
+  >
+
+    <div class="brand">
+
+      <h1>
+        Personal Dictionary
+      </h1>
+
+      <p>
+        Seu dicionário pessoal de idiomas.
+      </p>
+
+    </div>
+
+    <form id="loginForm">
+
+      <div class="field">
+
+        <label for="email">
+          E-mail
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          required
+          placeholder="seu@email.com"
+        />
+
+      </div>
+
+      <div class="field">
+
+        <label for="password">
+          Senha
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          required
+          placeholder="••••••••••••"
+        />
+
+      </div>
+
+      <button
+        id="loginButton"
+        type="submit"
+      >
+        Entrar
+      </button>
+
+      <div
+        id="status"
+        class="status"
+      ></div>
+
+    </form>
+
+  </main>
+
+  <main
+    id="appView"
+    class="app"
+  >
+
+    <section class="app-card">
+
+      <div class="app-header">
+
+        <div>
+
+          <h2>
+            Dictionary
+          </h2>
+
+          <div
+            id="userEmail"
+            class="status"
+            style="
+              text-align: left;
+              margin-top: 5px;
+            "
+          ></div>
+
+        </div>
+
+        <button
+          id="logoutButton"
+          class="logout"
+          type="button"
+        >
+          Sair
+        </button>
+
+      </div>
+
+      <div class="placeholder">
+        Login funcionando.
+        Aqui entra a busca do Wiktionary.
+      </div>
+
+    </section>
+
+  </main>
+
+  <script type="module">
+
+    import {
+      createClient
+    } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+    /*
+      COLE AQUI:
+
+      1. Project URL
+      2. Publishable key / anon key
+
+      NUNCA coloque service_role aqui.
+    */
+
+    const SUPABASE_URL =
+      "https://bqgweziunlzwdousflkf.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_aZKwM2_YzG3OzL6KLnSg0A_XWrRYF1J";
+
+
+    const supabase =
+      createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+
+    const loginView =
+      document.getElementById(
+        "loginView"
+      );
+
+    const appView =
+      document.getElementById(
+        "appView"
+      );
+
+    const loginForm =
+      document.getElementById(
+        "loginForm"
+      );
+
+    const loginButton =
+      document.getElementById(
+        "loginButton"
+      );
+
+    const logoutButton =
+      document.getElementById(
+        "logoutButton"
+      );
+
+    const status =
+      document.getElementById(
+        "status"
+      );
+
+    const userEmail =
+      document.getElementById(
+        "userEmail"
+      );
+
+
+    function showLogin(
+      message = "",
+      isError = false
+    ) {
+
+      loginView.style.display =
+        "block";
+
+      appView.style.display =
+        "none";
+
+      status.textContent =
+        message;
+
+      status.className =
+        isError
+          ? "status error"
+          : "status";
+    }
+
+
+    function showApp(session) {
+
+      loginView.style.display =
+        "none";
+
+      appView.style.display =
+        "block";
+
+      userEmail.textContent =
+        session?.user?.email ?? "";
+
+      status.textContent = "";
+    }
+
+
+    async function loadSession() {
+
+      const {
+        data,
+        error
+      } =
+        await supabase.auth.getSession();
+
+
+      if (
+        error ||
+        !data.session
+      ) {
+
+        showLogin();
+
+        return;
+      }
+
+
+      showApp(
+        data.session
+      );
+    }
+
+
+    loginForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        const email =
+          document
+            .getElementById(
+              "email"
+            )
+            .value
+            .trim();
+
+
+        const password =
+          document
+            .getElementById(
+              "password"
+            )
+            .value;
+
+
+        loginButton.disabled =
+          true;
+
+        status.textContent =
+          "Entrando...";
+
+        status.className =
+          "status";
+
+
+        const {
+          data,
+          error
+        } =
+          await supabase.auth
+            .signInWithPassword({
+              email,
+              password
+            });
+
+
+        loginButton.disabled =
+          false;
+
+
+        if (error) {
+
+          showLogin(
+            "E-mail ou senha inválidos.",
+            true
+          );
+
+          return;
+        }
+
+
+        showApp(
+          data.session
+        );
+      }
+    );
+
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        await supabase.auth.signOut();
+
+        showLogin();
+      }
+    );
+
+
+    supabase.auth.onAuthStateChange(
+      (
+        _event,
+        session
+      ) => {
+
+        if (session) {
+
+          showApp(session);
+
+        } else {
+
+          showLogin();
+
+        }
+      }
+    );
+
+
+    loadSession();
+
+  </script>
+
 </body>
 </html>
