@@ -20,19 +20,19 @@
 
 <body class="dictionary-page">
 
-  <div class="page-topbar">
+  <header class="dictionary-topbar">
 
     <div class="topbar-left">
+
       <button
         id="syncButton"
         class="sync-button"
         type="button"
         aria-label="Synchronize dictionary"
+        title="Sync dictionary"
       >
         <svg
           viewBox="0 0 24 24"
-          width="18"
-          height="18"
           aria-hidden="true"
         >
           <path
@@ -47,9 +47,46 @@
 
         <span>Sync</span>
       </button>
+
     </div>
 
+
+    <div class="topbar-center">
+
+      <button
+        id="libraryButton"
+        class="library-button"
+        type="button"
+        aria-label="Open library"
+        title="My Dictionary"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H6.5A2.5 2.5 0 0 0 4 20.5V5.5Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linejoin="round"
+          />
+
+          <path
+            d="M20 5.5A2.5 2.5 0 0 0 17.5 3H14v18a3 3 0 0 1 3-3h.5a2.5 2.5 0 0 1 2.5 2.5V5.5Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.9"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+    </div>
+
+
     <div class="topbar-right">
+
       <div class="language-selector">
 
         <button
@@ -62,10 +99,11 @@
           <img
             id="currentLanguageFlag"
             class="current-language-flag"
-            src="../chinese-flag.png"
-            alt="Chinese"
+            src="../turkish-flag.png"
+            alt="Turkish"
           />
         </button>
+
 
         <div
           id="languageMenu"
@@ -86,6 +124,7 @@
             <span>Chinese</span>
           </button>
 
+
           <button
             class="language-option"
             type="button"
@@ -96,8 +135,9 @@
               alt=""
             />
 
-            <span>Modern Standard Arabic</span>
+            <span>Standard Arabic</span>
           </button>
+
 
           <button
             class="language-option"
@@ -112,7 +152,9 @@
             <span>Turkish</span>
           </button>
 
+
           <div class="language-menu-divider"></div>
+
 
           <button
             id="logoutButton"
@@ -121,8 +163,6 @@
           >
             <svg
               viewBox="0 0 24 24"
-              width="18"
-              height="18"
               aria-hidden="true"
             >
               <path
@@ -141,163 +181,312 @@
         </div>
 
       </div>
+
     </div>
 
-  </div>
+  </header>
 
 
   <main class="dictionary-container">
 
-    <section class="dictionary-hero-card">
+    <h1
+      id="dictionaryTitle"
+      class="dictionary-title"
+    >
+      Turkish Dictionary
+    </h1>
 
-      <div class="dictionary-hero-copy">
-        <h1>Dictionary</h1>
 
-        <p>
-          Search your saved words, browse what you have already added,
-          and open entries instantly from cache.
-        </p>
+    <!-- SEARCH ONLINE -->
+
+    <section class="search-card">
+
+      <div class="card-title-area">
+
+        <div class="card-heading">
+
+          <span
+            class="online-icon"
+            aria-hidden="true"
+          >
+            🌐
+          </span>
+
+          <h2>
+            Search online
+          </h2>
+
+        </div>
 
         <div
-          id="userEmail"
-          class="user-email"
-        ></div>
+          id="onlineDirection"
+          class="search-direction"
+        >
+          English → Turkish
+        </div>
+
       </div>
 
-      <div class="dictionary-hero-search">
-        <label
-          class="search-label"
-          for="searchInput"
-        >
-          Search word
-        </label>
 
-        <div class="search-input-wrap">
+      <form
+        id="onlineSearchForm"
+        class="search-form"
+      >
+
+        <div class="search-language-flag">
+          <img
+            src="../english-flag.png"
+            alt="English"
+          />
+        </div>
+
+
+        <div class="search-field-wrap">
+
           <svg
-            class="search-icon"
+            class="field-search-icon"
             viewBox="0 0 24 24"
-            width="18"
-            height="18"
             aria-hidden="true"
           >
             <path
-              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15z"
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
               stroke-linecap="round"
-              stroke-linejoin="round"
             />
           </svg>
 
           <input
-            id="searchInput"
+            id="onlineSearchInput"
             type="text"
-            placeholder="Type a word in the current language..."
             autocomplete="off"
+            placeholder="Type a word in English..."
+          />
+
+        </div>
+
+
+        <div class="search-target-flag">
+          <img
+            id="onlineTargetFlag"
+            src="../turkish-flag.png"
+            alt="Turkish"
           />
         </div>
 
-        <div
-          id="searchSuggestions"
-          class="search-suggestions"
-        ></div>
-      </div>
+
+        <button
+          class="search-submit-button"
+          type="submit"
+        >
+          Search
+        </button>
+
+      </form>
+
+
+      <div
+        id="onlineResult"
+        class="result-area"
+        hidden
+      ></div>
 
     </section>
 
 
-    <section class="dictionary-main-grid">
+    <!-- SEARCH WIKTIONARY -->
 
-      <aside class="words-panel">
+    <section class="search-card">
 
-        <div class="panel-header">
-          <div>
-            <h2>Saved words</h2>
-            <p id="wordsCountText">0 words</p>
-          </div>
+      <div class="card-title-area">
+
+        <div class="card-heading">
+
+          <img
+            src="../wiktionary.png"
+            alt="Wiktionary"
+            class="service-logo wiktionary-logo"
+          />
+
+          <h2>
+            Search on Wiktionary
+          </h2>
+
+        </div>
+
+        <div
+          id="wiktionaryDirection"
+          class="search-direction"
+        >
+          Turkish → English
+        </div>
+
+      </div>
+
+
+      <form
+        id="wiktionarySearchForm"
+        class="search-form"
+      >
+
+        <div class="search-language-flag">
+          <img
+            id="wiktionarySourceFlag"
+            src="../turkish-flag.png"
+            alt="Turkish"
+          />
+        </div>
+
+
+        <div class="search-field-wrap">
+
+          <svg
+            class="field-search-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          <input
+            id="wiktionarySearchInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Type a Turkish word..."
+          />
+
+        </div>
+
+
+        <button
+          class="search-submit-button"
+          type="submit"
+        >
+          Search
+        </button>
+
+      </form>
+
+
+      <div
+        id="wiktionaryResult"
+        class="result-area"
+        hidden
+      ></div>
+
+    </section>
+
+
+    <!-- SEARCH CACHE -->
+
+    <section class="search-card">
+
+      <div class="card-title-area">
+
+        <div class="card-heading">
+
+          <img
+            src="../library.png"
+            alt=""
+            class="service-logo library-card-logo"
+          />
+
+          <h2>
+            Search in cache
+          </h2>
+
+        </div>
+
+
+        <div class="cache-description">
+          Search words already saved in your library
+        </div>
+
+
+        <div class="cache-language-switch">
 
           <button
-            id="browseAllButton"
-            class="secondary-chip-button"
+            id="cacheTargetButton"
+            class="cache-language-button active"
             type="button"
           >
-            Show all
+            Turkish
           </button>
-        </div>
 
-        <div
-          id="wordsList"
-          class="words-list"
-        ></div>
-
-      </aside>
-
-
-      <section class="details-panel">
-
-        <div id="wordDetailsEmpty" class="word-details-empty">
-          <div class="empty-icon">✦</div>
-
-          <h3>Select a word</h3>
-
-          <p>
-            Click a cached word or pick a suggestion to see its details.
-          </p>
-        </div>
-
-        <div
-          id="wordDetails"
-          class="word-details"
-          hidden
-        >
-
-          <div class="word-details-head">
-            <div>
-              <div
-                id="detailsPartOfSpeech"
-                class="details-badge"
-              ></div>
-
-              <h2 id="detailsWord"></h2>
-
-              <div
-                id="detailsPronunciation"
-                class="details-pronunciation"
-              ></div>
-            </div>
-
-            <div
-              id="detailsWordMeta"
-              class="details-meta"
-            ></div>
-          </div>
-
-          <div class="details-block">
-            <h3>Forms</h3>
-
-            <pre
-              id="detailsForms"
-              class="details-code"
-            ></pre>
-          </div>
-
-          <div class="details-block">
-            <h3>Meanings</h3>
-
-            <div
-              id="detailsMeanings"
-              class="details-meanings"
-            ></div>
-          </div>
+          <button
+            id="cacheEnglishButton"
+            class="cache-language-button"
+            type="button"
+          >
+            English
+          </button>
 
         </div>
 
-      </section>
+      </div>
+
+
+      <form
+        id="cacheSearchForm"
+        class="search-form cache-search-form"
+      >
+
+        <div class="search-language-flag">
+
+          <img
+            id="cacheSearchFlag"
+            src="../turkish-flag.png"
+            alt="Turkish"
+          />
+
+        </div>
+
+
+        <div class="search-field-wrap">
+
+          <svg
+            class="field-search-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          <input
+            id="cacheSearchInput"
+            type="text"
+            autocomplete="off"
+            placeholder="Search Turkish words..."
+          />
+
+        </div>
+
+      </form>
+
+
+      <div
+        id="cacheSuggestions"
+        class="cache-results"
+        hidden
+      ></div>
 
     </section>
 
   </main>
+
 
   <script
     type="module"
