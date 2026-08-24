@@ -1,5 +1,4 @@
 :root {
-  --card: rgba(255, 255, 255, 0.88);
   --text: #172033;
   --muted: #667085;
   --line: rgba(100, 116, 139, 0.22);
@@ -59,13 +58,22 @@ body {
 
   padding: 34px 30px;
 
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 24px;
 
-  background: rgba(255, 255, 255, 0.88);
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.78)
+    ),
+    url("../background.jpg");
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   box-shadow:
     0 20px 60px rgba(31, 41, 55, 0.14);
@@ -132,7 +140,7 @@ input {
 
   padding: 0 14px;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.90);
 
   color: var(--text);
 
@@ -147,7 +155,7 @@ input {
 }
 
 input:hover {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
 }
 
 input:focus {
@@ -173,7 +181,8 @@ button {
   transition:
     transform 0.1s ease,
     opacity 0.15s ease,
-    box-shadow 0.15s ease;
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 button:active {
@@ -249,13 +258,22 @@ button:disabled {
 .app-card {
   padding: 28px;
 
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.58);
   border-radius: 24px;
 
-  background: rgba(255, 255, 255, 0.90);
+  background:
+    linear-gradient(
+      rgba(255, 255, 255, 0.80),
+      rgba(255, 255, 255, 0.80)
+    ),
+    url("../background.jpg");
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   box-shadow:
     0 20px 60px rgba(31, 41, 55, 0.14);
@@ -285,12 +303,152 @@ button:disabled {
   font-size: 13px;
 }
 
+
+/* =========================
+   HEADER ACTIONS
+   ========================= */
+
+.header-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+/* =========================
+   LANGUAGE SELECTOR
+   ========================= */
+
+.language-selector {
+  position: relative;
+}
+
+.language-button {
+  width: 62px;
+  height: 46px;
+
+  padding: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(100, 116, 139, 0.18);
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  box-shadow:
+    0 5px 14px rgba(15, 23, 42, 0.08);
+}
+
+.language-button:hover {
+  background: rgba(255, 255, 255, 0.92);
+
+  box-shadow:
+    0 7px 18px rgba(15, 23, 42, 0.12);
+}
+
+.current-language-flag {
+  width: 46px;
+  height: 30px;
+
+  display: block;
+
+  object-fit: cover;
+
+  border-radius: 6px;
+
+  box-shadow:
+    0 2px 7px rgba(15, 23, 42, 0.16);
+}
+
+.language-menu {
+  position: absolute;
+
+  top: calc(100% + 10px);
+  right: 0;
+
+  width: 180px;
+
+  padding: 7px;
+
+  z-index: 100;
+
+  border: 1px solid rgba(100, 116, 139, 0.18);
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 14px 36px rgba(15, 23, 42, 0.16);
+}
+
+.language-menu[hidden] {
+  display: none;
+}
+
+.language-option {
+  width: 100%;
+  height: 48px;
+
+  padding: 6px 10px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #172033;
+
+  text-align: left;
+
+  box-shadow: none;
+}
+
+.language-option:hover {
+  background: rgba(241, 245, 249, 0.90);
+}
+
+.language-option img {
+  width: 38px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+
+  box-shadow:
+    0 2px 6px rgba(15, 23, 42, 0.12);
+}
+
+.language-option span {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+
+/* =========================
+   LOGOUT
+   ========================= */
+
 .logout-button {
   width: auto;
 
   padding: 0 16px;
 
-  background: #eef2f7;
+  background: rgba(255, 255, 255, 0.72);
   color: #334155;
 
   box-shadow:
@@ -298,8 +456,13 @@ button:disabled {
 }
 
 .logout-button:hover {
-  background: #e2e8f0;
+  background: rgba(255, 255, 255, 0.92);
 }
+
+
+/* =========================
+   PLACEHOLDER
+   ========================= */
 
 .placeholder {
   margin-top: 24px;
@@ -309,7 +472,7 @@ button:disabled {
   border: 1px dashed rgba(71, 85, 105, 0.22);
   border-radius: 14px;
 
-  background: rgba(248, 250, 252, 0.72);
+  background: rgba(255, 255, 255, 0.52);
 
   color: var(--muted);
 
@@ -345,5 +508,40 @@ button:disabled {
   .brand-flags img {
     width: 42px;
     height: 27px;
+  }
+
+  .app-header {
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .language-button {
+    width: 58px;
+    height: 44px;
+  }
+
+  .current-language-flag {
+    width: 42px;
+    height: 27px;
+  }
+
+  .language-menu {
+    width: 170px;
+  }
+
+  .language-option img {
+    width: 36px;
+    height: 23px;
+  }
+
+  .logout-button {
+    height: 44px;
+
+    padding: 0 12px;
+
+    font-size: 13px;
   }
 }
