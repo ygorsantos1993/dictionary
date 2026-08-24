@@ -20,74 +20,14 @@
 
 <body class="dictionary-page">
 
-  <div class="top-menu">
+  <div class="page-topbar">
 
-    <button
-      id="languageButton"
-      class="language-button"
-      type="button"
-      aria-label="Open menu"
-      aria-expanded="false"
-    >
-      <img
-        id="currentLanguageFlag"
-        class="current-language-flag"
-        src="../chinese-flag.png"
-        alt="Chinese"
-      />
-    </button>
-
-    <div
-      id="languageMenu"
-      class="language-menu"
-      hidden
-    >
-
+    <div class="topbar-left">
       <button
-        class="language-option"
+        id="syncButton"
+        class="sync-button"
         type="button"
-        data-language="chinese"
-      >
-        <img
-          src="../chinese-flag.png"
-          alt=""
-        />
-
-        <span>Chinese</span>
-      </button>
-
-      <button
-        class="language-option"
-        type="button"
-        data-language="arabic_msa"
-      >
-        <img
-          src="../arabic-flag.png"
-          alt=""
-        />
-
-        <span>Modern Standard Arabic</span>
-      </button>
-
-      <button
-        class="language-option"
-        type="button"
-        data-language="turkish"
-      >
-        <img
-          src="../turkish-flag.png"
-          alt=""
-        />
-
-        <span>Turkish</span>
-      </button>
-
-      <div class="language-menu-divider"></div>
-
-      <button
-        id="logoutButton"
-        class="menu-signout"
-        type="button"
+        aria-label="Synchronize dictionary"
       >
         <svg
           viewBox="0 0 24 24"
@@ -96,7 +36,7 @@
           aria-hidden="true"
         >
           <path
-            d="M10 17l5-5-5-5M15 12H3M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
+            d="M20 12a8 8 0 0 1-13.66 5.66M4 12A8 8 0 0 1 17.66 6.34M20 4v6h-6M4 20v-6h6"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -105,9 +45,102 @@
           />
         </svg>
 
-        <span>Sign out</span>
+        <span>Sync</span>
       </button>
+    </div>
 
+    <div class="topbar-right">
+      <div class="language-selector">
+
+        <button
+          id="languageButton"
+          class="language-button"
+          type="button"
+          aria-label="Open dictionary menu"
+          aria-expanded="false"
+        >
+          <img
+            id="currentLanguageFlag"
+            class="current-language-flag"
+            src="../chinese-flag.png"
+            alt="Chinese"
+          />
+        </button>
+
+        <div
+          id="languageMenu"
+          class="language-menu"
+          hidden
+        >
+
+          <button
+            class="language-option"
+            type="button"
+            data-language="chinese"
+          >
+            <img
+              src="../chinese-flag.png"
+              alt=""
+            />
+
+            <span>Chinese</span>
+          </button>
+
+          <button
+            class="language-option"
+            type="button"
+            data-language="msa"
+          >
+            <img
+              src="../arabic-flag.png"
+              alt=""
+            />
+
+            <span>Modern Standard Arabic</span>
+          </button>
+
+          <button
+            class="language-option"
+            type="button"
+            data-language="turkish"
+          >
+            <img
+              src="../turkish-flag.png"
+              alt=""
+            />
+
+            <span>Turkish</span>
+          </button>
+
+          <div class="language-menu-divider"></div>
+
+          <button
+            id="logoutButton"
+            class="menu-signout"
+            type="button"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="18"
+              height="18"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 17l5-5-5-5M15 12H3M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            <span>Sign out</span>
+          </button>
+
+        </div>
+
+      </div>
     </div>
 
   </div>
@@ -115,24 +148,152 @@
 
   <main class="dictionary-container">
 
-    <section class="app-card">
+    <section class="dictionary-hero-card">
 
-      <header class="app-header">
+      <div class="dictionary-hero-copy">
+        <h1>Dictionary</h1>
 
-        <div>
-          <h1>Dictionary</h1>
+        <p>
+          Search your saved words, browse what you have already added,
+          and open entries instantly from cache.
+        </p>
 
-          <div
-            id="userEmail"
-            class="user-email"
-          ></div>
+        <div
+          id="userEmail"
+          class="user-email"
+        ></div>
+      </div>
+
+      <div class="dictionary-hero-search">
+        <label
+          class="search-label"
+          for="searchInput"
+        >
+          Search word
+        </label>
+
+        <div class="search-input-wrap">
+          <svg
+            class="search-icon"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            aria-hidden="true"
+          >
+            <path
+              d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Type a word in the current language..."
+            autocomplete="off"
+          />
         </div>
 
-      </header>
-
-      <div class="placeholder">
-        Wiktionary search will go here.
+        <div
+          id="searchSuggestions"
+          class="search-suggestions"
+        ></div>
       </div>
+
+    </section>
+
+
+    <section class="dictionary-main-grid">
+
+      <aside class="words-panel">
+
+        <div class="panel-header">
+          <div>
+            <h2>Saved words</h2>
+            <p id="wordsCountText">0 words</p>
+          </div>
+
+          <button
+            id="browseAllButton"
+            class="secondary-chip-button"
+            type="button"
+          >
+            Show all
+          </button>
+        </div>
+
+        <div
+          id="wordsList"
+          class="words-list"
+        ></div>
+
+      </aside>
+
+
+      <section class="details-panel">
+
+        <div id="wordDetailsEmpty" class="word-details-empty">
+          <div class="empty-icon">✦</div>
+
+          <h3>Select a word</h3>
+
+          <p>
+            Click a cached word or pick a suggestion to see its details.
+          </p>
+        </div>
+
+        <div
+          id="wordDetails"
+          class="word-details"
+          hidden
+        >
+
+          <div class="word-details-head">
+            <div>
+              <div
+                id="detailsPartOfSpeech"
+                class="details-badge"
+              ></div>
+
+              <h2 id="detailsWord"></h2>
+
+              <div
+                id="detailsPronunciation"
+                class="details-pronunciation"
+              ></div>
+            </div>
+
+            <div
+              id="detailsWordMeta"
+              class="details-meta"
+            ></div>
+          </div>
+
+          <div class="details-block">
+            <h3>Forms</h3>
+
+            <pre
+              id="detailsForms"
+              class="details-code"
+            ></pre>
+          </div>
+
+          <div class="details-block">
+            <h3>Meanings</h3>
+
+            <div
+              id="detailsMeanings"
+              class="details-meanings"
+            ></div>
+          </div>
+
+        </div>
+
+      </section>
 
     </section>
 
