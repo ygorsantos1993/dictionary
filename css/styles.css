@@ -15,6 +15,7 @@ html,
 body {
   min-height: 100%;
   margin: 0;
+
   font-family:
     Inter,
     ui-sans-serif,
@@ -23,11 +24,13 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+
   color: var(--text);
 }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 
@@ -36,8 +39,12 @@ body {
    ========================= */
 
 .login-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+
   display: grid;
   place-items: center;
+
   padding: 24px;
 
   background:
@@ -50,11 +57,11 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 .card {
   width: min(100%, 390px);
+
   padding: 32px;
 
   border: 1px solid rgba(255, 255, 255, 0.32);
@@ -76,13 +83,16 @@ body {
 
 .brand h1 {
   margin: 0;
+
   font-size: 27px;
   letter-spacing: -0.04em;
 }
 
 .brand p {
   margin: 8px 0 0;
+
   color: var(--muted);
+
   font-size: 14px;
   line-height: 1.5;
 }
@@ -93,7 +103,9 @@ body {
 
 label {
   display: block;
+
   margin-bottom: 7px;
+
   font-size: 13px;
   font-weight: 650;
 }
@@ -110,6 +122,7 @@ input {
   background: rgba(255, 255, 255, 0.9);
 
   color: var(--text);
+
   font: inherit;
 
   outline: none;
@@ -149,9 +162,11 @@ button:disabled {
 
 .status {
   min-height: 20px;
+
   margin-top: 14px;
 
   font-size: 13px;
+
   color: var(--muted);
 
   text-align: center;
@@ -168,6 +183,8 @@ button:disabled {
 
 .dictionary-page {
   min-height: 100vh;
+  min-height: 100dvh;
+
   padding: 24px;
 
   background:
@@ -180,11 +197,11 @@ button:disabled {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 .dictionary-container {
   width: min(100%, 900px);
+
   margin: 0 auto;
 }
 
@@ -205,8 +222,10 @@ button:disabled {
 
 .app-header {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
+
   gap: 16px;
 }
 
@@ -217,12 +236,15 @@ button:disabled {
 
 .user-email {
   margin-top: 5px;
+
   color: var(--muted);
+
   font-size: 13px;
 }
 
 .logout-button {
   width: auto;
+
   padding: 0 16px;
 
   background: #eef0f3;
@@ -231,6 +253,7 @@ button:disabled {
 
 .placeholder {
   margin-top: 24px;
+
   padding: 24px;
 
   border: 1px dashed rgba(17, 24, 39, 0.2);
@@ -255,6 +278,7 @@ button:disabled {
   .card,
   .app-card {
     padding: 24px;
+
     border-radius: 18px;
   }
 }
