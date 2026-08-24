@@ -147,15 +147,6 @@ input {
   font: inherit;
 
   outline: none;
-
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-
-input:hover {
-  background: rgba(255, 255, 255, 0.96);
 }
 
 input:focus {
@@ -177,16 +168,6 @@ button {
   font-weight: 700;
 
   cursor: pointer;
-
-  transition:
-    transform 0.1s ease,
-    opacity 0.15s ease,
-    box-shadow 0.15s ease,
-    background 0.15s ease;
-}
-
-button:active {
-  transform: scale(0.99);
 }
 
 .login-card button {
@@ -205,15 +186,9 @@ button:active {
     0 10px 24px rgba(37, 99, 235, 0.22);
 }
 
-.login-card button:hover {
-  box-shadow:
-    0 12px 28px rgba(37, 99, 235, 0.28);
-}
-
 button:disabled {
   opacity: 0.6;
   cursor: default;
-  transform: none;
 }
 
 .status {
@@ -234,7 +209,7 @@ button:disabled {
 
 
 /* =========================
-   DICTIONARY
+   DICTIONARY PAGE
    ========================= */
 
 .dictionary-page {
@@ -284,12 +259,9 @@ button:disabled {
 
   align-items: center;
   justify-content: space-between;
-
-  gap: 16px;
 }
 
-.app-header h1,
-.app-header h2 {
+.app-header h1 {
   margin: 0;
 
   color: #172033;
@@ -305,52 +277,60 @@ button:disabled {
 
 
 /* =========================
-   LANGUAGE SELECTOR
+   TOP RIGHT MENU
    ========================= */
 
-.language-selector {
-  position: relative;
+.top-menu {
+  position: fixed;
+
+  top: 24px;
+  right: 24px;
+
+  z-index: 1000;
 }
 
 .language-button {
-  width: 62px;
-  height: 46px;
+  width: auto;
+  height: auto;
 
-  padding: 6px;
+  padding: 0;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 
-  border: 1px solid rgba(100, 116, 139, 0.18);
-  border-radius: 12px;
+  border: 0;
+  border-radius: 0;
 
-  background: rgba(255, 255, 255, 0.72);
+  background: transparent;
 
-  box-shadow:
-    0 5px 14px rgba(15, 23, 42, 0.08);
+  box-shadow: none;
 }
 
 .language-button:hover {
-  background: rgba(255, 255, 255, 0.92);
+  background: transparent;
+}
 
-  box-shadow:
-    0 7px 18px rgba(15, 23, 42, 0.12);
+.language-button:active {
+  transform: scale(0.97);
 }
 
 .current-language-flag {
-  width: 46px;
-  height: 30px;
+  width: 64px;
+  height: 42px;
 
   display: block;
 
   object-fit: cover;
 
-  border-radius: 6px;
+  border-radius: 7px;
 
   box-shadow:
-    0 2px 7px rgba(15, 23, 42, 0.16);
+    0 4px 14px rgba(15, 23, 42, 0.22);
 }
+
+
+/* =========================
+   LANGUAGE MENU
+   ========================= */
 
 .language-menu {
   position: absolute;
@@ -358,22 +338,20 @@ button:disabled {
   top: calc(100% + 10px);
   right: 0;
 
-  width: 245px;
+  width: 250px;
 
   padding: 7px;
-
-  z-index: 100;
 
   border: 1px solid rgba(100, 116, 139, 0.18);
   border-radius: 14px;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.97);
 
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
   box-shadow:
-    0 14px 36px rgba(15, 23, 42, 0.16);
+    0 14px 36px rgba(15, 23, 42, 0.18);
 }
 
 .language-menu[hidden] {
@@ -382,14 +360,14 @@ button:disabled {
 
 .language-option {
   width: 100%;
-  height: 48px;
+  height: 50px;
 
   padding: 6px 10px;
 
   display: flex;
   align-items: center;
 
-  gap: 11px;
+  gap: 12px;
 
   border-radius: 10px;
 
@@ -403,12 +381,12 @@ button:disabled {
 }
 
 .language-option:hover {
-  background: rgba(241, 245, 249, 0.90);
+  background: rgba(241, 245, 249, 0.95);
 }
 
 .language-option img {
-  width: 38px;
-  height: 25px;
+  width: 40px;
+  height: 26px;
 
   flex-shrink: 0;
 
@@ -427,7 +405,7 @@ button:disabled {
 
 
 /* =========================
-   MENU DIVIDER
+   SIGN OUT
    ========================= */
 
 .language-menu-divider {
@@ -438,14 +416,9 @@ button:disabled {
   background: rgba(100, 116, 139, 0.18);
 }
 
-
-/* =========================
-   SIGN OUT
-   ========================= */
-
 .menu-signout {
   width: 100%;
-  height: 44px;
+  height: 46px;
 
   padding: 0 10px;
 
@@ -463,22 +436,19 @@ button:disabled {
   box-shadow: none;
 }
 
-.menu-signout svg {
-  width: 18px;
-  height: 18px;
+.menu-signout:hover {
+  background: rgba(241, 245, 249, 0.95);
 
+  color: #172033;
+}
+
+.menu-signout svg {
   flex-shrink: 0;
 }
 
 .menu-signout span {
   font-size: 14px;
   font-weight: 650;
-}
-
-.menu-signout:hover {
-  background: rgba(241, 245, 249, 0.90);
-
-  color: #172033;
 }
 
 
@@ -523,36 +493,28 @@ button:disabled {
     font-size: 27px;
   }
 
-  .brand-flags {
-    gap: 10px;
-  }
-
   .brand-flags img {
     width: 42px;
     height: 27px;
   }
 
-  .app-header {
-    align-items: flex-start;
-  }
-
-  .language-button {
-    width: 58px;
-    height: 44px;
+  .top-menu {
+    top: 18px;
+    right: 18px;
   }
 
   .current-language-flag {
-    width: 42px;
-    height: 27px;
+    width: 58px;
+    height: 38px;
   }
 
   .language-menu {
-    width: 245px;
-    max-width: calc(100vw - 48px);
+    width: 250px;
+    max-width: calc(100vw - 36px);
   }
 
   .language-option img {
-    width: 36px;
-    height: 23px;
+    width: 38px;
+    height: 25px;
   }
 }
