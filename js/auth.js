@@ -11,82 +11,78 @@ const status =
 
 
 async function checkExistingSession() {
-
   const {
     data,
     error
   } = await supabase.auth.getSession();
 
+  if (error) {
+    console.error(
+      "Failed to get existing session:",
+      error
+    );
 
-  if (
-    !error &&
-    data.session
-  ) {
+    return;
+  }
 
+  if (data.session) {
     window.location.href =
       "./pages/dictionary.html";
   }
 }
 
 
-loginForm.addEventListener(
-  "submit",
-  async (event) => {
+if (loginForm) {
+  loginForm.addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
 
-    event.preventDefault();
+      const email =
+        document
+          .getElementById("email")
+          .value
+          .trim();
 
+      const password =
+        document
+          .getElementById("password")
+          .value;
 
-    const email =
-      document
-        .getElementById("email")
-        .value
-        .trim();
-
-
-    const password =
-      document
-        .getElementById("password")
-        .value;
-
-
-    loginButton.disabled = true;
-
-    status.textContent =
-      "Signing in...";
-
-    status.className =
-      "status";
-
-
-    const {
-      error
-    } =
-      await supabase.auth
-        .signInWithPassword({
-          email,
-          password
-        });
-
-
-    loginButton.disabled = false;
-
-
-    if (error) {
+      loginButton.disabled = true;
 
       status.textContent =
-        "Invalid email or password.";
+        "Signing in...";
 
       status.className =
-        "status error";
+        "status";
 
-      return;
+      const {
+        error
+      } =
+        await supabase.auth
+          .signInWithPassword({
+            email,
+            password
+          });
+
+      loginButton.disabled = false;
+
+      if (error) {
+        status.textContent =
+          "Invalid email or password.";
+
+        status.className =
+          "status error";
+
+        return;
+      }
+
+      window.location.href =
+        "./pages/dictionary.html";
     }
-
-
-    window.location.href =
-      "./pages/dictionary.html";
-  }
-);
+  );
+}
 
 
 checkExistingSession();
