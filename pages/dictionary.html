@@ -35,13 +35,83 @@
           ></div>
         </div>
 
-        <button
-          id="logoutButton"
-          class="logout-button"
-          type="button"
-        >
-          Sign out
-        </button>
+        <div class="header-actions">
+
+          <div class="language-selector">
+
+            <button
+              id="languageButton"
+              class="language-button"
+              type="button"
+              aria-label="Change dictionary language"
+              aria-expanded="false"
+            >
+              <img
+                id="currentLanguageFlag"
+                class="current-language-flag"
+                src="../chinese-flag.png"
+                alt="Chinese"
+              />
+            </button>
+
+            <div
+              id="languageMenu"
+              class="language-menu"
+              hidden
+            >
+
+              <button
+                class="language-option"
+                type="button"
+                data-language="chinese"
+              >
+                <img
+                  src="../chinese-flag.png"
+                  alt=""
+                />
+
+                <span>Chinese</span>
+              </button>
+
+              <button
+                class="language-option"
+                type="button"
+                data-language="arabic"
+              >
+                <img
+                  src="../arabic-flag.png"
+                  alt=""
+                />
+
+                <span>Arabic</span>
+              </button>
+
+              <button
+                class="language-option"
+                type="button"
+                data-language="turkish"
+              >
+                <img
+                  src="../turkish-flag.png"
+                  alt=""
+                />
+
+                <span>Turkish</span>
+              </button>
+
+            </div>
+
+          </div>
+
+          <button
+            id="logoutButton"
+            class="logout-button"
+            type="button"
+          >
+            Sign out
+          </button>
+
+        </div>
 
       </header>
 
