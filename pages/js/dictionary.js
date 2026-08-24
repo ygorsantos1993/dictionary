@@ -1,0 +1,48 @@
+import { supabase } from "./supabase.js";
+
+const userEmail =
+  document.getElementById("userEmail");
+
+const logoutButton =
+  document.getElementById("logoutButton");
+
+
+async function requireSession() {
+
+  const {
+    data,
+    error
+  } =
+    await supabase.auth.getSession();
+
+
+  if (
+    error ||
+    !data.session
+  ) {
+
+    window.location.href =
+      "../index.html";
+
+    return;
+  }
+
+
+  userEmail.textContent =
+    data.session.user.email;
+}
+
+
+logoutButton.addEventListener(
+  "click",
+  async () => {
+
+    await supabase.auth.signOut();
+
+    window.location.href =
+      "../index.html";
+  }
+);
+
+
+requireSession();
