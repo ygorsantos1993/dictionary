@@ -278,15 +278,14 @@ button {
    ========================= */
 
 .sync-button {
-  height: 46px;
+  height: 52px;
 
   padding: 0 15px;
 
   display: flex;
-
   align-items: center;
 
-  gap: 8px;
+  gap: 9px;
 
   border-radius: 14px;
 
@@ -305,9 +304,13 @@ button {
     rgba(15, 23, 42, 0.16);
 }
 
-.sync-button svg {
-  width: 20px;
-  height: 20px;
+.sync-icon-image {
+  width: 28px;
+  height: 28px;
+
+  display: block;
+
+  object-fit: contain;
 }
 
 
@@ -316,11 +319,10 @@ button {
    ========================= */
 
 .library-button {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
 
   display: grid;
-
   place-items: center;
 
   padding: 0;
@@ -328,9 +330,7 @@ button {
   border-radius: 50%;
 
   background:
-    rgba(255, 255, 255, 0.24);
-
-  color: white;
+    rgba(255, 255, 255, 0.20);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -340,9 +340,13 @@ button {
     rgba(15, 23, 42, 0.16);
 }
 
-.library-button svg {
-  width: 27px;
-  height: 27px;
+.library-top-image {
+  width: 46px;
+  height: 46px;
+
+  display: block;
+
+  object-fit: contain;
 }
 
 
@@ -792,7 +796,8 @@ button {
   }
 
   .sync-button {
-    width: 46px;
+    width: 48px;
+    height: 48px;
 
     padding: 0;
 
@@ -803,9 +808,19 @@ button {
     display: none;
   }
 
+  .sync-icon-image {
+    width: 27px;
+    height: 27px;
+  }
+
   .library-button {
-    width: 46px;
-    height: 46px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .library-top-image {
+    width: 40px;
+    height: 40px;
   }
 
   .current-language-flag {
