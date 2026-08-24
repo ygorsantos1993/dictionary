@@ -1,19 +1,39 @@
 :root {
-  --text: #172033;
-  --muted: #667085;
-  --line: rgba(100, 116, 139, 0.22);
+  --text: #1d242e;
+  --muted: #60656b;
+
+  --gold: #b98b49;
+  --gold-light: #d9b36f;
+  --gold-dark: #8d6530;
+
+  --cream:
+    rgba(255, 250, 244, 0.90);
+
+  --cream-strong:
+    rgba(255, 252, 248, 0.95);
+
+  --menu-dark:
+    rgba(45, 56, 68, 0.82);
+
+  --line:
+    rgba(185, 139, 73, 0.34);
+
   --accent-1: #3b82f6;
   --accent-2: #2563eb;
+
   --error: #b42318;
 }
+
 
 * {
   box-sizing: border-box;
 }
 
+
 html,
 body {
   min-height: 100%;
+
   margin: 0;
 
   font-family:
@@ -28,37 +48,54 @@ body {
   color: var(--text);
 }
 
+
 body {
   min-height: 100vh;
   min-height: 100dvh;
 }
 
 
-/* =========================
+button {
+  border: 0;
+
+  font: inherit;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
    LOGIN
-   ========================= */
+   ========================================================= */
 
 .login-page {
   min-height: 100vh;
   min-height: 100dvh;
 
   display: grid;
+
   place-items: center;
 
   padding: 24px;
 
-  background: url("../background.jpg");
+  background:
+    url("../background.jpg");
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
+
 
 .card {
   width: min(100%, 400px);
 
   padding: 34px 30px;
 
-  border: 1px solid rgba(255, 255, 255, 0.58);
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.58);
+
   border-radius: 24px;
 
   background:
@@ -76,8 +113,10 @@ body {
   -webkit-backdrop-filter: blur(10px);
 
   box-shadow:
-    0 20px 60px rgba(31, 41, 55, 0.14);
+    0 20px 60px
+    rgba(31, 41, 55, 0.14);
 }
+
 
 .brand {
   margin-bottom: 24px;
@@ -85,14 +124,17 @@ body {
   text-align: center;
 }
 
+
 .brand-title {
   margin: 0;
 
   font-size: 30px;
+
   line-height: 1.1;
 
   letter-spacing: -0.04em;
 }
+
 
 .brand-flags {
   margin-top: 14px;
@@ -105,6 +147,7 @@ body {
   gap: 12px;
 }
 
+
 .brand-flags img {
   width: 46px;
   height: 30px;
@@ -114,12 +157,15 @@ body {
   border-radius: 6px;
 
   box-shadow:
-    0 3px 10px rgba(15, 23, 42, 0.14);
+    0 3px 10px
+    rgba(15, 23, 42, 0.14);
 }
+
 
 .field {
   margin-bottom: 16px;
 }
+
 
 label {
   display: block;
@@ -132,14 +178,18 @@ label {
   color: #334155;
 }
 
+
 input {
   width: 100%;
   height: 50px;
 
-  border: 1px solid var(--line);
-  border-radius: 14px;
-
   padding: 0 14px;
+
+  border:
+    1px solid
+    rgba(100, 116, 139, 0.22);
+
+  border-radius: 14px;
 
   background:
     rgba(255, 255, 255, 0.90);
@@ -150,6 +200,7 @@ input {
 
   outline: none;
 }
+
 
 input:focus {
   border-color:
@@ -162,13 +213,6 @@ input:focus {
   background: #ffffff;
 }
 
-button {
-  border: 0;
-
-  font: inherit;
-
-  cursor: pointer;
-}
 
 .login-card button {
   width: 100%;
@@ -192,232 +236,317 @@ button {
     rgba(37, 99, 235, 0.22);
 }
 
+
 .status {
   min-height: 20px;
 
   margin-top: 14px;
 
-  color: var(--muted);
+  color: #667085;
 
   font-size: 13px;
 
   text-align: center;
 }
 
+
 .status.error {
   color: var(--error);
 }
 
 
-/* =========================
-   DICTIONARY PAGE
-   ========================= */
+/* =========================================================
+   DICTIONARY HUB
+   ========================================================= */
 
 .dictionary-page {
+  position: relative;
+
   min-height: 100vh;
   min-height: 100dvh;
 
   padding:
-    96px
-    24px
-    50px;
+    max(24px, env(safe-area-inset-top))
+    20px
+    max(34px, env(safe-area-inset-bottom));
+
+  overflow-x: hidden;
 
   background:
-    url("../background.jpg");
+    url("../turkey.png");
 
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 
-.dictionary-container {
-  width: min(100%, 860px);
+  background-position:
+    center center;
 
-  margin: 0 auto;
+  background-attachment: fixed;
 }
 
 
-/* =========================
-   TOP BAR
-   ========================= */
+/*
+  Very subtle veil only to make text readable.
+  The background stays strongly visible.
+*/
+.dictionary-page::before {
+  content: "";
 
-.dictionary-topbar {
   position: fixed;
 
-  top: 20px;
-  left: 24px;
-  right: 24px;
+  inset: 0;
 
-  display: grid;
-
-  grid-template-columns:
-    1fr
-    auto
-    1fr;
-
-  align-items: center;
-
-  z-index: 1000;
-}
-
-.topbar-left {
-  justify-self: start;
-}
-
-.topbar-center {
-  justify-self: center;
-}
-
-.topbar-right {
-  justify-self: end;
-}
-
-
-/* =========================
-   SYNC
-   ========================= */
-
-.sync-button {
-  height: 52px;
-
-  padding: 0 15px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 9px;
-
-  border-radius: 14px;
+  pointer-events: none;
 
   background:
-    rgba(255, 255, 255, 0.22);
-
-  color: white;
-
-  font-weight: 700;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 8px 24px
-    rgba(15, 23, 42, 0.16);
-}
-
-.sync-icon-image {
-  width: 28px;
-  height: 28px;
-
-  display: block;
-
-  object-fit: contain;
+    linear-gradient(
+      to bottom,
+      rgba(43, 58, 73, 0.10) 0%,
+      rgba(255, 218, 167, 0.02) 38%,
+      rgba(14, 28, 38, 0.13) 100%
+    );
 }
 
 
-/* =========================
-   LIBRARY TOP BUTTON
-   ========================= */
+/* =========================================================
+   TOP BAR
+   ========================================================= */
 
-.library-button {
-  width: 58px;
-  height: 58px;
+.dictionary-topbar {
+  position: relative;
+
+  z-index: 20;
+
+  width: min(100%, 720px);
+
+  margin: 0 auto;
+
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+
+.hub-top-button {
+  width: 54px;
+  height: 54px;
 
   display: grid;
+
   place-items: center;
 
   padding: 0;
 
-  border-radius: 50%;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 17px;
 
   background:
-    rgba(255, 255, 255, 0.20);
+    rgba(43, 54, 67, 0.65);
+
+  color:
+    var(--gold-light);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
   box-shadow:
     0 8px 24px
-    rgba(15, 23, 42, 0.16);
-}
+    rgba(10, 20, 30, 0.14);
 
-.library-top-image {
-  width: 46px;
-  height: 46px;
-
-  display: block;
-
-  object-fit: contain;
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
 }
 
 
-/* =========================
-   LANGUAGE FLAG
-   ========================= */
+.hub-top-button:hover {
+  background:
+    rgba(43, 54, 67, 0.78);
+}
+
+
+.hub-top-button:active {
+  transform:
+    scale(0.96);
+}
+
+
+.sync-icon {
+  width: 29px;
+  height: 29px;
+}
+
+
+.sync-button.is-syncing .sync-icon {
+  animation:
+    sync-spin
+    700ms
+    linear
+    infinite;
+}
+
+
+@keyframes sync-spin {
+
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   LANGUAGE BUTTON
+   ========================================================= */
 
 .language-selector {
   position: relative;
 }
 
-.language-button {
-  width: auto;
-  height: auto;
 
-  display: block;
+.hub-language-button {
+  height: 54px;
 
-  padding: 0;
+  padding:
+    0
+    12px
+    0
+    9px;
 
-  background: transparent;
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  border-radius: 17px;
+
+  background:
+    rgba(43, 54, 67, 0.66);
+
+  color:
+    #efc988;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 8px 24px
+    rgba(10, 20, 30, 0.14);
+
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
 }
 
-.current-language-flag {
-  width: 68px;
-  height: 45px;
+
+.hub-language-button:hover {
+  background:
+    rgba(43, 54, 67, 0.79);
+}
+
+
+.hub-language-button:active {
+  transform:
+    scale(0.97);
+}
+
+
+.hub-language-flag {
+  width: 43px;
+  height: 29px;
 
   display: block;
 
   object-fit: cover;
 
-  border-radius: 7px;
+  border-radius: 6px;
 
   box-shadow:
-    0 5px 16px
-    rgba(15, 23, 42, 0.22);
+    0 3px 10px
+    rgba(0, 0, 0, 0.16);
 }
 
 
-/* =========================
+.language-chevron {
+  width: 23px;
+  height: 23px;
+
+  transition:
+    transform 180ms ease;
+}
+
+
+.hub-language-button[
+  aria-expanded="true"
+]
+.language-chevron {
+  transform:
+    rotate(180deg);
+}
+
+
+/* =========================================================
    LANGUAGE MENU
-   ========================= */
+   ========================================================= */
 
 .language-menu {
   position: absolute;
 
-  top: calc(100% + 11px);
+  top:
+    calc(100% + 10px);
+
   right: 0;
 
   width: 230px;
 
   padding: 7px;
 
-  border-radius: 15px;
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.20);
+
+  border-radius: 16px;
 
   background:
-    rgba(255, 255, 255, 0.97);
+    rgba(255, 252, 248, 0.96);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   box-shadow:
-    0 14px 38px
-    rgba(15, 23, 42, 0.18);
+    0 18px 40px
+    rgba(15, 23, 42, 0.20);
 }
+
 
 .language-menu[hidden] {
   display: none;
 }
 
-.language-option {
+
+.language-option,
+.menu-signout {
   width: 100%;
+
   height: 49px;
 
-  padding: 6px 10px;
+  padding:
+    5px
+    10px;
 
   display: flex;
 
@@ -425,22 +554,26 @@ button {
 
   gap: 11px;
 
-  border-radius: 10px;
+  border-radius: 11px;
 
-  background: transparent;
+  background:
+    transparent;
 
-  color: var(--text);
+  color:
+    #28323e;
 
   text-align: left;
 
   font-weight: 650;
 }
 
+
 .language-option:hover,
 .menu-signout:hover {
   background:
-    rgba(241, 245, 249, 0.92);
+    rgba(185, 139, 73, 0.10);
 }
+
 
 .language-option img {
   width: 38px;
@@ -451,430 +584,794 @@ button {
   border-radius: 4px;
 }
 
+
 .language-menu-divider {
   height: 1px;
 
-  margin: 6px 5px;
+  margin:
+    6px
+    5px;
 
   background:
-    rgba(100, 116, 139, 0.18);
+    rgba(142, 109, 66, 0.18);
 }
+
 
 .menu-signout {
-  width: 100%;
-  height: 46px;
-
-  padding: 0 10px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  border-radius: 10px;
-
-  background: transparent;
-
-  color: #667085;
-
-  font-weight: 650;
+  color:
+    #6d7075;
 }
+
 
 .menu-signout svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
 }
 
 
-/* =========================
-   TITLE
-   ========================= */
+/* =========================================================
+   HUB CONTENT
+   ========================================================= */
 
-.dictionary-title {
+.dictionary-hub {
+  position: relative;
+
+  z-index: 5;
+
+  width:
+    min(100%, 720px);
+
   margin:
-    4px
-    0
-    28px;
+    0 auto;
 
-  color: white;
+  padding-top:
+    clamp(
+      72px,
+      12vh,
+      142px
+    );
+}
 
-  font-size: 38px;
-  line-height: 1.05;
 
-  letter-spacing: -0.04em;
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.hub-title-section {
+  margin-bottom:
+    clamp(
+      48px,
+      8vh,
+      82px
+    );
 
   text-align: center;
+}
+
+
+.hub-language-title {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #c69a58;
+
+  font-size:
+    clamp(
+      55px,
+      14vw,
+      82px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.95;
+
+  letter-spacing:
+    -0.035em;
 
   text-shadow:
-    0 3px 15px
-    rgba(15, 23, 42, 0.22);
+    0 2px 14px
+    rgba(66, 43, 18, 0.14);
 }
 
 
-/* =========================
-   SEARCH CARDS
-   ========================= */
+.hub-dictionary-label {
+  margin-top:
+    24px;
 
-.search-card {
-  margin-bottom: 20px;
+  color:
+    #4a5663;
 
-  padding: 24px;
+  font-size:
+    clamp(
+      18px,
+      4.2vw,
+      26px
+    );
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.45);
+  font-weight: 500;
 
-  border-radius: 24px;
+  letter-spacing:
+    0.28em;
 
-  background:
-    linear-gradient(
-      rgba(255, 255, 255, 0.52),
-      rgba(255, 255, 255, 0.52)
-    ),
-    url("../background.jpg");
-
-  background-size: cover;
-  background-position: center;
-
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-
-  box-shadow:
-    0 18px 46px
-    rgba(15, 23, 42, 0.13);
+  text-shadow:
+    0 1px 6px
+    rgba(255, 255, 255, 0.25);
 }
 
-.card-title-area {
-  margin-bottom: 18px;
 
-  text-align: center;
-}
+.hub-ornament,
+.hub-bottom-ornament {
+  margin:
+    30px
+    auto
+    0;
 
-.card-heading {
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  gap: 11px;
-}
+  gap: 12px;
 
-.card-heading h2 {
-  margin: 0;
-
-  font-size: 23px;
-
-  letter-spacing: -0.025em;
-}
-
-.search-direction,
-.cache-description {
-  margin-top: 7px;
-
-  color: #475569;
-
-  font-size: 14px;
-
-  font-weight: 650;
+  color:
+    #bc8f4f;
 }
 
 
-/* =========================
-   ONLINE ICON
-   ========================= */
+.hub-ornament span,
+.hub-bottom-ornament span {
+  width:
+    clamp(
+      70px,
+      20vw,
+      150px
+    );
 
-.online-icon {
-  font-size: 28px;
-
-  line-height: 1;
-}
-
-
-/* =========================
-   SERVICE IMAGES
-   ========================= */
-
-.service-logo {
-  display: block;
-
-  object-fit: contain;
-}
-
-.wiktionary-logo {
-  width: 45px;
-  height: 45px;
-}
-
-.library-card-logo {
-  width: 48px;
-  height: 48px;
-}
-
-
-/* =========================
-   SEARCH FORM
-   ========================= */
-
-.search-form {
-  display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-}
-
-.search-language-flag,
-.search-target-flag {
-  flex-shrink: 0;
-}
-
-.search-language-flag img,
-.search-target-flag img {
-  width: 44px;
-  height: 29px;
-
-  display: block;
-
-  object-fit: cover;
-
-  border-radius: 5px;
-
-  box-shadow:
-    0 2px 8px
-    rgba(15, 23, 42, 0.14);
-}
-
-.search-field-wrap {
-  position: relative;
-
-  flex: 1;
-}
-
-.field-search-icon {
-  position: absolute;
-
-  top: 16px;
-  left: 14px;
-
-  width: 18px;
-  height: 18px;
-
-  color: #64748b;
-
-  pointer-events: none;
-}
-
-.search-field-wrap input {
-  padding-left: 42px;
-}
-
-.search-submit-button {
-  height: 50px;
-
-  padding: 0 18px;
-
-  flex-shrink: 0;
-
-  border-radius: 14px;
+  height: 1px;
 
   background:
     linear-gradient(
-      135deg,
-      #3b82f6,
-      #2563eb
+      to right,
+      transparent,
+      #bc8f4f
+    );
+}
+
+
+.hub-ornament span:last-child,
+.hub-bottom-ornament span:last-child {
+  background:
+    linear-gradient(
+      to left,
+      transparent,
+      #bc8f4f
+    );
+}
+
+
+.hub-ornament strong,
+.hub-bottom-ornament strong {
+  font-family:
+    Georgia,
+    serif;
+
+  font-size: 22px;
+
+  font-weight: 400;
+}
+
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.hub-menu {
+  display: grid;
+
+  gap: 18px;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.hub-card {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 128px;
+
+  padding:
+    18px
+    22px;
+
+  display: grid;
+
+  grid-template-columns:
+    96px
+    minmax(0, 1fr)
+    32px;
+
+  align-items: center;
+
+  gap: 16px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.72);
+
+  border-radius: 25px;
+
+  background:
+    linear-gradient(
+      105deg,
+      rgba(255, 251, 246, 0.94),
+      rgba(255, 250, 245, 0.84)
     );
 
-  color: white;
+  color:
+    var(--text);
 
-  font-weight: 750;
+  text-align: left;
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
 
   box-shadow:
-    0 8px 20px
-    rgba(37, 99, 235, 0.20);
+    0 12px 35px
+    rgba(26, 38, 48, 0.13);
+
+  overflow: hidden;
+
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    background 170ms ease;
 }
 
 
-/* =========================
-   RESULTS
-   ========================= */
+.hub-card::after {
+  content: "";
 
-.result-area {
-  margin-top: 18px;
+  position: absolute;
 
-  padding: 18px;
+  inset: 0;
 
-  border-radius: 17px;
+  pointer-events: none;
 
   background:
-    rgba(255, 255, 255, 0.57);
+    linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.23),
+      transparent 48%
+    );
 }
 
 
-/* =========================
-   CACHE SWITCH
-   ========================= */
+.hub-card:hover {
+  transform:
+    translateY(-2px);
 
-.cache-language-switch {
-  margin-top: 13px;
-
-  display: inline-flex;
-
-  padding: 4px;
-
-  border-radius: 12px;
+  box-shadow:
+    0 16px 42px
+    rgba(26, 38, 48, 0.17);
 
   background:
-    rgba(255, 255, 255, 0.48);
+    rgba(255, 252, 248, 0.96);
 }
 
-.cache-language-button {
-  min-width: 100px;
-  height: 38px;
 
-  padding: 0 13px;
+.hub-card:active {
+  transform:
+    scale(0.99);
+}
 
-  border-radius: 9px;
 
-  background: transparent;
+/* =========================================================
+   CARD ICONS
+   ========================================================= */
 
-  color: #64748b;
+.hub-card-icon-wrap {
+  position: relative;
+
+  z-index: 2;
+
+  width: 90px;
+  height: 90px;
+
+  display: grid;
+
+  place-items: center;
+}
+
+
+.hub-card-icon {
+  width: 86px;
+  height: 86px;
+
+  display: block;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 4px 5px
+      rgba(70, 46, 22, 0.08)
+    );
+}
+
+
+/* =========================================================
+   CARD TEXT
+   ========================================================= */
+
+.hub-card-content {
+  position: relative;
+
+  z-index: 2;
+
+  min-width: 0;
+}
+
+
+.hub-card-title {
+  color:
+    #171b20;
+
+  font-size:
+    clamp(
+      20px,
+      4.6vw,
+      27px
+    );
+
+  font-weight: 600;
+
+  line-height: 1.18;
+
+  letter-spacing:
+    -0.025em;
+}
+
+
+.hub-card-subtitle {
+  margin-top:
+    10px;
+
+  color:
+    #676b6f;
+
+  font-size:
+    clamp(
+      15px,
+      3.8vw,
+      19px
+    );
+
+  font-weight: 450;
+
+  line-height: 1.25;
+}
+
+
+/* =========================================================
+   CARD ARROW
+   ========================================================= */
+
+.hub-card-arrow {
+  position: relative;
+
+  z-index: 2;
+
+  width: 30px;
+  height: 30px;
+
+  color:
+    #bb8b49;
+
+  justify-self: end;
+
+  transition:
+    transform 160ms ease;
+}
+
+
+.hub-card:hover
+.hub-card-arrow {
+  transform:
+    translateX(3px);
+}
+
+
+/* =========================================================
+   BOTTOM ORNAMENT
+   ========================================================= */
+
+.hub-bottom-ornament {
+  margin-top:
+    32px;
+
+  margin-bottom:
+    12px;
+}
+
+
+/* =========================================================
+   SYNC TOAST
+   ========================================================= */
+
+.sync-toast {
+  position: fixed;
+
+  left: 50%;
+  bottom:
+    max(
+      24px,
+      env(safe-area-inset-bottom)
+    );
+
+  z-index: 2000;
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    11px
+    17px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.16);
+
+  border-radius: 999px;
+
+  background:
+    rgba(41, 52, 63, 0.88);
+
+  color:
+    #f4d39b;
 
   font-size: 13px;
 
   font-weight: 700;
-}
 
-.cache-language-button.active {
-  background:
-    rgba(255, 255, 255, 0.92);
+  white-space: nowrap;
 
-  color: #172033;
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
 
   box-shadow:
-    0 4px 12px
-    rgba(15, 23, 42, 0.08);
-}
-
-.cache-search-form {
-  max-width: 650px;
-
-  margin: 0 auto;
+    0 10px 30px
+    rgba(0, 0, 0, 0.18);
 }
 
 
-/* =========================
-   CACHE RESULTS
-   ========================= */
-
-.cache-results {
-  margin-top: 16px;
-
-  display: grid;
-
-  gap: 8px;
+.sync-toast[hidden] {
+  display: none;
 }
 
 
-/* =========================
-   MOBILE
-   ========================= */
+/* =========================================================
+   DESKTOP
+   ========================================================= */
 
-@media (max-width: 640px) {
+@media (min-width: 850px) {
 
   .dictionary-page {
     padding:
-      88px
-      16px
+      30px
+      34px
+      50px;
+  }
+
+
+  .dictionary-hub {
+    padding-top:
+      82px;
+  }
+
+
+  .hub-title-section {
+    margin-bottom:
+      55px;
+  }
+
+
+  .hub-menu {
+    gap:
+      16px;
+  }
+
+
+  .hub-card {
+    min-height:
+      118px;
+
+    padding:
+      15px
+      24px;
+
+    grid-template-columns:
+      90px
+      minmax(0, 1fr)
       34px;
   }
 
+
+  .hub-card-icon-wrap {
+    width:
+      84px;
+
+    height:
+      84px;
+  }
+
+
+  .hub-card-icon {
+    width:
+      80px;
+
+    height:
+      80px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .dictionary-page {
+    padding-left:
+      16px;
+
+    padding-right:
+      16px;
+
+    background-position:
+      59% center;
+  }
+
+
   .dictionary-topbar {
-    top: 15px;
-    left: 16px;
-    right: 16px;
+    width:
+      100%;
   }
 
-  .sync-button {
-    width: 48px;
-    height: 48px;
 
-    padding: 0;
+  .hub-top-button {
+    width:
+      50px;
 
-    justify-content: center;
+    height:
+      50px;
+
+    border-radius:
+      16px;
   }
 
-  .sync-button span {
-    display: none;
+
+  .sync-icon {
+    width:
+      27px;
+
+    height:
+      27px;
   }
 
-  .sync-icon-image {
-    width: 27px;
-    height: 27px;
+
+  .hub-language-button {
+    height:
+      50px;
+
+    border-radius:
+      16px;
   }
 
-  .library-button {
-    width: 50px;
-    height: 50px;
+
+  .hub-language-flag {
+    width:
+      40px;
+
+    height:
+      27px;
   }
 
-  .library-top-image {
-    width: 40px;
-    height: 40px;
+
+  .dictionary-hub {
+    padding-top:
+      112px;
   }
 
-  .current-language-flag {
-    width: 60px;
-    height: 40px;
+
+  .hub-title-section {
+    margin-bottom:
+      60px;
   }
 
-  .dictionary-title {
-    margin-bottom: 22px;
 
-    font-size: 31px;
+  .hub-language-title {
+    font-size:
+      clamp(
+        53px,
+        16vw,
+        72px
+      );
   }
 
-  .search-card {
-    padding: 20px;
 
-    border-radius: 21px;
+  .hub-dictionary-label {
+    margin-top:
+      20px;
+
+    font-size:
+      18px;
+
+    letter-spacing:
+      0.25em;
   }
 
-  .card-heading h2 {
-    font-size: 21px;
+
+  .hub-ornament {
+    margin-top:
+      24px;
   }
 
-  .wiktionary-logo {
-    width: 40px;
-    height: 40px;
+
+  .hub-menu {
+    gap:
+      14px;
   }
 
-  .library-card-logo {
-    width: 43px;
-    height: 43px;
+
+  .hub-card {
+    min-height:
+      113px;
+
+    padding:
+      14px
+      16px;
+
+    grid-template-columns:
+      74px
+      minmax(0, 1fr)
+      25px;
+
+    gap:
+      13px;
+
+    border-radius:
+      22px;
   }
 
-  .search-form {
-    flex-wrap: wrap;
+
+  .hub-card-icon-wrap {
+    width:
+      72px;
+
+    height:
+      72px;
   }
 
-  .search-field-wrap {
-    min-width:
-      calc(100% - 64px);
+
+  .hub-card-icon {
+    width:
+      70px;
+
+    height:
+      70px;
   }
 
-  .search-target-flag {
-    display: none;
+
+  .hub-card-title {
+    font-size:
+      19px;
   }
 
-  .search-submit-button {
-    width: 100%;
+
+  .hub-card-subtitle {
+    margin-top:
+      7px;
+
+    font-size:
+      14px;
   }
+
+
+  .hub-card-arrow {
+    width:
+      25px;
+
+    height:
+      25px;
+  }
+
 
   .language-menu {
-    width: 230px;
+    width:
+      225px;
 
     max-width:
       calc(100vw - 32px);
   }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 370px) {
+
+  .dictionary-hub {
+    padding-top:
+      92px;
+  }
+
+
+  .hub-title-section {
+    margin-bottom:
+      42px;
+  }
+
+
+  .hub-card {
+    grid-template-columns:
+      62px
+      minmax(0, 1fr)
+      22px;
+
+    padding:
+      12px
+      13px;
+  }
+
+
+  .hub-card-icon-wrap {
+    width:
+      60px;
+
+    height:
+      60px;
+  }
+
+
+  .hub-card-icon {
+    width:
+      58px;
+
+    height:
+      58px;
+  }
+
+
+  .hub-card-title {
+    font-size:
+      17px;
+  }
+
+
+  .hub-card-subtitle {
+    font-size:
+      13px;
+  }
+
 }
