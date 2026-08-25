@@ -652,7 +652,8 @@ function parseEtymologyGroup(
       parsePartOfSpeech(
         posSection,
         partOfSpeech,
-        searchedWord
+        searchedWord,
+        group
       );
 
 
@@ -804,7 +805,8 @@ function findPosSectionsInGroup(
 function parsePartOfSpeech(
   posSection,
   partOfSpeech,
-  searchedWord
+  searchedWord,
+  group
 ) {
 
   const headwordLine =
@@ -851,7 +853,8 @@ function parsePartOfSpeech(
       parseVerbForms(
         posSection,
         headwordLine,
-        searchedWord
+        searchedWord,
+        group
       );
 
   }
@@ -2009,7 +2012,8 @@ function findTableCellPosition(
 function parseVerbForms(
   posSection,
   headwordLine,
-  searchedWord
+  searchedWord,
+  group
 ) {
 
   const forms = [];
@@ -2060,6 +2064,7 @@ function parseVerbForms(
   const conjugationForms =
     extractVerbFormsFromConjugation(
       posSection,
+      group,
       {
         needAorist
       }
@@ -2130,6 +2135,7 @@ function extractVerbAoristFromHeadword(
 
 function extractVerbFormsFromConjugation(
   posSection,
+  group,
   {
     needAorist
   }
@@ -2140,7 +2146,8 @@ function extractVerbFormsFromConjugation(
 
   const conjugationSections =
     findConjugationSections(
-      posSection
+      posSection,
+      group
     );
 
 
@@ -2234,10 +2241,40 @@ function extractVerbFormsFromConjugation(
 
 
 function findConjugationSections(
-  posSection
+  posSection,
+  group
 ) {
 
   const result = [];
+
+  const seen =
+    new Set();
+
+
+  const addSection =
+    (section) => {
+
+      if (
+        !section ||
+        seen.has(
+          section
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      seen.add(
+        section
+      );
+
+      result.push(
+        section
+      );
+
+    };
 
 
   if (
@@ -2246,7 +2283,7 @@ function findConjugationSections(
     ) === "Conjugation"
   ) {
 
-    result.push(
+    addSection(
       posSection
     );
 
@@ -2266,9 +2303,78 @@ function findConjugationSections(
       ) === "Conjugation"
     ) {
 
-      result.push(
+      addSection(
         section
       );
+
+    }
+
+  }
+
+
+  /*
+    Parsoid may expose Verb and Conjugation as sibling
+    sections instead of nesting Conjugation inside Verb.
+
+    In that case, scan the current etymology group from
+    this Verb until the next part of speech.
+  */
+
+  if (
+    group &&
+    Array.isArray(
+      group.sections
+    )
+  ) {
+
+    const posIndex =
+      group.sections.indexOf(
+        posSection
+      );
+
+
+    if (
+      posIndex !== -1
+    ) {
+
+      for (
+        let index = posIndex + 1;
+        index < group.sections.length;
+        index += 1
+      ) {
+
+        const section =
+          group.sections[index];
+
+
+        const title =
+          getSectionTitle(
+            section
+          );
+
+
+        if (
+          POS_NAMES.has(
+            title
+          )
+        ) {
+
+          break;
+
+        }
+
+
+        if (
+          title === "Conjugation"
+        ) {
+
+          addSection(
+            section
+          );
+
+        }
+
+      }
 
     }
 
@@ -2352,7 +2458,7 @@ function extractVerbCoreFormsFromConjugationTable(
     const aoristRow =
       findTableRowInRange(
         grid,
-        /^aorist$/i,
+        /^aorist(?:\s+simple)?$/i,
         positiveRange.start,
         positiveRange.end
       );
@@ -2402,7 +2508,7 @@ function extractVerbCoreFormsFromConjugationTable(
     const continuousRow =
       findTableRowInRange(
         grid,
-        /^continuous$/i,
+        /^continuous(?:\s+simple)?$/i,
         positiveRange.start,
         positiveRange.end
       );
@@ -2678,10 +2784,7 @@ function findTableRowInRange(
       of row
     ) {
 
-      if (
-        !cell ||
-        cell.tag !== "TH"
-      ) {
+      if (!cell) {
 
         continue;
 
