@@ -61,6 +61,17 @@ const POS_NAMES = new Set([
 ]);
 
 
+const INVARIABLE_POS_NAMES = new Set([
+  "Adverb",
+  "Numeral",
+  "Postposition",
+  "Conjunction",
+  "Interjection",
+  "Determiner",
+  "Particle"
+]);
+
+
 /* =========================================================
    AUTH
    ========================================================= */
@@ -493,6 +504,20 @@ function buildEtymologyGroups(
         );
 
 
+    const sharedAlternativeFormSections =
+      directSections
+        .slice(
+          0,
+          firstEtymologyIndex
+        )
+        .filter(
+          (section) =>
+            getSectionTitle(
+              section
+            ) === "Alternative forms"
+        );
+
+
     const groups = [];
 
 
@@ -547,7 +572,9 @@ function buildEtymologyGroups(
 
           sections,
 
-          sharedPronunciationSections
+          sharedPronunciationSections,
+
+          sharedAlternativeFormSections
 
         });
 
@@ -581,6 +608,9 @@ function buildEtymologyGroups(
         directSections,
 
       sharedPronunciationSections:
+        [],
+
+      sharedAlternativeFormSections:
         []
 
     }
@@ -653,6 +683,11 @@ function parseEtymologyGroup(
 
     etymology:
       group.etymology,
+
+    alternativeForms:
+      extractAlternativeFormsForEtymology(
+        group
+      ),
 
     surfaceAnalysis:
       extractSurfaceAnalysis(
@@ -808,6 +843,22 @@ function parsePartOfSpeech(
   }
 
 
+  if (
+    INVARIABLE_POS_NAMES.has(
+      partOfSpeech
+    )
+  ) {
+
+    /*
+      These POS are treated as invariable in this importer.
+      Do not generate or infer forms for them.
+    */
+
+    forms = [];
+
+  }
+
+
   const meanings =
     extractMeanings(
       posSection
@@ -871,6 +922,262 @@ function getSectionTitle(
 
 
   return "";
+
+}
+
+
+/* =========================================================
+   ALTERNATIVE FORMS PER ETYMOLOGY
+
+   Alternative forms belong to the WORD + ETYMOLOGY,
+   never to a specific part of speech.
+
+   If Wiktionary places Alternative forms before numbered
+   etymologies, use them as a shared fallback.
+   ========================================================= */
+
+function extractAlternativeFormsForEtymology(
+  group
+) {
+
+  let alternativeFormSections =
+    findAlternativeFormSections(
+      group.sections
+    );
+
+
+  if (
+    !alternativeFormSections.length &&
+    group
+      .sharedAlternativeFormSections
+      .length
+  ) {
+
+    alternativeFormSections =
+      group
+        .sharedAlternativeFormSections;
+
+  }
+
+
+  return extractAlternativeFormsFromSections(
+    alternativeFormSections
+  );
+
+}
+
+
+function findAlternativeFormSections(
+  sections
+) {
+
+  const result = [];
+
+  const seen =
+    new Set();
+
+
+  for (
+    const section
+    of sections
+  ) {
+
+    if (
+      getSectionTitle(
+        section
+      ) === "Alternative forms"
+    ) {
+
+      if (
+        !seen.has(
+          section
+        )
+      ) {
+
+        seen.add(
+          section
+        );
+
+        result.push(
+          section
+        );
+
+      }
+
+    }
+
+
+    const nested =
+      section.querySelectorAll(
+        "section"
+      );
+
+
+    for (
+      const child
+      of nested
+    ) {
+
+      if (
+        getSectionTitle(
+          child
+        ) !== "Alternative forms"
+      ) {
+
+        continue;
+
+      }
+
+
+      if (
+        seen.has(
+          child
+        )
+      ) {
+
+        continue;
+
+      }
+
+
+      seen.add(
+        child
+      );
+
+      result.push(
+        child
+      );
+
+    }
+
+  }
+
+
+  return result;
+
+}
+
+
+function extractAlternativeFormsFromSections(
+  sections
+) {
+
+  const results = [];
+
+  const seen =
+    new Set();
+
+
+  for (
+    const section
+    of sections
+  ) {
+
+    const items =
+      Array.from(
+        section.querySelectorAll(
+          "li"
+        )
+      );
+
+
+    for (
+      const item
+      of items
+    ) {
+
+      let values =
+        Array.from(
+          item.querySelectorAll(
+            '[lang="tr"]'
+          )
+        )
+        .map(
+          (element) =>
+            cleanText(
+              element.textContent
+            )
+        )
+        .filter(
+          Boolean
+        );
+
+
+      if (
+        !values.length
+      ) {
+
+        values =
+          Array.from(
+            item.querySelectorAll(
+              'a[href*="/wiki/"]'
+            )
+          )
+          .map(
+            (element) =>
+              cleanText(
+                element.textContent
+              )
+          )
+          .filter(
+            (value) =>
+              value &&
+              !/^(edit|citation|citations)$/i.test(
+                value
+              )
+          );
+
+      }
+
+
+      for (
+        const value
+        of values
+      ) {
+
+        const normalized =
+          normalizeFormValue(
+            value
+          );
+
+
+        if (
+          !normalized ||
+          seen.has(
+            normalized
+          )
+        ) {
+
+          continue;
+
+        }
+
+
+        seen.add(
+          normalized
+        );
+
+
+        results.push({
+
+          value,
+
+          source:
+            "wiktionary_alternative_forms",
+
+          selected:
+            true
+
+        });
+
+      }
+
+    }
+
+  }
+
+
+  return results;
 
 }
 
@@ -1516,7 +1823,7 @@ function findTableCellPosition(
       }
 
 
-      const text =
+      const cellText =
         normalizeTableLabel(
           cell.text
         );
@@ -1524,7 +1831,7 @@ function findTableCellPosition(
 
       if (
         pattern.test(
-          text
+          cellText
         )
       ) {
 
@@ -3382,6 +3689,14 @@ function renderWordCard(
 
 
     ${
+      renderAlternativeForms(
+        wordEntry,
+        existing
+      )
+    }
+
+
+    ${
       wordEntry.surfaceAnalysis
         ? renderSurfaceAnalysis(
             wordEntry.surfaceAnalysis
@@ -3441,6 +3756,91 @@ function renderWordCard(
 
 
   return card;
+
+}
+
+
+/* =========================================================
+   ALTERNATIVE FORMS UI
+   ========================================================= */
+
+function renderAlternativeForms(
+  wordEntry,
+  existing
+) {
+
+  if (
+    !wordEntry.alternativeForms.length
+  ) {
+
+    return "";
+
+  }
+
+
+  return `
+
+    <section
+      class="wiki-entry-section wiki-alternative-forms-section"
+    >
+
+      <h3>
+        Alternative forms
+      </h3>
+
+
+      <div class="wiki-choice-list">
+
+        ${
+          wordEntry.alternativeForms
+            .map(
+              (
+                alternativeForm,
+                index
+              ) => `
+
+                <label class="wiki-choice-row">
+
+                  ${
+                    existing
+                      ? ""
+                      : `
+                        <input
+                          type="checkbox"
+                          data-kind="alternative-form"
+                          data-index="${index}"
+                          checked
+                        />
+
+                        <span
+                          class="wiki-custom-check"
+                        ></span>
+                      `
+                  }
+
+
+                  <span
+                    class="wiki-choice-content"
+                  >
+
+                    <strong>
+                      ${escapeHtml(alternativeForm.value)}
+                    </strong>
+
+                  </span>
+
+                </label>
+
+              `
+            )
+            .join("")
+        }
+
+      </div>
+
+    </section>
+
+  `;
 
 }
 
@@ -4157,6 +4557,12 @@ function wireWordCard(
   );
 
 
+  wireAlternativeFormCheckboxes(
+    card,
+    wordEntry
+  );
+
+
   wirePronunciationCheckboxes(
     card,
     wordEntry
@@ -4191,6 +4597,16 @@ function resetWordSelection(
   card,
   wordEntry
 ) {
+
+  wordEntry.alternativeForms.forEach(
+    (item) => {
+
+      item.selected =
+        true;
+
+    }
+  );
+
 
   wordEntry.pronunciation.forEach(
     (item) => {
@@ -4240,6 +4656,7 @@ function resetWordSelection(
 
   card
     .querySelectorAll(`
+      input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
       input[data-kind="meaning"],
@@ -4283,6 +4700,7 @@ function setInternalControlsDisabled(
 
   card
     .querySelectorAll(`
+      input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
       input[data-kind="meaning"],
@@ -4302,6 +4720,54 @@ function setInternalControlsDisabled(
     "wiki-content-disabled",
     disabled
   );
+
+}
+
+
+/* =========================================================
+   ALTERNATIVE FORM EVENTS
+   ========================================================= */
+
+function wireAlternativeFormCheckboxes(
+  card,
+  wordEntry
+) {
+
+  card
+    .querySelectorAll(
+      'input[data-kind="alternative-form"]'
+    )
+    .forEach(
+      (checkbox) => {
+
+        checkbox.addEventListener(
+          "change",
+          () => {
+
+            const index =
+              Number(
+                checkbox.dataset.index
+              );
+
+
+            if (
+              wordEntry.alternativeForms[
+                index
+              ]
+            ) {
+
+              wordEntry
+                .alternativeForms[index]
+                .selected =
+                  checkbox.checked;
+
+            }
+
+          }
+        );
+
+      }
+    );
 
 }
 
@@ -4814,6 +5280,20 @@ function buildSelectedPayload(
 
     etymology:
       wordEntry.etymology,
+
+    alternativeForms:
+      wordEntry.alternativeForms
+        .filter(
+          (item) =>
+            item.selected
+        )
+        .map(
+          ({
+            selected,
+            ...item
+          }) =>
+            item
+        ),
 
     surfaceAnalysis:
       wordEntry.surfaceAnalysis,
