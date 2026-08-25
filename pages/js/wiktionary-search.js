@@ -1,6 +1,10 @@
 import { supabase } from "../../js/supabase.js";
 
 
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
 const form =
   document.getElementById(
     "wiktionarySearchForm"
@@ -52,6 +56,10 @@ const entriesContainer =
   );
 
 
+/* =========================================================
+   STATE
+   ========================================================= */
+
 let currentWord = "";
 
 let parsedEntries = [];
@@ -59,6 +67,10 @@ let parsedEntries = [];
 let existingEntries = [];
 
 
+/*
+  For now the interface is prepared for several POS,
+  but Noun is our first fully supported Turkish entry.
+*/
 const POS_NAMES = new Set([
   "Noun",
   "Proper noun",
@@ -74,6 +86,10 @@ const POS_NAMES = new Set([
   "Particle"
 ]);
 
+
+/* =========================================================
+   AUTH
+   ========================================================= */
 
 async function requireSession() {
 
@@ -96,6 +112,10 @@ async function requireSession() {
 }
 
 
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
 backButton.addEventListener(
   "click",
   () => {
@@ -106,6 +126,10 @@ backButton.addEventListener(
   }
 );
 
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
 
 form.addEventListener(
   "submit",
@@ -142,7 +166,7 @@ form.addEventListener(
 
 function normalizeSearchWord(value) {
 
-  return value
+  return String(value || "")
     .trim()
     .replace(/\s+/g, " ");
 
@@ -167,7 +191,7 @@ async function searchWiktionary(word) {
         url,
         {
           headers: {
-            "Accept":
+            Accept:
               "application/json"
           }
         }
@@ -189,7 +213,7 @@ async function searchWiktionary(word) {
     if (!response.ok) {
 
       throw new Error(
-        `Wiktionary returned ${response.status}.`
+        `Wiktionary returned HTTP ${response.status}.`
       );
 
     }
@@ -199,11 +223,11 @@ async function searchWiktionary(word) {
       await response.json();
 
 
-    const html =
-      data.html;
-
-
-    if (!html) {
+    if (
+      !data ||
+      typeof data.html !== "string" ||
+      !data.html.trim()
+    ) {
 
       throw new Error(
         "Wiktionary returned no HTML."
@@ -218,9 +242,15 @@ async function searchWiktionary(word) {
 
     parsedEntries =
       parseTurkishEntries(
-        html,
+        data.html,
         word
       );
+
+
+    console.log(
+      "Parsed Turkish entries:",
+      parsedEntries
+    );
 
 
     if (
@@ -267,6 +297,10 @@ async function searchWiktionary(word) {
 }
 
 
+/* =========================================================
+   DATABASE CHECK
+   ========================================================= */
+
 async function loadExistingEntries(word) {
 
   const {
@@ -276,10 +310,10 @@ async function loadExistingEntries(word) {
     .from("turkish_words")
     .select(
       `
-      id,
-      word,
-      etymology,
-      part_of_speech
+        id,
+        word,
+        etymology,
+        part_of_speech
       `
     )
     .eq(
@@ -305,6 +339,10 @@ async function loadExistingEntries(word) {
 }
 
 
+/* =========================================================
+   MAIN WIKTIONARY PARSER
+   ========================================================= */
+
 function parseTurkishEntries(
   html,
   searchedWord
@@ -321,11 +359,36 @@ function parseTurkishEntries(
     );
 
 
+  /*
+    REAL WIKTIONARY STRUCTURE:
+
+    <section>
+      <h2 id="Turkish">Turkish</h2>
+
+      <section>
+        <h3>Etymology</h3>
+      </section>
+
+      <section>
+        <h3>Pronunciation</h3>
+      </section>
+
+      <section>
+        <h3>Noun</h3>
+        ...
+      </section>
+    </section>
+  */
+
   const turkishHeading =
-    findHeadingByText(
-      doc,
-      "H2",
-      "Turkish"
+    Array.from(
+      doc.querySelectorAll("h2")
+    )
+    .find(
+      (heading) =>
+        cleanText(
+          heading.textContent
+        ) === "Turkish"
     );
 
 
@@ -336,100 +399,117 @@ function parseTurkishEntries(
   }
 
 
-  const turkishNodes =
-    collectUntilHeadingLevel(
-      turkishHeading,
-      2
+  const turkishSection =
+    turkishHeading.closest(
+      "section"
     );
 
 
-  const pronunciation =
-    extractPronunciations(
-      turkishNodes
-    );
+  if (!turkishSection) {
+
+    return [];
+
+  }
 
 
-  const hasNumberedEtymologies =
-    turkishNodes.some(
-      (node) =>
-        isHeading(node) &&
-        /^Etymology\s+\d+$/i.test(
-          headingText(node)
-        )
+  /*
+    First check whether the Turkish entry has:
+
+      Etymology 1
+      Etymology 2
+      Etymology 3
+
+    Those sections normally contain their own POS subsections.
+  */
+
+  const numberedEtymologySections =
+    getAllSections(
+      turkishSection
+    )
+    .filter(
+      (section) => {
+
+        const title =
+          getSectionTitle(
+            section
+          );
+
+
+        return /^Etymology\s+\d+$/i.test(
+          title
+        );
+
+      }
     );
 
 
   const entries = [];
 
 
-  if (hasNumberedEtymologies) {
-
-    let etymologyNumber = 0;
-
+  if (
+    numberedEtymologySections.length > 0
+  ) {
 
     for (
-      let i = 0;
-      i < turkishNodes.length;
-      i += 1
+      const etymologySection
+      of numberedEtymologySections
     ) {
 
-      const node =
-        turkishNodes[i];
-
-
-      if (
-        isHeading(node) &&
-        /^Etymology\s+\d+$/i.test(
-          headingText(node)
-        )
-      ) {
-
-        const match =
-          headingText(node)
-            .match(
-              /(\d+)/
-            );
-
-
-        etymologyNumber =
-          match
-            ? Number(match[1])
-            : etymologyNumber + 1;
-
-
-        const etymologyNodes =
-          collectNodesInsideArrayUntilHeadingLevel(
-            turkishNodes,
-            i + 1,
-            headingLevel(node)
-          );
-
-
-        entries.push(
-          ...parsePosEntries(
-            etymologyNodes,
-            searchedWord,
-            etymologyNumber,
-            pronunciation
-          )
+      const title =
+        getSectionTitle(
+          etymologySection
         );
 
-      }
+
+      const match =
+        title.match(
+          /(\d+)/
+        );
+
+
+      const etymologyNumber =
+        match
+          ? Number(match[1])
+          : 1;
+
+
+      entries.push(
+        ...parseEtymologyContainer(
+          etymologySection,
+          searchedWord,
+          etymologyNumber
+        )
+      );
 
     }
 
-  } else {
 
-    entries.push(
-      ...parsePosEntries(
-        turkishNodes,
-        searchedWord,
-        1,
-        pronunciation
-      )
-    );
+    return entries;
 
   }
+
+
+  /*
+    No numbered etymologies.
+
+    Example: ev
+
+    Turkish
+      Etymology
+      Pronunciation
+      Noun
+
+    Database convention:
+      etymology = 1
+  */
+
+  entries.push(
+    ...parseEtymologyContainer(
+      turkishSection,
+      searchedWord,
+      1
+    )
+  );
 
 
   return entries;
@@ -437,67 +517,67 @@ function parseTurkishEntries(
 }
 
 
-function parsePosEntries(
-  nodes,
+/* =========================================================
+   ETYMOLOGY CONTAINER
+   ========================================================= */
+
+function parseEtymologyContainer(
+  container,
   searchedWord,
-  etymology,
-  inheritedPronunciation
+  etymologyNumber
 ) {
 
   const entries = [];
 
 
+  /*
+    Pronunciation can belong to the etymology as a whole,
+    rather than being inside the Noun section.
+  */
+
+  const pronunciation =
+    extractPronunciationsFromContainer(
+      container
+    );
+
+
+  const posSections =
+    findPosSections(
+      container
+    );
+
+
   for (
-    let i = 0;
-    i < nodes.length;
-    i += 1
+    const posSection
+    of posSections
   ) {
 
-    const node =
-      nodes[i];
-
-
-    if (!isHeading(node)) {
-
-      continue;
-
-    }
-
-
-    const pos =
-      headingText(node);
-
-
-    if (!POS_NAMES.has(pos)) {
-
-      continue;
-
-    }
-
-
-    const sectionNodes =
-      collectNodesInsideArrayUntilHeadingLevel(
-        nodes,
-        i + 1,
-        headingLevel(node)
+    const partOfSpeech =
+      getSectionTitle(
+        posSection
       );
 
 
     const entry =
       parsePosSection(
-        sectionNodes,
+        posSection,
         {
           searchedWord,
-          etymology,
-          pos,
-          inheritedPronunciation
+          etymologyNumber,
+          partOfSpeech,
+          inheritedPronunciation:
+            pronunciation
         }
       );
 
 
-    entries.push(
-      entry
-    );
+    if (entry) {
+
+      entries.push(
+        entry
+      );
+
+    }
 
   }
 
@@ -507,68 +587,127 @@ function parsePosEntries(
 }
 
 
+/* =========================================================
+   FIND POS SECTIONS
+   ========================================================= */
+
+function findPosSections(container) {
+
+  const result = [];
+
+
+  for (
+    const section
+    of getAllSections(container)
+  ) {
+
+    const title =
+      getSectionTitle(
+        section
+      );
+
+
+    if (
+      POS_NAMES.has(
+        title
+      )
+    ) {
+
+      result.push(
+        section
+      );
+
+    }
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================================================
+   PARSE POS
+   ========================================================= */
+
 function parsePosSection(
-  nodes,
+  posSection,
   {
     searchedWord,
-    etymology,
-    pos,
+    etymologyNumber,
+    partOfSpeech,
     inheritedPronunciation
   }
 ) {
 
-  const sectionPronunciation =
-    extractPronunciations(
-      nodes
+  const localPronunciation =
+    extractPronunciationsFromContainer(
+      posSection
     );
 
 
-  const pronunciations =
-    sectionPronunciation.length
-      ? sectionPronunciation
+  const pronunciation =
+    localPronunciation.length > 0
+      ? localPronunciation
       : inheritedPronunciation;
 
 
-  const headwordText =
-    extractHeadwordText(
-      nodes,
-      searchedWord
+  const headwordLine =
+    posSection.querySelector(
+      ".headword-line"
     );
 
 
-  const forms =
-    pos === "Noun" ||
-    pos === "Proper noun"
-      ? parseNounHeadwordForms(
-          headwordText,
-          searchedWord
+  const headwordText =
+    headwordLine
+      ? cleanText(
+          headwordLine.textContent
         )
-      : [];
+      : searchedWord;
+
+
+  let forms = [];
+
+
+  if (
+    partOfSpeech === "Noun" ||
+    partOfSpeech === "Proper noun"
+  ) {
+
+    forms =
+      parseNounHeadwordForms(
+        headwordLine,
+        headwordText,
+        searchedWord
+      );
+
+  }
 
 
   const meanings =
     extractMeanings(
-      nodes
+      posSection
     );
 
 
   const notes =
     extractNotes(
-      nodes
+      posSection
     );
 
 
   return {
+
     word:
       searchedWord,
 
-    etymology,
+    etymology:
+      etymologyNumber,
 
-    partOfSpeech:
-      pos,
+    partOfSpeech,
 
-    pronunciation:
-      pronunciations,
+    pronunciation,
 
     forms,
 
@@ -578,77 +717,240 @@ function parsePosSection(
 
     selected:
       true
+
   };
 
 }
 
 
-function extractHeadwordText(
-  nodes,
-  searchedWord
-) {
+/* =========================================================
+   SECTION HELPERS
+   ========================================================= */
 
-  for (const node of nodes) {
+function getAllSections(container) {
+
+  return Array.from(
+    container.querySelectorAll(
+      "section"
+    )
+  );
+
+}
+
+
+function getSectionTitle(section) {
+
+  /*
+    We need only the heading that belongs directly
+    to this section.
+
+    querySelector("h3") alone could accidentally
+    pick a heading from a nested child section.
+  */
+
+  for (
+    const child
+    of section.children
+  ) {
 
     if (
-      isHeading(node)
+      /^H[1-6]$/.test(
+        child.tagName
+      )
     ) {
 
-      continue;
-
-    }
-
-
-    if (
-      node.nodeType !==
-      Node.ELEMENT_NODE
-    ) {
-
-      continue;
-
-    }
-
-
-    const text =
-      cleanText(
-        node.textContent
+      return cleanText(
+        child.textContent
       );
-
-
-    if (
-      !text ||
-      !text
-        .toLocaleLowerCase("tr-TR")
-        .startsWith(
-          searchedWord
-            .toLocaleLowerCase(
-              "tr-TR"
-            )
-        )
-    ) {
-
-      continue;
-
-    }
-
-
-    if (
-      text.length <= 250
-    ) {
-
-      return text;
 
     }
 
   }
 
 
-  return searchedWord;
+  return "";
 
 }
 
 
+/* =========================================================
+   PRONUNCIATION
+   ========================================================= */
+
+function extractPronunciationsFromContainer(
+  container
+) {
+
+  const pronunciationSections =
+    getAllSections(
+      container
+    )
+    .filter(
+      (section) =>
+        getSectionTitle(section) ===
+        "Pronunciation"
+    );
+
+
+  /*
+    container itself might already be
+    the Pronunciation section.
+  */
+
+  if (
+    getSectionTitle(container) ===
+    "Pronunciation"
+  ) {
+
+    pronunciationSections.unshift(
+      container
+    );
+
+  }
+
+
+  const results = [];
+
+  const seen =
+    new Set();
+
+
+  for (
+    const section
+    of pronunciationSections
+  ) {
+
+    /*
+      Actual Wiktionary HTML:
+
+      <span class="IPA nowrap">/ˈev/</span>
+    */
+
+    const ipaElements =
+      section.querySelectorAll(
+        ".IPA"
+      );
+
+
+    for (
+      const element
+      of ipaElements
+    ) {
+
+      const ipa =
+        cleanText(
+          element.textContent
+        );
+
+
+      if (!ipa) {
+
+        continue;
+
+      }
+
+
+      /*
+        We only want actual IPA values,
+        not the link whose text is "IPA".
+      */
+
+      if (
+        !(
+          ipa.startsWith("/") ||
+          ipa.startsWith("[")
+        )
+      ) {
+
+        continue;
+
+      }
+
+
+      if (
+        seen.has(ipa)
+      ) {
+
+        continue;
+
+      }
+
+
+      seen.add(ipa);
+
+
+      const label =
+        extractPronunciationQualifier(
+          element
+        );
+
+
+      results.push({
+
+        ipa,
+
+        label,
+
+        selected:
+          true
+
+      });
+
+    }
+
+  }
+
+
+  return results;
+
+}
+
+
+function extractPronunciationQualifier(
+  ipaElement
+) {
+
+  const parent =
+    ipaElement.closest("li");
+
+
+  if (!parent) {
+
+    return null;
+
+  }
+
+
+  const qualifier =
+    parent.querySelector(
+      ".usage-label-accent, .qualifier-content"
+    );
+
+
+  if (!qualifier) {
+
+    return null;
+
+  }
+
+
+  const text =
+    cleanText(
+      qualifier.textContent
+    );
+
+
+  return text || null;
+
+}
+
+
+/* =========================================================
+   NOUN HEADWORD FORMS
+   ========================================================= */
+
 function parseNounHeadwordForms(
+  headwordElement,
   headwordText,
   searchedWord
 ) {
@@ -656,60 +958,168 @@ function parseNounHeadwordForms(
   const forms = [];
 
 
-  if (!headwordText) {
+  /*
+    Actual Wiktionary:
 
-    return forms;
+    ev
+    (definite accusative evi, plural evler)
+
+    We first try to read the DOM structurally.
+  */
+
+  if (headwordElement) {
+
+    const boldForms =
+      Array.from(
+        headwordElement.querySelectorAll(
+          "b"
+        )
+      );
+
+
+    for (
+      const bold
+      of boldForms
+    ) {
+
+      const value =
+        cleanText(
+          bold.textContent
+        );
+
+
+      if (
+        !value ||
+        value === searchedWord
+      ) {
+
+        continue;
+
+      }
+
+
+      const previousText =
+        getTextBeforeElement(
+          bold
+        )
+        .toLowerCase();
+
+
+      if (
+        previousText.includes(
+          "accusative"
+        )
+      ) {
+
+        addFormIfMissing(
+          forms,
+          {
+            key:
+              "accusative",
+
+            label:
+              "Accusative",
+
+            value
+          }
+        );
+
+        continue;
+
+      }
+
+
+      if (
+        previousText.includes(
+          "plural"
+        )
+      ) {
+
+        addFormIfMissing(
+          forms,
+          {
+            key:
+              "plural",
+
+            label:
+              "Plural",
+
+            value
+          }
+        );
+
+        continue;
+
+      }
+
+
+      if (
+        previousText.includes(
+          "genitive"
+        )
+      ) {
+
+        addFormIfMissing(
+          forms,
+          {
+            key:
+              "genitive",
+
+            label:
+              "Genitive",
+
+            value
+          }
+        );
+
+      }
+
+    }
 
   }
 
 
-  const parenthesisMatch =
-    headwordText.match(
-      /\((.+)\)/
+  /*
+    Fallback parser in case Wiktionary changes
+    part of the headword markup.
+  */
+
+  const text =
+    cleanText(
+      headwordText
     );
 
 
-  if (!parenthesisMatch) {
-
-    return forms;
-
-  }
-
-
-  const inside =
-    parenthesisMatch[1];
-
-
-  const formMatchers = [
+  const regexDefinitions = [
 
     {
-      label:
-        "Accusative",
-
       key:
         "accusative",
+
+      label:
+        "Accusative",
 
       regex:
         /(?:definite\s+)?accusative\s+([^,;)]+)/i
     },
 
     {
-      label:
-        "Plural",
-
       key:
         "plural",
+
+      label:
+        "Plural",
 
       regex:
         /plural\s+([^,;)]+)/i
     },
 
     {
-      label:
-        "Genitive",
-
       key:
         "genitive",
+
+      label:
+        "Genitive",
 
       regex:
         /genitive\s+([^,;)]+)/i
@@ -719,13 +1129,13 @@ function parseNounHeadwordForms(
 
 
   for (
-    const matcher
-    of formMatchers
+    const definition
+    of regexDefinitions
   ) {
 
     const match =
-      inside.match(
-        matcher.regex
+      text.match(
+        definition.regex
       );
 
 
@@ -737,7 +1147,7 @@ function parseNounHeadwordForms(
 
 
     const value =
-      cleanFormValue(
+      cleanText(
         match[1]
       );
 
@@ -752,45 +1162,338 @@ function parseNounHeadwordForms(
     }
 
 
-    forms.push({
-      key:
-        matcher.key,
+    addFormIfMissing(
+      forms,
+      {
+        key:
+          definition.key,
 
-      label:
-        matcher.label,
+        label:
+          definition.label,
 
-      value,
-
-      selected:
-        true
-    });
+        value
+      }
+    );
 
   }
 
 
-  return forms;
+  return forms.map(
+    (form) => ({
+      ...form,
+      selected:
+        true
+    })
+  );
 
 }
 
 
-function cleanFormValue(value) {
+function getTextBeforeElement(element) {
 
-  return value
-    .replace(
-      /\[[^\]]+\]/g,
-      ""
-    )
-    .replace(
-      /\s+/g,
-      " "
-    )
-    .trim();
+  const parent =
+    element.parentElement;
+
+
+  if (!parent) {
+
+    return "";
+
+  }
+
+
+  let text = "";
+
+
+  for (
+    const node
+    of parent.childNodes
+  ) {
+
+    if (
+      node === element
+    ) {
+
+      break;
+
+    }
+
+
+    text +=
+      node.textContent || "";
+
+  }
+
+
+  /*
+    Only the last part matters.
+  */
+
+  return cleanText(
+    text.slice(-80)
+  );
 
 }
 
 
-function extractPronunciations(
-  nodes
+function addFormIfMissing(
+  forms,
+  form
+) {
+
+  const exists =
+    forms.some(
+      (existing) =>
+        existing.key ===
+          form.key &&
+        existing.value ===
+          form.value
+    );
+
+
+  if (!exists) {
+
+    forms.push(
+      form
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   MEANINGS
+   ========================================================= */
+
+function extractMeanings(
+  posSection
+) {
+
+  /*
+    Actual structure:
+
+    <section>
+      <h3>Noun</h3>
+
+      <p class/headword...></p>
+
+      <ol>
+        <li>meaning</li>
+        <li>meaning</li>
+      </ol>
+
+      <section>
+        <h4>Declension</h4>
+      </section>
+    </section>
+
+    We want the OL that belongs directly
+    to the Noun section.
+  */
+
+  let meaningsList = null;
+
+
+  for (
+    const child
+    of posSection.children
+  ) {
+
+    if (
+      child.tagName === "OL"
+    ) {
+
+      meaningsList =
+        child;
+
+      break;
+
+    }
+
+  }
+
+
+  if (!meaningsList) {
+
+    return [];
+
+  }
+
+
+  const meaningItems =
+    Array.from(
+      meaningsList.children
+    )
+    .filter(
+      (element) =>
+        element.tagName === "LI"
+    );
+
+
+  const meanings = [];
+
+
+  meaningItems.forEach(
+    (item, index) => {
+
+      const usageLabel =
+        extractMeaningUsageLabel(
+          item
+        );
+
+
+      const meaning =
+        extractMeaningText(
+          item
+        );
+
+
+      if (!meaning) {
+
+        return;
+
+      }
+
+
+      meanings.push({
+
+        position:
+          index + 1,
+
+        usageLabel,
+
+        meaning,
+
+        examples:
+          extractExamples(
+            item
+          ),
+
+        selected:
+          true
+
+      });
+
+    }
+  );
+
+
+  return meanings;
+
+}
+
+
+/* =========================================================
+   USAGE LABEL
+   ========================================================= */
+
+function extractMeaningUsageLabel(
+  item
+) {
+
+  /*
+    Real Wiktionary:
+
+    <span class="usage-label-sense">
+      (architecture)
+    </span>
+  */
+
+  const label =
+    item.querySelector(
+      ":scope > .usage-label-sense"
+    ) ||
+    item.querySelector(
+      ".usage-label-sense"
+    );
+
+
+  if (!label) {
+
+    return null;
+
+  }
+
+
+  let text =
+    cleanText(
+      label.textContent
+    );
+
+
+  text =
+    text
+      .replace(
+        /^\(/,
+        ""
+      )
+      .replace(
+        /\)$/,
+        ""
+      )
+      .trim();
+
+
+  return text || null;
+
+}
+
+
+/* =========================================================
+   MEANING TEXT
+   ========================================================= */
+
+function extractMeaningText(
+  item
+) {
+
+  const clone =
+    item.cloneNode(true);
+
+
+  /*
+    Remove examples, synonyms and other nested material.
+  */
+
+  clone
+    .querySelectorAll(
+      "dl, ul, ol, table, figure, style, sup.mw-ref"
+    )
+    .forEach(
+      (element) =>
+        element.remove()
+    );
+
+
+  /*
+    We'll save usage_label separately,
+    so remove it from meaning text.
+  */
+
+  clone
+    .querySelectorAll(
+      ".usage-label-sense"
+    )
+    .forEach(
+      (element) =>
+        element.remove()
+    );
+
+
+  return cleanText(
+    clone.textContent
+  );
+
+}
+
+
+/* =========================================================
+   EXAMPLES
+   ========================================================= */
+
+function extractExamples(
+  meaningItem
 ) {
 
   const results = [];
@@ -799,20 +1502,59 @@ function extractPronunciations(
     new Set();
 
 
+  /*
+    Wiktionary usage examples are specifically marked
+    with classes like:
+
+      h-usage-example
+      h-usage-example collocation
+
+    This avoids accidentally saving Synonym blocks
+    as examples.
+  */
+
+  const exampleElements =
+    meaningItem.querySelectorAll(
+      ".h-usage-example"
+    );
+
+
   for (
-    let i = 0;
-    i < nodes.length;
-    i += 1
+    const exampleElement
+    of exampleElements
   ) {
 
-    const node =
-      nodes[i];
+    const sourceElement =
+      exampleElement.querySelector(
+        ".e-example"
+      );
+
+
+    const translationElement =
+      exampleElement.querySelector(
+        ".e-translation"
+      );
+
+
+    const source =
+      sourceElement
+        ? cleanText(
+            sourceElement.textContent
+          )
+        : null;
+
+
+    const translation =
+      translationElement
+        ? cleanText(
+            translationElement.textContent
+          )
+        : null;
 
 
     if (
-      !isHeading(node) ||
-      headingText(node) !==
-        "Pronunciation"
+      !source &&
+      !translation
     ) {
 
       continue;
@@ -820,79 +1562,37 @@ function extractPronunciations(
     }
 
 
-    const level =
-      headingLevel(node);
+    const key =
+      `${source || ""}|${translation || ""}`;
 
 
-    const section =
-      collectNodesInsideArrayUntilHeadingLevel(
-        nodes,
-        i + 1,
-        level
-      );
-
-
-    for (
-      const sectionNode
-      of section
+    if (
+      seen.has(key)
     ) {
 
-      const text =
-        cleanText(
-          sectionNode.textContent
-        );
+      continue;
+
+    }
 
 
-      if (
-        !text ||
-        !/IPA/i.test(text)
-      ) {
-
-        continue;
-
-      }
+    seen.add(key);
 
 
-      const matches = [
-        ...text.matchAll(
-          /(?:\/[^/\n]+\/|\[[^\]\n]+\])/g
-        )
-      ];
+    results.push({
+
+      text:
+        source,
+
+      translation
+
+    });
 
 
-      for (
-        const match
-        of matches
-      ) {
+    if (
+      results.length >= 8
+    ) {
 
-        const ipa =
-          match[0].trim();
-
-
-        if (
-          seen.has(ipa)
-        ) {
-
-          continue;
-
-        }
-
-
-        seen.add(ipa);
-
-
-        results.push({
-          ipa,
-          label:
-            extractPronunciationLabel(
-              text,
-              ipa
-            ),
-          selected:
-            true
-        });
-
-      }
+      break;
 
     }
 
@@ -904,347 +1604,65 @@ function extractPronunciations(
 }
 
 
-function extractPronunciationLabel(
-  text,
-  ipa
-) {
-
-  const index =
-    text.indexOf(ipa);
-
-
-  if (index <= 0) {
-
-    return null;
-
-  }
-
-
-  const before =
-    text
-      .slice(
-        0,
-        index
-      )
-      .replace(
-        /IPA[^:]*:/gi,
-        ""
-      )
-      .replace(
-        /IPA/gi,
-        ""
-      )
-      .trim();
-
-
-  if (
-    !before ||
-    before.length > 50
-  ) {
-
-    return null;
-
-  }
-
-
-  return before;
-
-}
-
-
-function extractMeanings(
-  nodes
-) {
-
-  const meanings = [];
-
-
-  for (
-    const node
-    of nodes
-  ) {
-
-    if (
-      node.nodeType !==
-      Node.ELEMENT_NODE
-    ) {
-
-      continue;
-
-    }
-
-
-    if (
-      node.tagName !== "OL"
-    ) {
-
-      continue;
-
-    }
-
-
-    if (
-      node.closest(
-        "table"
-      )
-    ) {
-
-      continue;
-
-    }
-
-
-    const items =
-      Array.from(
-        node.children
-      )
-      .filter(
-        (child) =>
-          child.tagName === "LI"
-      );
-
-
-    for (
-      const item
-      of items
-    ) {
-
-      const definition =
-        extractDefinitionText(
-          item
-        );
-
-
-      if (!definition) {
-
-        continue;
-
-      }
-
-
-      meanings.push({
-        position:
-          meanings.length + 1,
-
-        usageLabel:
-          extractUsageLabel(
-            definition
-          ),
-
-        meaning:
-          removeLeadingUsageLabel(
-            definition
-          ),
-
-        examples:
-          extractExamples(
-            item
-          ),
-
-        selected:
-          true
-      });
-
-    }
-
-
-    if (
-      meanings.length
-    ) {
-
-      break;
-
-    }
-
-  }
-
-
-  return meanings;
-
-}
-
-
-function extractDefinitionText(
-  item
-) {
-
-  const clone =
-    item.cloneNode(true);
-
-
-  clone
-    .querySelectorAll(
-      "ol, ul, dl, table, figure, style"
-    )
-    .forEach(
-      (child) =>
-        child.remove()
-    );
-
-
-  return cleanText(
-    clone.textContent
-  );
-
-}
-
-
-function extractUsageLabel(
-  definition
-) {
-
-  const match =
-    definition.match(
-      /^\(([^)]+)\)\s*/
-    );
-
-
-  return match
-    ? match[1].trim()
-    : null;
-
-}
-
-
-function removeLeadingUsageLabel(
-  definition
-) {
-
-  return definition
-    .replace(
-      /^\([^)]+\)\s*/,
-      ""
-    )
-    .trim();
-
-}
-
-
-function extractExamples(
-  item
-) {
-
-  const examples = [];
-
-  const seen =
-    new Set();
-
-
-  const candidates =
-    item.querySelectorAll(
-      "dl dd, ul li"
-    );
-
-
-  for (
-    const candidate
-    of candidates
-  ) {
-
-    const text =
-      cleanText(
-        candidate.textContent
-      );
-
-
-    if (
-      !text ||
-      text.length < 3 ||
-      seen.has(text)
-    ) {
-
-      continue;
-
-    }
-
-
-    seen.add(text);
-
-    examples.push(
-      text
-    );
-
-
-    if (
-      examples.length >= 6
-    ) {
-
-      break;
-
-    }
-
-  }
-
-
-  return examples;
-
-}
-
+/* =========================================================
+   NOTES
+   ========================================================= */
 
 function extractNotes(
-  nodes
+  posSection
 ) {
 
   const notes = [];
 
 
+  const relevantSections =
+    getAllSections(
+      posSection
+    )
+    .filter(
+      (section) => {
+
+        const title =
+          getSectionTitle(
+            section
+          );
+
+
+        return (
+          title === "Usage notes" ||
+          title === "Declension"
+        );
+
+      }
+    );
+
+
   for (
-    let i = 0;
-    i < nodes.length;
-    i += 1
+    const section
+    of relevantSections
   ) {
 
-    const node =
-      nodes[i];
-
-
-    if (!isHeading(node)) {
-
-      continue;
-
-    }
-
-
-    const sectionName =
-      headingText(node);
-
-
-    const isUsageNotes =
-      sectionName ===
-      "Usage notes";
-
-
-    const isDeclension =
-      sectionName ===
-      "Declension";
-
-
-    if (
-      !isUsageNotes &&
-      !isDeclension
-    ) {
-
-      continue;
-
-    }
-
-
-    const section =
-      collectNodesInsideArrayUntilHeadingLevel(
-        nodes,
-        i + 1,
-        headingLevel(node)
+    const sectionTitle =
+      getSectionTitle(
+        section
       );
 
 
+    /*
+      We only want prose notes.
+
+      Do NOT save the giant declension table here.
+    */
+
     for (
-      const sectionNode
-      of section
+      const child
+      of section.children
     ) {
 
       if (
-        sectionNode.nodeType !==
-        Node.ELEMENT_NODE
+        /^H[1-6]$/.test(
+          child.tagName
+        )
       ) {
 
         continue;
@@ -1258,7 +1676,7 @@ function extractNotes(
           "STYLE",
           "FIGURE"
         ].includes(
-          sectionNode.tagName
+          child.tagName
         )
       ) {
 
@@ -1267,9 +1685,14 @@ function extractNotes(
       }
 
 
+      /*
+        A DIV containing a declension table
+        must also be ignored.
+      */
+
       if (
-        sectionNode.querySelector &&
-        sectionNode.querySelector(
+        child.querySelector &&
+        child.querySelector(
           "table"
         )
       ) {
@@ -1281,13 +1704,13 @@ function extractNotes(
 
       const text =
         cleanText(
-          sectionNode.textContent
+          child.textContent
         );
 
 
       if (
         !text ||
-        text.length < 20
+        text.length < 15
       ) {
 
         continue;
@@ -1296,15 +1719,15 @@ function extractNotes(
 
 
       notes.push({
+
         section:
-          isDeclension
-            ? "Declension"
-            : "Usage notes",
+          sectionTitle,
 
         text,
 
         selected:
           true
+
       });
 
     }
@@ -1329,7 +1752,7 @@ function dedupeNotes(notes) {
     (note) => {
 
       const key =
-        `${note.section}:${note.text}`;
+        `${note.section}|${note.text}`;
 
 
       if (
@@ -1350,6 +1773,10 @@ function dedupeNotes(notes) {
 
 }
 
+
+/* =========================================================
+   RENDER RESULTS
+   ========================================================= */
 
 function renderEntries() {
 
@@ -1376,63 +1803,61 @@ function renderEntries() {
     "";
 
 
-  let newEntries = 0;
+  for (
+    const entry
+    of parsedEntries
+  ) {
 
-
-  parsedEntries.forEach(
-    (entry) => {
-
-      const existing =
-        findExistingEntry(
-          entry
-        );
-
-
-      if (!existing) {
-
-        newEntries += 1;
-
-      }
-
-
-      const card =
-        existing
-          ? renderExistingCard(
-              entry,
-              existing
-            )
-          : renderNewCard(
-              entry
-            );
-
-
-      entriesContainer.appendChild(
-        card
+    const existing =
+      findExistingEntry(
+        entry
       );
 
-    }
-  );
+
+    const card =
+      existing
+        ? renderExistingCard(
+            entry,
+            existing
+          )
+        : renderNewCard(
+            entry
+          );
 
 
-  updateSaveButton(
-    newEntries
-  );
+    entriesContainer.appendChild(
+      card
+    );
+
+  }
+
+
+  updateSelectedCount();
 
 }
 
 
+/* =========================================================
+   FIND SAVED ENTRY
+   ========================================================= */
+
 function findExistingEntry(entry) {
 
   return existingEntries.find(
-    (saved) =>
-      Number(saved.etymology) ===
-        Number(entry.etymology) &&
-      normalizePos(
-        saved.part_of_speech
-      ) ===
+    (saved) => {
+
+      return (
+        Number(saved.etymology) ===
+          Number(entry.etymology) &&
         normalizePos(
-          entry.partOfSpeech
-        )
+          saved.part_of_speech
+        ) ===
+          normalizePos(
+            entry.partOfSpeech
+          )
+      );
+
+    }
   );
 
 }
@@ -1446,12 +1871,16 @@ function normalizePos(value) {
     .trim()
     .toLowerCase()
     .replace(
-      /\s+/g,
-      "_"
+      /[\s_-]+/g,
+      ""
     );
 
 }
 
+
+/* =========================================================
+   NEW ENTRY CARD
+   ========================================================= */
 
 function renderNewCard(entry) {
 
@@ -1467,7 +1896,9 @@ function renderNewCard(entry) {
 
   card.innerHTML = `
     <div class="wiki-entry-top">
+
       <div>
+
         <div class="wiki-etymology">
           Etymology ${entry.etymology}
         </div>
@@ -1475,9 +1906,12 @@ function renderNewCard(entry) {
         <div class="wiki-pos">
           ${escapeHtml(entry.partOfSpeech)}
         </div>
+
       </div>
 
+
       <label class="wiki-entry-select">
+
         <input
           type="checkbox"
           class="wiki-entry-main-checkbox"
@@ -1485,12 +1919,16 @@ function renderNewCard(entry) {
         />
 
         <span></span>
+
       </label>
+
     </div>
+
 
     <div class="wiki-entry-status new">
       Not in My Dictionary
     </div>
+
 
     ${renderPronunciation(entry)}
 
@@ -1502,23 +1940,25 @@ function renderNewCard(entry) {
   `;
 
 
-  const entryCheckbox =
+  const mainCheckbox =
     card.querySelector(
       ".wiki-entry-main-checkbox"
     );
 
 
-  entryCheckbox.addEventListener(
+  mainCheckbox.addEventListener(
     "change",
     () => {
 
       entry.selected =
-        entryCheckbox.checked;
+        mainCheckbox.checked;
+
 
       card.classList.toggle(
         "entry-not-selected",
         !entry.selected
       );
+
 
       updateSelectedCount();
 
@@ -1542,6 +1982,10 @@ function renderNewCard(entry) {
 }
 
 
+/* =========================================================
+   EXISTING ENTRY CARD
+   ========================================================= */
+
 function renderExistingCard(
   entry,
   existing
@@ -1557,17 +2001,26 @@ function renderExistingCard(
     "wiki-entry-card wiki-entry-existing";
 
 
+  /*
+    Existing entries stay compact.
+
+    User decided:
+      show only enough meanings
+      to identify what this entry is.
+  */
+
   const meanings =
-    entry.meanings
-      .slice(
-        0,
-        4
-      );
+    entry.meanings.slice(
+      0,
+      4
+    );
 
 
   card.innerHTML = `
     <div class="wiki-entry-top compact">
+
       <div>
+
         <div class="wiki-etymology">
           Etymology ${entry.etymology}
         </div>
@@ -1575,24 +2028,33 @@ function renderExistingCard(
         <div class="wiki-pos">
           ${escapeHtml(entry.partOfSpeech)}
         </div>
+
       </div>
+
 
       <div class="wiki-saved-mark">
         ✓
       </div>
+
     </div>
+
 
     <div class="wiki-entry-status saved">
       Already in My Dictionary · ID ${existing.id}
     </div>
 
+
     ${
       meanings.length
         ? `
           <section class="wiki-entry-section existing-meanings">
-            <h3>Meanings</h3>
+
+            <h3>
+              Meanings
+            </h3>
 
             <ol class="wiki-existing-meaning-list">
+
               ${
                 meanings
                   .map(
@@ -1604,11 +2066,14 @@ function renderExistingCard(
                   )
                   .join("")
               }
+
             </ol>
+
           </section>
         `
         : ""
     }
+
 
     <button
       class="wiki-library-placeholder"
@@ -1624,6 +2089,10 @@ function renderExistingCard(
 
 }
 
+
+/* =========================================================
+   PRONUNCIATION UI
+   ========================================================= */
 
 function renderPronunciation(entry) {
 
@@ -1667,6 +2136,7 @@ function renderPronunciation(entry) {
 
                   <span class="wiki-custom-check"></span>
 
+
                   <span class="wiki-choice-content">
 
                     <strong class="wiki-ipa">
@@ -1698,6 +2168,10 @@ function renderPronunciation(entry) {
 
 }
 
+
+/* =========================================================
+   FORMS UI
+   ========================================================= */
 
 function renderForms(entry) {
 
@@ -1765,19 +2239,27 @@ function renderForms(entry) {
 }
 
 
-function renderVisibleMeanings(
-  entry
-) {
+/* =========================================================
+   VISIBLE MEANINGS
+   ========================================================= */
+
+function renderVisibleMeanings(entry) {
 
   if (
     !entry.meanings.length
   ) {
 
     return "";
+
   }
 
 
-  const visible =
+  /*
+    Decision:
+      maximum 4 meanings visible.
+  */
+
+  const visibleMeanings =
     entry.meanings.slice(
       0,
       4
@@ -1794,7 +2276,7 @@ function renderVisibleMeanings(
       <div class="wiki-meaning-list">
 
         ${
-          visible
+          visibleMeanings
             .map(
               (meaning) =>
                 renderMeaningRow(
@@ -1811,6 +2293,10 @@ function renderVisibleMeanings(
 
 }
 
+
+/* =========================================================
+   MEANING ROW
+   ========================================================= */
 
 function renderMeaningRow(
   meaning
@@ -1832,9 +2318,11 @@ function renderMeaningRow(
 
       <span class="wiki-custom-check"></span>
 
+
       <span class="wiki-meaning-number">
         ${meaning.position}.
       </span>
+
 
       <span class="wiki-meaning-text">
 
@@ -1858,9 +2346,11 @@ function renderMeaningRow(
 }
 
 
-function renderHiddenDetails(
-  entry
-) {
+/* =========================================================
+   SHOW ALL DETAILS
+   ========================================================= */
+
+function renderHiddenDetails(entry) {
 
   const extraMeanings =
     entry.meanings.slice(
@@ -1868,23 +2358,35 @@ function renderHiddenDetails(
     );
 
 
-  const examples =
-    entry.meanings
-      .filter(
-        (meaning) =>
-          meaning.examples.length
-      );
+  const meaningsWithExamples =
+    entry.meanings.filter(
+      (meaning) =>
+        Array.isArray(
+          meaning.examples
+        ) &&
+        meaning.examples.length > 0
+    );
 
+
+  /*
+    Decision:
+
+    Show all details appears only if:
+      - there are more than 4 meanings
+      - examples exist
+      - notes exist
+  */
 
   const hasDetails =
     extraMeanings.length > 0 ||
-    examples.length > 0 ||
+    meaningsWithExamples.length > 0 ||
     entry.notes.length > 0;
 
 
   if (!hasDetails) {
 
     return "";
+
   }
 
 
@@ -1896,6 +2398,7 @@ function renderHiddenDetails(
         type="button"
         aria-expanded="false"
       >
+
         <span>
           Show all details
         </span>
@@ -1913,6 +2416,7 @@ function renderHiddenDetails(
             stroke-linejoin="round"
           />
         </svg>
+
       </button>
 
 
@@ -1952,7 +2456,7 @@ function renderHiddenDetails(
 
 
         ${
-          examples.length
+          meaningsWithExamples.length
             ? `
               <section class="wiki-entry-section detail-section">
 
@@ -1963,29 +2467,12 @@ function renderHiddenDetails(
                 <div class="wiki-example-list">
 
                   ${
-                    examples
+                    meaningsWithExamples
                       .map(
-                        (meaning) => `
-                          <div class="wiki-example-group">
-
-                            <div class="wiki-example-heading">
-                              Meaning ${meaning.position}
-                            </div>
-
-                            ${
-                              meaning.examples
-                                .map(
-                                  (example) => `
-                                    <div class="wiki-example">
-                                      ${escapeHtml(example)}
-                                    </div>
-                                  `
-                                )
-                                .join("")
-                            }
-
-                          </div>
-                        `
+                        (meaning) =>
+                          renderExampleGroup(
+                            meaning
+                          )
                       )
                       .join("")
                   }
@@ -2031,6 +2518,7 @@ function renderHiddenDetails(
 
                             <span class="wiki-custom-check"></span>
 
+
                             <span>
 
                               <small>
@@ -2064,6 +2552,81 @@ function renderHiddenDetails(
 }
 
 
+/* =========================================================
+   EXAMPLE UI
+   ========================================================= */
+
+function renderExampleGroup(
+  meaning
+) {
+
+  return `
+    <div class="wiki-example-group">
+
+      <div class="wiki-example-heading">
+        Meaning ${meaning.position}
+      </div>
+
+      ${
+        meaning.examples
+          .map(
+            (example) => {
+
+              if (
+                typeof example ===
+                "string"
+              ) {
+
+                return `
+                  <div class="wiki-example">
+                    ${escapeHtml(example)}
+                  </div>
+                `;
+
+              }
+
+
+              return `
+                <div class="wiki-example">
+
+                  ${
+                    example.text
+                      ? `
+                        <div>
+                          ${escapeHtml(example.text)}
+                        </div>
+                      `
+                      : ""
+                  }
+
+                  ${
+                    example.translation
+                      ? `
+                        <div>
+                          ${escapeHtml(example.translation)}
+                        </div>
+                      `
+                      : ""
+                  }
+
+                </div>
+              `;
+
+            }
+          )
+          .join("")
+      }
+
+    </div>
+  `;
+
+}
+
+
+/* =========================================================
+   DETAIL TOGGLE
+   ========================================================= */
+
 function wireDetailToggle(card) {
 
   const button =
@@ -2095,28 +2658,44 @@ function wireDetailToggle(card) {
         ) === "true";
 
 
+      const nextOpen =
+        !isOpen;
+
+
       button.setAttribute(
         "aria-expanded",
-        String(!isOpen)
+        String(nextOpen)
       );
 
 
       content.hidden =
-        isOpen;
+        !nextOpen;
 
 
-      button
-        .querySelector("span")
-        .textContent =
-          isOpen
-            ? "Show all details"
-            : "Hide details";
+      const label =
+        button.querySelector(
+          "span"
+        );
+
+
+      if (label) {
+
+        label.textContent =
+          nextOpen
+            ? "Hide details"
+            : "Show all details";
+
+      }
 
     }
   );
 
 }
 
+
+/* =========================================================
+   ITEM CHECKBOXES
+   ========================================================= */
 
 function wireItemCheckboxes(
   card,
@@ -2140,10 +2719,16 @@ function wireItemCheckboxes(
               );
 
 
-            entry
-              .pronunciation[index]
-              .selected =
-                checkbox.checked;
+            if (
+              entry.pronunciation[index]
+            ) {
+
+              entry
+                .pronunciation[index]
+                .selected =
+                  checkbox.checked;
+
+            }
 
           }
         );
@@ -2169,10 +2754,16 @@ function wireItemCheckboxes(
               );
 
 
-            entry
-              .forms[index]
-              .selected =
-                checkbox.checked;
+            if (
+              entry.forms[index]
+            ) {
+
+              entry
+                .forms[index]
+                .selected =
+                  checkbox.checked;
+
+            }
 
           }
         );
@@ -2237,10 +2828,16 @@ function wireItemCheckboxes(
               );
 
 
-            entry
-              .notes[index]
-              .selected =
-                checkbox.checked;
+            if (
+              entry.notes[index]
+            ) {
+
+              entry
+                .notes[index]
+                .selected =
+                  checkbox.checked;
+
+            }
 
           }
         );
@@ -2251,21 +2848,19 @@ function wireItemCheckboxes(
 }
 
 
+/* =========================================================
+   SAVE COUNT
+   ========================================================= */
+
 function updateSelectedCount() {
 
   const count =
     parsedEntries.filter(
       (entry) => {
 
-        const exists =
-          findExistingEntry(
-            entry
-          );
-
-
         return (
-          !exists &&
-          entry.selected
+          entry.selected &&
+          !findExistingEntry(entry)
         );
 
       }
@@ -2279,11 +2874,11 @@ function updateSelectedCount() {
 }
 
 
-function updateSaveButton(
-  count
-) {
+function updateSaveButton(count) {
 
-  if (count <= 0) {
+  if (
+    count <= 0
+  ) {
 
     saveButton.disabled =
       true;
@@ -2308,20 +2903,39 @@ function updateSaveButton(
 }
 
 
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+/*
+  Still intentionally NOT writing to Supabase.
+
+  This search/parser version must first be validated
+  with real words.
+
+  When confirmed, this button will send all selected
+  NEW entries together.
+*/
+
 saveButton.addEventListener(
   "click",
   () => {
 
     const selected =
       parsedEntries.filter(
-        (entry) =>
-          entry.selected &&
-          !findExistingEntry(entry)
+        (entry) => {
+
+          return (
+            entry.selected &&
+            !findExistingEntry(entry)
+          );
+
+        }
       );
 
 
     console.log(
-      "Selected new entries:",
+      "Entries ready to save:",
       selected
     );
 
@@ -2339,9 +2953,11 @@ saveButton.addEventListener(
 );
 
 
-function setLoading(
-  loading
-) {
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+function setLoading(loading) {
 
   searchButton.disabled =
     loading;
@@ -2357,6 +2973,10 @@ function setLoading(
 
 }
 
+
+/* =========================================================
+   RESET
+   ========================================================= */
 
 function clearResults() {
 
@@ -2385,9 +3005,13 @@ function clearResults() {
 }
 
 
+/* =========================================================
+   STATUS
+   ========================================================= */
+
 function showStatus(
   message,
-  type
+  type = ""
 ) {
 
   statusBox.textContent =
@@ -2412,155 +3036,9 @@ function hideStatus() {
 }
 
 
-function findHeadingByText(
-  doc,
-  tagName,
-  text
-) {
-
-  return Array
-    .from(
-      doc.querySelectorAll(
-        tagName
-      )
-    )
-    .find(
-      (heading) =>
-        headingText(heading) ===
-        text
-    );
-
-}
-
-
-function headingText(node) {
-
-  const clone =
-    node.cloneNode(true);
-
-
-  clone
-    .querySelectorAll(
-      ".mw-editsection, .mw-editsection-bracket"
-    )
-    .forEach(
-      (item) =>
-        item.remove()
-    );
-
-
-  return cleanText(
-    clone.textContent
-  );
-
-}
-
-
-function isHeading(node) {
-
-  return (
-    node &&
-    node.nodeType ===
-      Node.ELEMENT_NODE &&
-    /^H[1-6]$/.test(
-      node.tagName
-    )
-  );
-
-}
-
-
-function headingLevel(node) {
-
-  return Number(
-    node.tagName.slice(1)
-  );
-
-}
-
-
-function collectUntilHeadingLevel(
-  heading,
-  stopLevel
-) {
-
-  const nodes = [];
-
-
-  let current =
-    heading.nextElementSibling;
-
-
-  while (current) {
-
-    if (
-      isHeading(current) &&
-      headingLevel(current) <=
-        stopLevel
-    ) {
-
-      break;
-
-    }
-
-
-    nodes.push(
-      current
-    );
-
-
-    current =
-      current.nextElementSibling;
-
-  }
-
-
-  return nodes;
-
-}
-
-
-function collectNodesInsideArrayUntilHeadingLevel(
-  nodes,
-  startIndex,
-  stopLevel
-) {
-
-  const result = [];
-
-
-  for (
-    let i = startIndex;
-    i < nodes.length;
-    i += 1
-  ) {
-
-    const node =
-      nodes[i];
-
-
-    if (
-      isHeading(node) &&
-      headingLevel(node) <=
-        stopLevel
-    ) {
-
-      break;
-
-    }
-
-
-    result.push(
-      node
-    );
-
-  }
-
-
-  return result;
-
-}
-
+/* =========================================================
+   TEXT HELPERS
+   ========================================================= */
 
 function cleanText(value) {
 
@@ -2608,5 +3086,9 @@ function escapeHtml(value) {
 
 }
 
+
+/* =========================================================
+   START
+   ========================================================= */
 
 requireSession();
