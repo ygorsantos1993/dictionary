@@ -1086,54 +1086,70 @@ function extractAlternativeFormsFromSections(
       of items
     ) {
 
-      let values =
+      let valueElements =
         Array.from(
           item.querySelectorAll(
             '[lang="tr"]'
           )
-        )
-        .map(
-          (element) =>
-            cleanText(
-              element.textContent
-            )
-        )
-        .filter(
-          Boolean
         );
 
 
       if (
-        !values.length
+        !valueElements.length
       ) {
 
-        values =
+        valueElements =
           Array.from(
             item.querySelectorAll(
               'a[href*="/wiki/"]'
             )
           )
-          .map(
-            (element) =>
-              cleanText(
-                element.textContent
-              )
-          )
           .filter(
-            (value) =>
-              value &&
-              !/^(edit|citation|citations)$/i.test(
-                value
-              )
+            (element) => {
+
+              const value =
+                cleanText(
+                  element.textContent
+                );
+
+
+              return (
+                value &&
+                !/^(edit|citation|citations)$/i.test(
+                  value
+                )
+              );
+
+            }
           );
 
       }
 
 
       for (
-        const value
-        of values
+        const valueElement
+        of valueElements
       ) {
+
+        const value =
+          cleanText(
+            valueElement.textContent
+          );
+
+
+        if (!value) {
+
+          continue;
+
+        }
+
+
+        const usageLabel =
+          extractAlternativeFormUsageLabel(
+            item,
+            valueElement
+          );
+
 
         const normalized =
           normalizeFormValue(
@@ -1141,10 +1157,14 @@ function extractAlternativeFormsFromSections(
           );
 
 
+        const dedupeKey =
+          `${normalized}|${String(usageLabel || "").toLowerCase()}`;
+
+
         if (
           !normalized ||
           seen.has(
-            normalized
+            dedupeKey
           )
         ) {
 
@@ -1154,13 +1174,15 @@ function extractAlternativeFormsFromSections(
 
 
         seen.add(
-          normalized
+          dedupeKey
         );
 
 
         results.push({
 
           value,
+
+          usageLabel,
 
           source:
             "wiktionary_alternative_forms",
@@ -1178,6 +1200,105 @@ function extractAlternativeFormsFromSections(
 
 
   return results;
+
+}
+
+
+function extractAlternativeFormUsageLabel(
+  item,
+  valueElement
+) {
+
+  const clone =
+    item.cloneNode(
+      true
+    );
+
+
+  clone
+    .querySelectorAll(
+      "sup, style, .mw-ref"
+    )
+    .forEach(
+      (element) =>
+        element.remove()
+    );
+
+
+  const valueText =
+    cleanText(
+      valueElement.textContent
+    );
+
+
+  const candidateElements =
+    Array.from(
+      clone.querySelectorAll(
+        '[lang="tr"], a[href*="/wiki/"]'
+      )
+    );
+
+
+  let removedValue =
+    false;
+
+
+  for (
+    const element
+    of candidateElements
+  ) {
+
+    if (
+      !removedValue &&
+      cleanText(
+        element.textContent
+      ) === valueText
+    ) {
+
+      element.remove();
+
+      removedValue =
+        true;
+
+      break;
+
+    }
+
+  }
+
+
+  let label =
+    cleanText(
+      clone.textContent
+    )
+      .replace(
+        /^[,;:\-–—\s]+/,
+        ""
+      )
+      .replace(
+        /[,;:\-–—\s]+$/,
+        ""
+      )
+      .trim();
+
+
+  if (
+    label.startsWith("(") &&
+    label.endsWith(")")
+  ) {
+
+    label =
+      label
+        .slice(
+          1,
+          -1
+        )
+        .trim();
+
+  }
+
+
+  return label || null;
 
 }
 
@@ -3826,6 +3947,16 @@ function renderAlternativeForms(
                     <strong>
                       ${escapeHtml(alternativeForm.value)}
                     </strong>
+
+                    ${
+                      alternativeForm.usageLabel
+                        ? `
+                          <small>
+                            ${escapeHtml(alternativeForm.usageLabel)}
+                          </small>
+                        `
+                        : ""
+                    }
 
                   </span>
 
