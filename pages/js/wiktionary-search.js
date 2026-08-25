@@ -471,10 +471,6 @@ function buildEtymologyGroups(
   );
 
 
-  /*
-    NUMBERED ETYMOLOGIES
-  */
-
   if (
     numberedIndexes.length
   ) {
@@ -1216,18 +1212,6 @@ function extractPronunciationQualifier(
 
 /* =========================================================
    NOUN FORMS
-
-   ABSOLUTE RULE:
-
-   1. NEVER GENERATE A FORM.
-   2. First read what Wiktionary explicitly puts
-      in the headword.
-   3. Preserve extra forms too:
-      obsolete, rare, alternative, etc.
-   4. If Accusative and/or Plural are absent,
-      search Wiktionary's own Declension table.
-   5. If Wiktionary does not provide it,
-      do not add it.
    ========================================================= */
 
 function parseNounForms(
@@ -1319,22 +1303,84 @@ function extractHeadwordForms(
   const forms = [];
 
 
-  const formElements =
+  /*
+    Read the headword line in document order.
+
+    Example:
+
+    definite accusative kütübü or kütüpü,
+    plural kütüpler
+
+    The same grammatical label remains active for every
+    alternative until Wiktionary introduces a new label.
+
+    Therefore:
+    - kütübü -> Accusative
+    - kütüpü -> Accusative
+    - kütüpler -> Plural
+
+    The word "or" is only connecting text and is never
+    stored as part of a form.
+  */
+
+  const elements =
     Array.from(
       headwordLine.querySelectorAll(
-        "b, strong"
+        "i, em, b, strong"
       )
     );
 
 
+  let currentLabel =
+    null;
+
+
   for (
-    const formElement
-    of formElements
+    const element
+    of elements
   ) {
+
+    const tag =
+      element.tagName;
+
+
+    if (
+      tag === "I" ||
+      tag === "EM"
+    ) {
+
+      const labelText =
+        cleanText(
+          element.textContent
+        );
+
+
+      if (labelText) {
+
+        currentLabel =
+          labelText;
+
+      }
+
+
+      continue;
+
+    }
+
+
+    if (
+      tag !== "B" &&
+      tag !== "STRONG"
+    ) {
+
+      continue;
+
+    }
+
 
     const value =
       cleanText(
-        formElement.textContent
+        element.textContent
       );
 
 
@@ -1353,26 +1399,7 @@ function extractHeadwordForms(
     }
 
 
-    const labelElement =
-      findPreviousHeadwordLabel(
-        formElement
-      );
-
-
-    if (!labelElement) {
-
-      continue;
-
-    }
-
-
-    const rawLabel =
-      cleanText(
-        labelElement.textContent
-      );
-
-
-    if (!rawLabel) {
+    if (!currentLabel) {
 
       continue;
 
@@ -1381,7 +1408,7 @@ function extractHeadwordForms(
 
     const normalized =
       normalizeFormLabel(
-        rawLabel
+        currentLabel
       );
 
 
@@ -1577,10 +1604,6 @@ function normalizeFormLabel(
 
 /* =========================================================
    DECLENSION FALLBACK
-
-   IMPORTANT:
-   This only looks elsewhere on Wiktionary.
-   It never generates a Turkish form.
    ========================================================= */
 
 function extractMissingFormsFromDeclension(
@@ -3316,6 +3339,12 @@ function renderForms(
   }
 
 
+  const groups =
+    groupFormsForRendering(
+      pos.forms
+    );
+
+
   return `
 
     <div
@@ -3332,45 +3361,76 @@ function renderForms(
       >
 
         ${
-          pos.forms
+          groups
             .map(
-              (
-                form,
-                index
-              ) => `
+              (group) => `
 
-                <label
-                  class="wiki-form-chip"
+                <div
+                  class="wiki-form-group"
                 >
 
-                  ${
-                    existing
-                      ? ""
-                      : `
-                        <input
-                          type="checkbox"
-                          data-kind="form"
-                          data-pos="${escapeAttribute(pos.partOfSpeech)}"
-                          data-index="${index}"
-                          checked
-                        />
-                      `
-                  }
+                  <div
+                    class="wiki-etymology"
+                  >
+                    ${escapeHtml(group.label)}
+                  </div>
 
 
-                  <span>
+                  <div
+                    class="wiki-choice-list"
+                  >
 
-                    <small>
-                      ${escapeHtml(form.label)}
-                    </small>
+                    ${
+                      group.items
+                        .map(
+                          ({
+                            form,
+                            index
+                          }) => `
 
-                    <strong>
-                      ${escapeHtml(form.value)}
-                    </strong>
+                            <label
+                              class="wiki-choice-row"
+                            >
 
-                  </span>
+                              ${
+                                existing
+                                  ? ""
+                                  : `
+                                    <input
+                                      type="checkbox"
+                                      data-kind="form"
+                                      data-pos="${escapeAttribute(pos.partOfSpeech)}"
+                                      data-index="${index}"
+                                      checked
+                                    />
 
-                </label>
+                                    <span
+                                      class="wiki-custom-check"
+                                    ></span>
+                                  `
+                              }
+
+
+                              <span
+                                class="wiki-choice-content"
+                              >
+
+                                <strong>
+                                  ${escapeHtml(form.value)}
+                                </strong>
+
+                              </span>
+
+                            </label>
+
+                          `
+                        )
+                        .join("")
+                    }
+
+                  </div>
+
+                </div>
 
               `
             )
@@ -3382,6 +3442,88 @@ function renderForms(
     </div>
 
   `;
+
+}
+
+
+/* =========================================================
+   GROUP FORMS FOR UI
+
+   Example:
+
+   Accusative
+   ☑ kütübü
+   ☑ kütüpü
+
+   Plural
+   ☑ kütüpler
+   ========================================================= */
+
+function groupFormsForRendering(
+  forms
+) {
+
+  const groups = [];
+
+  const byKey =
+    new Map();
+
+
+  forms.forEach(
+    (
+      form,
+      index
+    ) => {
+
+      const groupKey =
+        `${form.key}::${form.label}`;
+
+
+      let group =
+        byKey.get(
+          groupKey
+        );
+
+
+      if (!group) {
+
+        group = {
+
+          key:
+            form.key,
+
+          label:
+            form.label,
+
+          items:
+            []
+
+        };
+
+
+        byKey.set(
+          groupKey,
+          group
+        );
+
+
+        groups.push(
+          group
+        );
+
+      }
+
+
+      group.items.push({
+        form,
+        index
+      });
+
+    }
+  );
+
+
+  return groups;
 
 }
 
@@ -3682,15 +3824,6 @@ function wireWordCard(
         mainCheckbox.checked;
 
 
-      /*
-        WORD OFF:
-        freeze all internal controls.
-
-        WORD ON:
-        reset every selectable field to checked,
-        then unlock the card.
-      */
-
       if (
         wordEntry.selected
       ) {
@@ -3749,9 +3882,6 @@ function wireWordCard(
 
 /* =========================================================
    RESET WORD SELECTION
-
-   Re-checking the main WORD checkbox starts again
-   with every selectable field selected.
    ========================================================= */
 
 function resetWordSelection(
@@ -3985,11 +4115,6 @@ function wireFormCheckboxes(
 
 /* =========================================================
    MEANING EVENTS
-
-   ZERO MEANINGS:
-   WORD AUTO-OFF + LOCK.
-
-   MARKING A MEANING NEVER AUTO-TURNS WORD ON.
    ========================================================= */
 
 function wireMeaningCheckboxes(
@@ -4327,8 +4452,6 @@ function updateSaveButton(
 
 /* =========================================================
    SAVE PREVIEW
-
-   DATABASE WRITE STILL DISABLED.
    ========================================================= */
 
 saveButton.addEventListener(
