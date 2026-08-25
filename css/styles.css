@@ -2164,6 +2164,9 @@ input:not(:checked) + span {
 
 .wiki-form-group[
   data-form-key="accusative"
+],
+.wiki-form-group[
+  data-form-key="aorist"
 ] {
   grid-column: 1;
   grid-row: 1;
@@ -2171,6 +2174,9 @@ input:not(:checked) + span {
 
 .wiki-form-group[
   data-form-key="plural"
+],
+.wiki-form-group[
+  data-form-key="continuous"
 ] {
   grid-column: 2;
   grid-row: 1;
