@@ -1807,7 +1807,12 @@ input:checked +
       minmax(0, 1fr)
     );
 
-  gap: 9px;
+  column-gap: 9px;
+  row-gap: 18px;
+
+  align-items: start;
+
+  grid-auto-flow: row;
 }
 
 
@@ -2148,13 +2153,27 @@ input:not(:checked) + span {
 }
 
 .wiki-form-group {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  grid-column: 1;
 }
 
-.wiki-form-group + .wiki-form-group {
-  margin-top: 18px;
+.wiki-form-group[
+  data-form-key="accusative"
+] {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.wiki-form-group[
+  data-form-key="plural"
+] {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .wiki-form-group .wiki-etymology {
