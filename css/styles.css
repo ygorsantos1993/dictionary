@@ -1,75 +1,84 @@
 :root {
   --text: #1d242e;
-  --muted: #60656b;
+  --muted: #646b71;
+
   --gold: #b98b49;
-  --gold-light: #d9b36f;
+  --gold-light: #dfbd80;
   --gold-dark: #8d6530;
-  --cream: rgba(255, 250, 244, 0.90);
-  --cream-strong: rgba(255, 252, 248, 0.95);
-  --menu-dark: rgba(45, 56, 68, 0.82);
-  --green: #3b8765;
-  --green-soft: rgba(59, 135, 101, 0.10);
-  --red: #a64b42;
-  --line: rgba(185, 139, 73, 0.34);
+
+  --cream:
+    rgba(255, 250, 244, 0.91);
+
+  --cream-strong:
+    rgba(255, 252, 248, 0.97);
+
+  --green:
+    #3b8765;
+
+  --green-soft:
+    rgba(59, 135, 101, 0.10);
+
+  --red:
+    #a64b42;
+
+  --line:
+    rgba(185, 139, 73, 0.31);
+
   --accent-1: #3b82f6;
   --accent-2: #2563eb;
+
+  --error: #b42318;
 }
 
-*,
-*::before,
-*::after {
+
+* {
   box-sizing: border-box;
 }
+
 
 html,
 body {
   min-height: 100%;
-  margin: 0;
-}
 
-body {
-  min-height: 100vh;
-  color: var(--text);
+  margin: 0;
+
   font-family:
     Inter,
+    ui-sans-serif,
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
     sans-serif;
+
+  color: var(--text);
 }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
+
 
 button {
   border: 0;
+
+  font: inherit;
+
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
+
 
 button:disabled {
   cursor: default;
 }
 
-img {
-  display: block;
-  max-width: 100%;
+
+input {
+  font: inherit;
 }
 
-a {
-  color: inherit;
-}
-
-[hidden] {
-  display: none !important;
-}
 
 /* =========================================================
    LOGIN
@@ -80,82 +89,134 @@ a {
   min-height: 100dvh;
 
   display: grid;
+
   place-items: center;
 
-  padding:
-    max(22px, env(safe-area-inset-top))
-    18px
-    max(22px, env(safe-area-inset-bottom));
+  padding: 24px;
 
   background:
-    linear-gradient(
-      rgba(9, 18, 31, 0.17),
-      rgba(9, 18, 31, 0.22)
-    ),
-    url("../background.jpg")
-    center / cover
-    no-repeat fixed;
+    url("../background.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.login-card {
-  width: min(100%, 420px);
 
-  padding: 26px 22px;
+.card {
+  width: min(100%, 400px);
+
+  padding: 34px 30px;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.22);
+    rgba(255, 255, 255, 0.58);
 
   border-radius: 24px;
 
   background:
-    rgba(8, 20, 38, 0.68);
+    linear-gradient(
+      rgba(255, 255, 255, 0.45),
+      rgba(255, 255, 255, 0.45)
+    ),
+    url("../background.jpg");
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   box-shadow:
-    0 18px 44px
-    rgba(2, 8, 18, 0.27);
-
-  color: #f8fbff;
+    0 20px 60px
+    rgba(31, 41, 55, 0.14);
 }
 
-.login-card h1,
-.login-card h2 {
-  margin-top: 0;
+
+.brand {
+  margin-bottom: 24px;
+
+  text-align: center;
 }
 
-.login-card label {
+
+.brand-title {
+  margin: 0;
+
+  font-size: 30px;
+
+  line-height: 1.1;
+
+  letter-spacing: -0.04em;
+}
+
+
+.brand-flags {
+  margin-top: 14px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+}
+
+
+.brand-flags img {
+  width: 46px;
+  height: 30px;
+
+  object-fit: cover;
+
+  border-radius: 6px;
+
+  box-shadow:
+    0 3px 10px
+    rgba(15, 23, 42, 0.14);
+}
+
+
+.field {
+  margin-bottom: 16px;
+}
+
+
+label {
   display: block;
 
   margin-bottom: 8px;
 
   font-size: 13px;
+
   font-weight: 700;
 
-  color: #e5edf8;
+  color: #334155;
 }
+
 
 .login-page input {
   width: 100%;
+
   height: 50px;
 
   padding: 0 14px;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.20);
+    rgba(100, 116, 139, 0.22);
 
   border-radius: 14px;
 
   background:
-    rgba(255, 255, 255, 0.94);
+    rgba(255, 255, 255, 0.90);
 
   color: var(--text);
 
   outline: none;
 }
+
 
 .login-page input:focus {
   border-color:
@@ -163,20 +224,56 @@ a {
 
   box-shadow:
     0 0 0 4px
-    rgba(37, 99, 235, 0.12);
+    rgba(37, 99, 235, 0.10);
+
+  background: #ffffff;
 }
+
 
 .login-card button {
   width: 100%;
+
   height: 50px;
 
   border-radius: 14px;
 
-  font-weight: 800;
+  background:
+    linear-gradient(
+      135deg,
+      var(--accent-1),
+      var(--accent-2)
+    );
+
+  color: white;
+
+  font-weight: 700;
+
+  box-shadow:
+    0 10px 24px
+    rgba(37, 99, 235, 0.22);
 }
 
+
+.status {
+  min-height: 20px;
+
+  margin-top: 14px;
+
+  color: #667085;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+
+.status.error {
+  color: var(--error);
+}
+
+
 /* =========================================================
-   DICTIONARY PAGE
+   DICTIONARY HUB
    ========================================================= */
 
 .dictionary-page {
@@ -186,72 +283,81 @@ a {
   min-height: 100dvh;
 
   padding:
-    max(20px, env(safe-area-inset-top))
-    22px
-    max(42px, env(safe-area-inset-bottom));
-
-  background:
-    url("../turkey.png")
-    center / cover
-    no-repeat fixed;
+    max(24px, env(safe-area-inset-top))
+    20px
+    max(34px, env(safe-area-inset-bottom));
 
   overflow-x: hidden;
+
+  background:
+    url("../turkey.png");
+
+  background-size: cover;
+
+  background-position:
+    center center;
+
+  background-attachment: fixed;
 }
+
 
 .dictionary-page::before {
   content: "";
 
   position: fixed;
+
   inset: 0;
 
   pointer-events: none;
 
   background:
     linear-gradient(
-      rgba(18, 29, 39, 0.07),
-      rgba(18, 29, 39, 0.17)
+      to bottom,
+      rgba(43, 58, 73, 0.10) 0%,
+      rgba(255, 218, 167, 0.02) 38%,
+      rgba(14, 28, 38, 0.13) 100%
     );
 }
 
-/* =========================================================
-   TOP BAR
-   ========================================================= */
 
 .dictionary-topbar {
   position: relative;
-  z-index: 10;
 
-  width: min(100%, 760px);
+  z-index: 20;
+
+  width: min(100%, 720px);
 
   margin: 0 auto;
 
   display: flex;
+
   align-items: flex-start;
+
   justify-content: space-between;
 }
 
+
 .hub-top-button {
-  min-width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
 
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
 
-  gap: 8px;
+  place-items: center;
 
-  padding: 0 14px;
+  padding: 0;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.20);
+    rgba(255, 255, 255, 0.14);
 
   border-radius: 17px;
 
   background:
-    rgba(43, 54, 67, 0.70);
+    rgba(43, 54, 67, 0.65);
 
-  color: #fff8ed;
+  color:
+    var(--gold-light);
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -261,30 +367,25 @@ a {
     rgba(10, 20, 30, 0.14);
 
   transition:
-    background 160ms ease,
-    transform 160ms ease;
+    transform 160ms ease,
+    background 160ms ease;
 }
 
-.hub-top-button:hover {
-  background:
-    rgba(43, 54, 67, 0.78);
-}
 
 .hub-top-button:active {
   transform:
     scale(0.96);
 }
 
-.sync-button {
-  font-weight: 700;
-}
 
 .sync-icon {
-  width: 25px;
-  height: 25px;
+  width: 29px;
+  height: 29px;
 }
 
-.sync-button.is-syncing .sync-icon {
+
+.sync-button.is-syncing
+.sync-icon {
   animation:
     sync-spin
     700ms
@@ -292,43 +393,53 @@ a {
     infinite;
 }
 
+
 @keyframes sync-spin {
-  to {
-    transform: rotate(360deg);
+
+  from {
+    transform:
+      rotate(0deg);
   }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+
 }
 
-/* =========================================================
-   LANGUAGE BUTTON
-   ========================================================= */
 
 .language-selector {
   position: relative;
 }
 
-.hub-language-button {
-  height: 52px;
 
-  min-width: 62px;
+.hub-language-button {
+  height: 54px;
+
+  padding:
+    0
+    12px
+    0
+    9px;
 
   display: flex;
+
   align-items: center;
-  justify-content: center;
 
-  gap: 7px;
-
-  padding: 0 10px;
+  gap: 9px;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.20);
+    rgba(255, 255, 255, 0.14);
 
   border-radius: 17px;
 
   background:
-    rgba(43, 54, 67, 0.72);
+    rgba(43, 54, 67, 0.66);
 
-  color: #fff;
+  color:
+    #efc988;
 
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -336,100 +447,107 @@ a {
   box-shadow:
     0 8px 24px
     rgba(10, 20, 30, 0.14);
-
-  transition:
-    background 160ms ease,
-    transform 160ms ease;
 }
 
-.hub-language-button:hover {
-  background:
-    rgba(43, 54, 67, 0.79);
-}
-
-.hub-language-button:active {
-  transform:
-    scale(0.97);
-}
 
 .hub-language-flag {
-  width: 42px;
-  height: 28px;
+  width: 43px;
+  height: 29px;
+
+  display: block;
 
   object-fit: cover;
 
   border-radius: 6px;
 
   box-shadow:
-    0 3px 9px
-    rgba(0, 0, 0, 0.18);
+    0 3px 10px
+    rgba(0, 0, 0, 0.16);
 }
 
-.hub-language-chevron {
-  width: 17px;
-  height: 17px;
+
+.language-chevron {
+  width: 23px;
+  height: 23px;
+
+  transition:
+    transform 180ms ease;
 }
 
-/* =========================================================
-   LANGUAGE MENU
-   ========================================================= */
+
+.hub-language-button[
+  aria-expanded="true"
+]
+.language-chevron {
+  transform:
+    rotate(180deg);
+}
+
 
 .language-menu {
   position: absolute;
 
-  top: calc(100% + 9px);
+  top:
+    calc(100% + 10px);
+
   right: 0;
 
-  z-index: 40;
+  width: 230px;
 
-  width: 220px;
-
-  padding: 8px;
+  padding: 7px;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.52);
+    rgba(255, 255, 255, 0.20);
 
-  border-radius: 18px;
+  border-radius: 16px;
 
   background:
-    rgba(255, 252, 247, 0.97);
+    rgba(255, 252, 248, 0.96);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   box-shadow:
-    0 16px 38px
-    rgba(24, 31, 36, 0.18);
-
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+    0 18px 40px
+    rgba(15, 23, 42, 0.20);
 }
+
+
+.language-menu[hidden] {
+  display: none;
+}
+
 
 .language-option,
 .menu-signout {
   width: 100%;
 
-  min-height: 48px;
+  height: 49px;
+
+  padding:
+    5px
+    10px;
 
   display: flex;
+
   align-items: center;
 
   gap: 11px;
 
-  padding: 8px 10px;
+  border-radius: 11px;
 
-  border-radius: 12px;
+  background:
+    transparent;
 
-  background: transparent;
-
-  color: #30373d;
+  color:
+    #28323e;
 
   text-align: left;
+
+  font-weight: 650;
 }
 
-.language-option:hover,
-.menu-signout:hover {
-  background:
-    rgba(185, 139, 73, 0.10);
-}
 
 .language-option img {
   width: 38px;
@@ -437,61 +555,67 @@ a {
 
   object-fit: cover;
 
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
-.language-option span {
-  min-width: 0;
 
-  flex: 1;
+.language-menu-divider {
+  height: 1px;
+
+  margin:
+    6px
+    5px;
+
+  background:
+    rgba(142, 109, 66, 0.18);
 }
+
 
 .menu-signout {
-  margin-top: 5px;
-
-  border-top:
-    1px solid
-    rgba(185, 139, 73, 0.12);
-
-  color: #925149;
+  color:
+    #6d7075;
 }
 
-/* =========================================================
-   HUB CONTENT
-   ========================================================= */
+
+.menu-signout svg {
+  width: 19px;
+  height: 19px;
+}
+
 
 .dictionary-hub {
   position: relative;
-  z-index: 2;
 
-  width: min(100%, 680px);
+  z-index: 5;
 
-  margin: 0 auto;
+  width:
+    min(100%, 720px);
+
+  margin:
+    0 auto;
 
   padding-top:
     clamp(
-      74px,
+      72px,
       12vh,
-      128px
+      142px
     );
 }
 
-/* =========================================================
-   TITLE
-   ========================================================= */
 
 .hub-title-section {
   margin-bottom:
     clamp(
-      42px,
-      7vh,
-      64px
+      48px,
+      8vh,
+      82px
     );
 
   text-align: center;
 }
 
-.hub-title {
+
+.hub-language-title {
   margin: 0;
 
   font-family:
@@ -499,82 +623,89 @@ a {
     "Times New Roman",
     serif;
 
+  color:
+    #c69a58;
+
   font-size:
     clamp(
-      38px,
-      8vw,
-      58px
+      55px,
+      14vw,
+      82px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.95;
+
+  letter-spacing:
+    -0.035em;
+
+  text-shadow:
+    0 2px 14px
+    rgba(66, 43, 18, 0.14);
+}
+
+
+.hub-dictionary-label {
+  margin-top:
+    24px;
+
+  color:
+    #4a5663;
+
+  font-size:
+    clamp(
+      18px,
+      4.2vw,
+      26px
     );
 
   font-weight: 500;
 
   letter-spacing:
-    0.05em;
-
-  color:
-    #c99b56;
-
-  text-shadow:
-    0 2px 10px
-    rgba(46, 30, 14, 0.23);
-}
-
-.hub-subtitle {
-  margin:
-    5px
-    0
-    0;
-
-  color:
-    rgba(59, 71, 82, 0.91);
-
-  font-size:
-    clamp(
-      13px,
-      2.9vw,
-      16px
-    );
-
-  font-weight: 750;
-
-  letter-spacing:
     0.28em;
-
-  text-transform: uppercase;
-
-  text-shadow:
-    0 1px 6px
-    rgba(255, 255, 255, 0.25);
 }
+
 
 .hub-ornament,
 .hub-bottom-ornament {
+  margin:
+    30px
+    auto
+    0;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   gap: 12px;
 
   color:
-    #bb8b49;
+    #bc8f4f;
 }
 
-.hub-ornament {
-  margin-top: 20px;
-}
 
 .hub-ornament span,
 .hub-bottom-ornament span {
-  width: min(22vw, 88px);
+  width:
+    clamp(
+      70px,
+      20vw,
+      150px
+    );
+
   height: 1px;
 
   background:
     linear-gradient(
       to right,
       transparent,
-      rgba(185, 139, 73, 0.80)
+      #bc8f4f
     );
 }
+
 
 .hub-ornament span:last-child,
 .hub-bottom-ornament span:last-child {
@@ -582,25 +713,22 @@ a {
     linear-gradient(
       to left,
       transparent,
-      rgba(185, 139, 73, 0.80)
+      #bc8f4f
     );
 }
+
 
 .hub-ornament strong,
 .hub-bottom-ornament strong {
   font-family:
     Georgia,
-    "Times New Roman",
     serif;
 
-  font-size: 16px;
+  font-size: 22px;
 
   font-weight: 400;
 }
 
-/* =========================================================
-   MENU
-   ========================================================= */
 
 .hub-menu {
   display: grid;
@@ -608,102 +736,70 @@ a {
   gap: 18px;
 }
 
-/* =========================================================
-   CARD
-   ========================================================= */
 
 .hub-card {
   position: relative;
 
-  min-height: 126px;
+  width: 100%;
+
+  min-height: 128px;
+
+  padding:
+    18px
+    22px;
 
   display: grid;
 
   grid-template-columns:
-    90px
+    96px
     minmax(0, 1fr)
-    30px;
+    32px;
 
   align-items: center;
 
-  gap: 18px;
-
-  padding:
-    17px
-    22px;
+  gap: 16px;
 
   border:
     1px solid
-    rgba(255, 255, 255, 0.66);
+    rgba(255, 255, 255, 0.72);
 
-  border-radius: 28px;
-
-  background:
-    rgba(255, 252, 248, 0.90);
-
-  color: inherit;
-
-  text-decoration: none;
-
-  box-shadow:
-    0 12px 34px
-    rgba(26, 38, 48, 0.13);
-
-  overflow: hidden;
-
-  transition:
-    transform 170ms ease,
-    box-shadow 170ms ease,
-    background 170ms ease;
-}
-
-.hub-card::after {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  pointer-events: none;
+  border-radius: 25px;
 
   background:
     linear-gradient(
-      120deg,
-      rgba(255, 255, 255, 0.23),
-      transparent 48%
+      105deg,
+      rgba(255, 251, 246, 0.94),
+      rgba(255, 250, 245, 0.84)
     );
-}
 
-.hub-card:hover {
-  transform:
-    translateY(-2px);
+  color:
+    var(--text);
+
+  text-align: left;
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
 
   box-shadow:
-    0 16px 42px
-    rgba(26, 38, 48, 0.17);
+    0 12px 35px
+    rgba(26, 38, 48, 0.13);
 
-  background:
-    rgba(255, 252, 248, 0.96);
+  overflow: hidden;
 }
 
-.hub-card:active {
-  transform:
-    scale(0.99);
-}
-
-/* =========================================================
-   CARD ICONS
-   ========================================================= */
 
 .hub-card-icon-wrap {
-  position: relative;
-  z-index: 2;
-
   width: 90px;
   height: 90px;
 
   display: grid;
+
   place-items: center;
 }
+
 
 .hub-card-icon {
   width: 86px;
@@ -712,108 +808,64 @@ a {
   display: block;
 
   object-fit: contain;
-
-  filter:
-    drop-shadow(
-      0 4px 5px
-      rgba(70, 46, 22, 0.08)
-    );
 }
 
-/* =========================================================
-   CARD TEXT
-   ========================================================= */
 
 .hub-card-content {
-  position: relative;
-  z-index: 2;
-
   min-width: 0;
 }
 
+
 .hub-card-title {
-  margin: 0;
-
   color:
-    #384149;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+    #171b20;
 
   font-size:
     clamp(
       20px,
-      4.4vw,
-      25px
+      4.6vw,
+      27px
     );
 
   font-weight: 600;
 
   line-height: 1.18;
-
-  letter-spacing:
-    -0.025em;
 }
 
+
 .hub-card-subtitle {
-  margin:
-    6px
-    0
-    0;
+  margin-top:
+    10px;
 
   color:
-    #6a7074;
+    #676b6f;
 
   font-size:
     clamp(
-      14px,
+      15px,
       3.8vw,
       19px
     );
-
-  font-weight: 450;
-
-  line-height: 1.25;
 }
 
-/* =========================================================
-   CARD ARROW
-   ========================================================= */
 
 .hub-card-arrow {
-  position: relative;
-  z-index: 2;
-
   width: 30px;
   height: 30px;
 
   color:
     #bb8b49;
-
-  justify-self: end;
-
-  transition:
-    transform 160ms ease;
 }
 
-.hub-card:hover .hub-card-arrow {
-  transform:
-    translateX(3px);
-}
-
-/* =========================================================
-   BOTTOM ORNAMENT
-   ========================================================= */
 
 .hub-bottom-ornament {
-  margin-top: 32px;
+  margin-top:
+    32px;
+
+  margin-bottom:
+    12px;
 }
 
-/* =========================================================
-   SYNC TOAST
-   ========================================================= */
 
 .sync-toast {
   position: fixed;
@@ -823,13 +875,10 @@ a {
   bottom:
     max(
       24px,
-      calc(
-        env(safe-area-inset-bottom) +
-        16px
-      )
+      env(safe-area-inset-bottom)
     );
 
-  z-index: 100;
+  z-index: 2000;
 
   transform:
     translateX(-50%);
@@ -838,39 +887,29 @@ a {
     11px
     17px;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.16);
-
   border-radius: 999px;
 
   background:
-    rgba(39, 48, 57, 0.92);
+    rgba(41, 52, 63, 0.88);
 
   color:
-    #fff;
+    #f4d39b;
 
   font-size: 13px;
 
   font-weight: 700;
 
   white-space: nowrap;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 10px 30px
-    rgba(0, 0, 0, 0.18);
 }
+
+
+.sync-toast[hidden] {
+  display: none;
+}
+
 
 /* =========================================================
    WIKTIONARY SEARCH PAGE
-
-   CURRENT MODEL:
-   1 CARD = 1 WORD + ETYMOLOGY
-   PRONUNCIATION / WORD FORMATION = WORD LEVEL
-   POS SECTIONS LIVE INSIDE THE SAME CARD
    ========================================================= */
 
 .wiktionary-page {
@@ -880,9 +919,15 @@ a {
   margin: 0;
 
   padding:
-    max(18px, env(safe-area-inset-top))
+    max(
+      18px,
+      env(safe-area-inset-top)
+    )
     15px
-    max(42px, env(safe-area-inset-bottom));
+    max(
+      42px,
+      env(safe-area-inset-bottom)
+    );
 
   background:
     linear-gradient(
@@ -892,11 +937,15 @@ a {
     url("../turkey.png");
 
   background-size: cover;
-  background-position: 58% center;
+
+  background-position:
+    58% center;
+
   background-attachment: fixed;
 
   overflow-x: hidden;
 }
+
 
 .wiktionary-topbar {
   position: sticky;
@@ -910,6 +959,7 @@ a {
   z-index: 100;
 
   width: 100%;
+
   max-width: 520px;
 
   margin:
@@ -928,12 +978,14 @@ a {
   gap: 10px;
 }
 
+
 .wiki-round-button,
 .wiki-language-indicator {
   width: 50px;
   height: 50px;
 
   display: grid;
+
   place-items: center;
 
   border:
@@ -949,21 +1001,26 @@ a {
     #efc681;
 
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
 
   box-shadow:
     0 7px 20px
     rgba(23, 31, 38, 0.16);
 }
 
+
 .wiki-round-button svg {
   width: 26px;
   height: 26px;
 }
 
+
 .wiki-language-indicator {
   justify-self: end;
 }
+
 
 .wiki-language-indicator img {
   width: 35px;
@@ -974,8 +1031,8 @@ a {
   border-radius: 5px;
 }
 
-.wiki-save-button,
-#saveButton {
+
+.wiki-save-button {
   justify-self: center;
 
   min-width: 104px;
@@ -1008,17 +1065,20 @@ a {
     rgba(95, 66, 30, 0.19);
 }
 
-.wiki-save-button:disabled,
-#saveButton:disabled {
+
+.wiki-save-button:disabled {
   opacity: 0.45;
 }
 
+
 .wiktionary-shell {
   width: 100%;
+
   max-width: 520px;
 
   margin: 0 auto;
 }
+
 
 .wiktionary-search-heading {
   display: flex;
@@ -1033,13 +1093,14 @@ a {
     18px;
 }
 
-.wiktionary-page-logo,
-.wiktionary-search-heading img {
+
+.wiktionary-page-logo {
   width: 66px;
   height: 66px;
 
   object-fit: contain;
 }
+
 
 .wiki-eyebrow {
   margin-bottom: 3px;
@@ -1054,6 +1115,7 @@ a {
   letter-spacing:
     0.18em;
 }
+
 
 .wiktionary-search-heading h1 {
   margin: 0;
@@ -1071,26 +1133,10 @@ a {
   font-weight: 500;
 }
 
-.wiktionary-search-heading p {
-  margin:
-    4px
-    0
-    0;
 
-  color:
-    #74716b;
-
-  font-size: 13px;
-}
-
-/* =========================================================
-   SEARCH FORM
-   Supports both old class names and current IDs.
-   ========================================================= */
-
-.wiktionary-search-form,
-#wiktionarySearchForm {
-  padding: 13px;
+.wiktionary-search-form {
+  padding:
+    13px;
 
   display: grid;
 
@@ -1116,9 +1162,11 @@ a {
     rgba(38, 45, 51, 0.13);
 }
 
+
 .wiki-search-input-wrap {
   position: relative;
 }
+
 
 .wiki-search-input-wrap svg {
   position: absolute;
@@ -1138,14 +1186,16 @@ a {
   pointer-events: none;
 }
 
-.wiki-search-input-wrap input,
-#wiktionarySearchInput {
+
+.wiki-search-input-wrap input {
   width: 100%;
   height: 51px;
 
   padding:
     0
-    14px;
+    14px
+    0
+    45px;
 
   border:
     1px solid
@@ -1164,12 +1214,8 @@ a {
   outline: none;
 }
 
-.wiki-search-input-wrap input {
-  padding-left: 45px;
-}
 
-.wiki-search-input-wrap input:focus,
-#wiktionarySearchInput:focus {
+.wiki-search-input-wrap input:focus {
   border-color:
     rgba(180, 132, 70, 0.54);
 
@@ -1178,8 +1224,8 @@ a {
     rgba(185, 139, 73, 0.10);
 }
 
-.wiki-search-button,
-#wiktionarySearchButton {
+
+.wiki-search-button {
   height: 48px;
 
   border-radius: 14px;
@@ -1196,14 +1242,11 @@ a {
   font-weight: 800;
 }
 
-.wiki-search-button:disabled,
-#wiktionarySearchButton:disabled {
+
+.wiki-search-button:disabled {
   opacity: 0.62;
 }
 
-/* =========================================================
-   STATUS
-   ========================================================= */
 
 .wiki-status {
   margin-top: 15px;
@@ -1229,27 +1272,26 @@ a {
     rgba(38, 45, 51, 0.10);
 }
 
+
 .wiki-status.error {
   color:
     #9e423b;
 }
+
 
 .wiki-status.success {
   color:
     #347659;
 }
 
+
 .wiki-status.empty {
   color:
     #6d665d;
 }
 
-/* =========================================================
-   RESULTS HEADER
-   ========================================================= */
 
-.wiki-results-header,
-#wikiResultsHeader {
+.wiki-results-header {
   padding:
     34px
     8px
@@ -1258,8 +1300,8 @@ a {
   text-align: center;
 }
 
-.wiki-results-header h2,
-#wikiWordTitle {
+
+.wiki-results-header h2 {
   margin: 0;
 
   font-family:
@@ -1277,9 +1319,8 @@ a {
   line-height: 1;
 }
 
-#wikiEntryCount {
-  display: block;
 
+#wikiEntryCount {
   margin-top: 8px;
 
   color:
@@ -1287,6 +1328,7 @@ a {
 
   font-size: 14px;
 }
+
 
 .wiki-header-ornament {
   margin-top: 19px;
@@ -1303,6 +1345,7 @@ a {
     #b88749;
 }
 
+
 .wiki-header-ornament span {
   width: 85px;
   height: 1px;
@@ -1315,6 +1358,7 @@ a {
     );
 }
 
+
 .wiki-header-ornament span:last-child {
   background:
     linear-gradient(
@@ -1324,18 +1368,15 @@ a {
     );
 }
 
+
 .wiki-header-ornament strong {
   font-size: 17px;
 
   font-weight: 400;
 }
 
-/* =========================================================
-   ENTRY LIST
-   ========================================================= */
 
-.wiki-entry-list,
-#wikiEntries {
+.wiki-entry-list {
   display: grid;
 
   gap: 20px;
@@ -1343,15 +1384,12 @@ a {
   padding-top: 12px;
 }
 
-/* =========================================================
-   WORD CARD
-   ========================================================= */
 
 .wiki-entry-card {
   padding:
-    21px
-    18px
-    24px;
+    19px
+    17px
+    23px;
 
   border:
     1px solid
@@ -1379,17 +1417,14 @@ a {
   overflow: visible;
 
   transition:
-    opacity
-    160ms ease;
+    opacity 160ms ease;
 }
+
 
 .wiki-entry-card.entry-not-selected {
   opacity: 0.58;
 }
 
-/* =========================================================
-   WORD HEADER
-   ========================================================= */
 
 .wiki-entry-top {
   display: flex;
@@ -1401,9 +1436,11 @@ a {
   gap: 15px;
 }
 
+
 .wiki-word-heading {
   min-width: 0;
 }
+
 
 .wiki-etymology {
   color:
@@ -1416,8 +1453,66 @@ a {
   letter-spacing:
     0.08em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 }
+
+
+.wiki-entry-select {
+  margin: 0;
+}
+
+
+.wiki-entry-select input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+.wiki-entry-select span {
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(171, 123, 62, 0.42);
+
+  border-radius: 9px;
+
+  background:
+    rgba(255, 255, 255, 0.55);
+}
+
+
+.wiki-entry-select
+input:checked + span {
+  background:
+    linear-gradient(
+      135deg,
+      #d4aa67,
+      #aa7535
+    );
+}
+
+
+.wiki-entry-select
+input:checked + span::after {
+  content: "✓";
+
+  color: white;
+
+  font-size: 18px;
+
+  font-weight: 900;
+}
+
 
 .wiki-entry-status {
   margin-top: 10px;
@@ -1439,6 +1534,7 @@ a {
   font-weight: 750;
 }
 
+
 .wiki-entry-status.new {
   background:
     rgba(178, 127, 65, 0.10);
@@ -1446,6 +1542,7 @@ a {
   color:
     #9a6931;
 }
+
 
 .wiki-entry-status.saved {
   background:
@@ -1455,63 +1552,6 @@ a {
     var(--green);
 }
 
-/* =========================================================
-   MAIN WORD CHECKBOX
-   ========================================================= */
-
-.wiki-entry-select {
-  position: relative;
-
-  margin: 0;
-
-  flex:
-    0 0 auto;
-}
-
-.wiki-entry-select input {
-  position: absolute;
-
-  opacity: 0;
-
-  pointer-events: none;
-}
-
-.wiki-entry-select span {
-  width: 29px;
-  height: 29px;
-
-  display: grid;
-
-  place-items: center;
-
-  border:
-    1px solid
-    rgba(171, 123, 62, 0.42);
-
-  border-radius: 9px;
-
-  background:
-    rgba(255, 255, 255, 0.55);
-}
-
-.wiki-entry-select input:checked + span {
-  background:
-    linear-gradient(
-      135deg,
-      #d4aa67,
-      #aa7535
-    );
-}
-
-.wiki-entry-select input:checked + span::after {
-  content: "✓";
-
-  color: white;
-
-  font-size: 18px;
-
-  font-weight: 900;
-}
 
 .wiki-saved-mark {
   width: 31px;
@@ -1534,26 +1574,26 @@ a {
   font-weight: 900;
 }
 
-/* =========================================================
-   WORD LEVEL
-   ========================================================= */
+
+/* WORD-LEVEL SECTIONS */
 
 .wiki-entry-section {
-  margin-top: 25px;
+  margin-top: 24px;
 
-  padding-top: 19px;
+  padding-top: 18px;
 
   border-top:
     1px solid
     rgba(170, 131, 80, 0.15);
 }
 
+
 .wiki-entry-section h3,
 .wiki-pos-subsection h3 {
   margin:
     0
     0
-    13px;
+    12px;
 
   color:
     #9b713d;
@@ -1565,16 +1605,10 @@ a {
   letter-spacing:
     0.07em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 }
 
-/* =========================================================
-   WORD FORMATION
-   ========================================================= */
-
-.wiki-surface-analysis {
-  margin-top: 24px;
-}
 
 .wiki-surface-text {
   margin: 0;
@@ -1587,21 +1621,17 @@ a {
   line-height: 1.48;
 }
 
-/* =========================================================
-   PRONUNCIATION
-   ========================================================= */
-
-.wiki-pronunciation-section {
-  margin-top: 27px;
-}
 
 .wiki-choice-list {
   display: grid;
 
-  gap: 9px;
+  gap: 8px;
 }
 
-.wiki-choice-row {
+
+.wiki-choice-row,
+.wiki-meaning-row,
+.wiki-note {
   margin: 0;
 
   display: flex;
@@ -1616,86 +1646,8 @@ a {
   cursor: pointer;
 }
 
-.wiki-choice-row input {
-  position: absolute;
 
-  opacity: 0;
-
-  pointer-events: none;
-}
-
-.wiki-choice-content {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 2px;
-}
-
-.wiki-choice-content small {
-  color:
-    #77716b;
-
-  font-weight: 500;
-}
-
-.wiki-ipa {
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size: 18px;
-
-  font-weight: 500;
-}
-
-/* =========================================================
-   PART OF SPEECH
-   ========================================================= */
-
-.wiki-pos-section {
-  margin-top: 34px;
-
-  padding-top: 24px;
-
-  border-top:
-    1px solid
-    rgba(170, 131, 80, 0.17);
-}
-
-.wiki-pos-title {
-  margin:
-    0
-    0
-    24px;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  color:
-    #343b40;
-
-  font-size: 25px;
-
-  font-weight: 500;
-}
-
-.wiki-pos-subsection {
-  margin-top: 28px;
-}
-
-.wiki-pos-title +
-.wiki-pos-subsection {
-  margin-top: 0;
-}
-
-/* =========================================================
-   CUSTOM CHECKBOX
-   ========================================================= */
-
+.wiki-choice-row input,
 .wiki-meaning-row input,
 .wiki-note input {
   position: absolute;
@@ -1705,12 +1657,12 @@ a {
   pointer-events: none;
 }
 
+
 .wiki-custom-check {
   width: 21px;
   height: 21px;
 
-  flex:
-    0 0 21px;
+  flex: 0 0 21px;
 
   display: grid;
 
@@ -1726,13 +1678,15 @@ a {
     rgba(255, 255, 255, 0.57);
 }
 
-.wiki-choice-row input:checked +
-.wiki-custom-check,
 
-.wiki-meaning-row input:checked +
+.wiki-choice-row
+input:checked +
 .wiki-custom-check,
-
-.wiki-note input:checked +
+.wiki-meaning-row
+input:checked +
+.wiki-custom-check,
+.wiki-note
+input:checked +
 .wiki-custom-check {
   background:
     #b98545;
@@ -1741,13 +1695,15 @@ a {
     #b98545;
 }
 
-.wiki-choice-row input:checked +
-.wiki-custom-check::after,
 
-.wiki-meaning-row input:checked +
+.wiki-choice-row
+input:checked +
 .wiki-custom-check::after,
-
-.wiki-note input:checked +
+.wiki-meaning-row
+input:checked +
+.wiki-custom-check::after,
+.wiki-note
+input:checked +
 .wiki-custom-check::after {
   content: "✓";
 
@@ -1758,14 +1714,89 @@ a {
   font-weight: 900;
 }
 
-/* =========================================================
-   FORMS
-   Dynamic: whatever Wiktionary gives.
-   ========================================================= */
+
+.wiki-choice-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+
+.wiki-choice-content small {
+  color:
+    #77716b;
+
+  font-weight: 500;
+}
+
+
+.wiki-ipa {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 500;
+}
+
+
+/* POS INSIDE WORD */
+
+.wiki-pos-section {
+  margin-top: 38px;
+
+  padding-top: 25px;
+
+  border-top:
+    1px solid
+    rgba(170, 131, 80, 0.17);
+}
+
+
+.wiki-pos-title {
+  margin:
+    0
+    0
+    27px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #343b40;
+
+  font-size: 25px;
+
+  font-weight: 500;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-pos-subsection {
+  margin-top: 33px;
+}
+
+
+.wiki-pos-title +
+.wiki-pos-subsection {
+  margin-top: 0;
+}
+
+
+/* FORMS */
 
 .wiki-forms-section {
-  margin-bottom: 30px;
+  margin-bottom: 34px;
 }
+
 
 .wiki-form-grid {
   display: grid;
@@ -1779,13 +1810,15 @@ a {
   gap: 9px;
 }
 
-.wiki-form-chip {
-  position: relative;
 
+.wiki-form-chip {
   margin: 0;
+
+  position: relative;
 
   cursor: pointer;
 }
+
 
 .wiki-form-chip input {
   position: absolute;
@@ -1794,6 +1827,7 @@ a {
 
   pointer-events: none;
 }
+
 
 .wiki-form-chip span {
   min-height: 58px;
@@ -1820,7 +1854,9 @@ a {
     rgba(255, 255, 255, 0.48);
 }
 
-.wiki-form-chip input:checked + span {
+
+.wiki-form-chip
+input:checked + span {
   border-color:
     rgba(179, 129, 64, 0.46);
 
@@ -1828,9 +1864,12 @@ a {
     rgba(226, 194, 146, 0.18);
 }
 
-.wiki-form-chip input:not(:checked) + span {
-  opacity: 0.48;
+
+.wiki-form-chip
+input:not(:checked) + span {
+  opacity: 0.46;
 }
+
 
 .wiki-form-chip small {
   color:
@@ -1843,8 +1882,10 @@ a {
   letter-spacing:
     0.05em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 }
+
 
 .wiki-form-chip strong {
   color:
@@ -1860,42 +1901,31 @@ a {
   font-weight: 500;
 }
 
-/* =========================================================
-   MEANINGS
-   ========================================================= */
+
+/* MEANINGS */
 
 .wiki-meanings-section {
-  margin-top: 30px;
+  margin-top: 34px;
 }
+
 
 .wiki-meaning-list {
   display: grid;
 
-  gap: 22px;
+  gap: 24px;
 }
+
 
 .wiki-meaning-block {
   transition:
-    opacity
-    150ms ease;
+    opacity 150ms ease;
 }
+
 
 .wiki-meaning-row {
   min-height: 29px;
-
-  margin: 0;
-
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 10px;
-
-  color:
-    #32383d;
-
-  cursor: pointer;
 }
+
 
 .wiki-meaning-number {
   min-width: 21px;
@@ -1911,6 +1941,7 @@ a {
   font-size: 17px;
 }
 
+
 .wiki-meaning-text {
   padding-top: 1px;
 
@@ -1922,6 +1953,7 @@ a {
   line-height: 1.42;
 }
 
+
 .wiki-usage-label {
   margin-right: 4px;
 
@@ -1931,18 +1963,17 @@ a {
   font-style: italic;
 }
 
+
 .wiki-meaning-not-selected {
   opacity: 0.42;
 }
 
-/* =========================================================
-   EXAMPLES
-   No checkbox. They follow the meaning.
-   ========================================================= */
+
+/* EXAMPLES FOLLOW THEIR MEANING */
 
 .wiki-meaning-examples {
   margin:
-    11px
+    12px
     0
     0
     31px;
@@ -1954,10 +1985,12 @@ a {
     rgba(170, 131, 80, 0.17);
 }
 
+
 .wiki-example-item +
 .wiki-example-item {
   margin-top: 12px;
 }
+
 
 .wiki-example-source {
   color:
@@ -1967,6 +2000,7 @@ a {
 
   line-height: 1.45;
 }
+
 
 .wiki-example-translation {
   margin-top: 3px;
@@ -1979,13 +2013,13 @@ a {
   line-height: 1.43;
 }
 
-/* =========================================================
-   NOTES
-   ========================================================= */
+
+/* NOTES */
 
 .wiki-notes-section {
-  margin-top: 30px;
+  margin-top: 34px;
 }
+
 
 .wiki-note-list {
   display: grid;
@@ -1993,31 +2027,22 @@ a {
   gap: 11px;
 }
 
+
 .wiki-note {
-  margin: 0;
-
-  padding: 11px;
-
-  display: flex;
-
-  align-items: flex-start;
-
-  gap: 10px;
+  padding:
+    11px;
 
   border-radius: 12px;
 
   background:
     rgba(255, 255, 255, 0.42);
-
-  color:
-    #32383d;
-
-  cursor: pointer;
 }
+
 
 .wiki-note > span:last-child {
   min-width: 0;
 }
+
 
 .wiki-note small {
   display: block;
@@ -2034,8 +2059,10 @@ a {
   letter-spacing:
     0.07em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 }
+
 
 .wiki-note strong {
   display: block;
@@ -2050,44 +2077,30 @@ a {
   line-height: 1.45;
 }
 
-/* =========================================================
-   WORD DISABLED
-   ========================================================= */
+
+/* WORD DISABLED */
 
 .wiki-content-disabled
 .wiki-entry-section,
-
 .wiki-content-disabled
 .wiki-pos-section {
   opacity: 0.55;
 }
 
+
 .wiki-content-disabled
 .wiki-choice-row,
-
 .wiki-content-disabled
 .wiki-form-chip,
-
 .wiki-content-disabled
 .wiki-meaning-row,
-
 .wiki-content-disabled
 .wiki-note {
   cursor: default;
 }
 
-/* =========================================================
-   EXISTING WORD
-   ========================================================= */
 
-.wiki-entry-existing {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 252, 247, 0.95),
-      rgba(245, 242, 233, 0.91)
-    );
-}
+/* EXISTING WORD */
 
 .wiki-library-placeholder {
   width: 100%;
@@ -2109,9 +2122,8 @@ a {
   opacity: 0.72;
 }
 
-/* =========================================================
-   OLD WIKTIONARY CONTROLS REMOVED
-   ========================================================= */
+
+/* REMOVE OLD UI */
 
 .wiki-toggle-all-button,
 .wiki-details-wrap,
@@ -2120,9 +2132,8 @@ a {
   display: none !important;
 }
 
-/* =========================================================
-   NATURAL PAGE SCROLL
-   ========================================================= */
+
+/* NATURAL PAGE SCROLL */
 
 .wiki-entry-card,
 .wiki-entry-section,
@@ -2136,6 +2147,7 @@ a {
   overflow: visible;
 }
 
+
 /* =========================================================
    MOBILE HUB
    ========================================================= */
@@ -2143,273 +2155,165 @@ a {
 @media (max-width: 520px) {
 
   .dictionary-page {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left:
+      16px;
+
+    padding-right:
+      16px;
 
     background-position:
       59% center;
   }
 
-  .dictionary-topbar {
-    width: 100%;
-  }
 
   .hub-top-button {
-    width: 50px;
-    height: 50px;
+    width:
+      50px;
 
-    min-width: 50px;
+    height:
+      50px;
 
-    padding: 0;
-
-    border-radius: 16px;
+    border-radius:
+      16px;
   }
 
-  .sync-button .sync-label {
-    display: none;
-  }
 
   .sync-icon {
-    width: 27px;
-    height: 27px;
+    width:
+      27px;
+
+    height:
+      27px;
   }
+
 
   .hub-language-button {
-    height: 50px;
+    height:
+      50px;
 
-    min-width: 58px;
-
-    border-radius: 16px;
+    border-radius:
+      16px;
   }
+
 
   .hub-language-flag {
-    width: 40px;
-    height: 27px;
+    width:
+      40px;
+
+    height:
+      27px;
   }
+
 
   .dictionary-hub {
-    padding-top: 112px;
+    padding-top:
+      112px;
   }
+
 
   .hub-title-section {
-    margin-bottom: 48px;
+    margin-bottom:
+      60px;
   }
 
-  .hub-title {
-    font-size: 42px;
+
+  .hub-language-title {
+    font-size:
+      clamp(
+        53px,
+        16vw,
+        72px
+      );
   }
 
-  .hub-ornament {
-    margin-top: 24px;
+
+  .hub-dictionary-label {
+    margin-top:
+      20px;
+
+    font-size:
+      18px;
+
+    letter-spacing:
+      0.25em;
   }
+
 
   .hub-menu {
-    gap: 14px;
+    gap:
+      14px;
   }
+
 
   .hub-card {
-    min-height: 104px;
-
-    grid-template-columns:
-      70px
-      minmax(0, 1fr)
-      24px;
-
-    gap: 12px;
+    min-height:
+      113px;
 
     padding:
-      13px
-      15px;
+      14px
+      16px;
 
-    border-radius: 23px;
+    grid-template-columns:
+      74px
+      minmax(0, 1fr)
+      25px;
+
+    gap:
+      13px;
+
+    border-radius:
+      22px;
   }
+
 
   .hub-card-icon-wrap {
-    width: 68px;
-    height: 68px;
+    width:
+      72px;
+
+    height:
+      72px;
   }
+
 
   .hub-card-icon {
-    width: 66px;
-    height: 66px;
+    width:
+      70px;
+
+    height:
+      70px;
   }
+
 
   .hub-card-title {
-    font-size: 19px;
+    font-size:
+      19px;
   }
+
 
   .hub-card-subtitle {
-    margin-top: 4px;
+    margin-top:
+      7px;
 
-    font-size: 14px;
+    font-size:
+      14px;
   }
+
 
   .hub-card-arrow {
-    width: 24px;
-    height: 24px;
+    width:
+      25px;
+
+    height:
+      25px;
   }
 
-  .hub-bottom-ornament {
-    margin-top: 27px;
-  }
-}
 
-/* =========================================================
-   MOBILE WIKTIONARY
-   ========================================================= */
+  .language-menu {
+    width:
+      225px;
 
-@media (max-width: 520px) {
-
-  .wiktionary-page {
-    padding-left: 12px;
-    padding-right: 12px;
-
-    background-position:
-      59% center;
+    max-width:
+      calc(100vw - 32px);
   }
 
-  .wiktionary-topbar {
-    grid-template-columns:
-      50px
-      1fr
-      50px;
-  }
-
-  .wiktionary-search-heading {
-    padding-left: 4px;
-    padding-right: 4px;
-  }
-
-  .wiktionary-search-form,
-  #wiktionarySearchForm {
-    padding: 11px;
-  }
-
-  .wiki-entry-card {
-    padding:
-      18px
-      15px
-      22px;
-  }
-
-  .wiki-pos-section {
-    margin-top: 31px;
-
-    padding-top: 22px;
-  }
-
-  .wiki-pos-title {
-    margin-bottom: 22px;
-  }
-
-  .wiki-meaning-list {
-    gap: 20px;
-  }
-}
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 370px) {
-
-  .dictionary-hub {
-    padding-top: 92px;
-  }
-
-  .hub-title-section {
-    margin-bottom: 42px;
-  }
-
-  .hub-card {
-    grid-template-columns:
-      62px
-      minmax(0, 1fr)
-      22px;
-
-    padding:
-      12px
-      13px;
-  }
-
-  .hub-card-icon-wrap {
-    width: 60px;
-    height: 60px;
-  }
-
-  .hub-card-icon {
-    width: 58px;
-    height: 58px;
-  }
-
-  .hub-card-title {
-    font-size: 17px;
-  }
-
-  .hub-card-subtitle {
-    font-size: 13px;
-  }
-
-  .wiki-form-grid {
-    grid-template-columns:
-      1fr;
-  }
-
-  .wiki-results-header h2,
-  #wikiWordTitle {
-    font-size: 42px;
-  }
-}
-
-/* =========================================================
-   DESKTOP
-   ========================================================= */
-
-@media (min-width: 850px) {
-
-  .dictionary-page {
-    padding:
-      30px
-      34px
-      50px;
-  }
-
-  .dictionary-hub {
-    padding-top: 82px;
-  }
-
-  .hub-title-section {
-    margin-bottom: 55px;
-  }
-
-  .hub-menu {
-    gap: 16px;
-  }
-
-  .hub-card {
-    min-height: 118px;
-
-    padding:
-      15px
-      24px;
-
-    grid-template-columns:
-      90px
-      minmax(0, 1fr)
-      34px;
-  }
-
-  .hub-card-icon-wrap {
-    width: 84px;
-    height: 84px;
-  }
-
-  .hub-card-icon {
-    width: 80px;
-    height: 80px;
-  }
-
-  .wiktionary-page {
-    padding-top: 24px;
-  }
 }
