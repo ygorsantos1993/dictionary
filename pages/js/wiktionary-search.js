@@ -159,7 +159,7 @@ async function searchWiktionary(word) {
   try {
 
     const url =
-      `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/html`;
+      `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/with_html`;
 
 
     const response =
@@ -247,7 +247,10 @@ async function searchWiktionary(word) {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Wiktionary search error:",
+      error
+    );
 
 
     showStatus(
@@ -350,10 +353,9 @@ function parseTurkishEntries(
     turkishNodes.some(
       (node) =>
         isHeading(node) &&
-        headingText(node)
-          .match(
-            /^Etymology\s+\d+$/i
-          )
+        /^Etymology\s+\d+$/i.test(
+          headingText(node)
+        )
     );
 
 
@@ -2306,21 +2308,6 @@ function updateSaveButton(
 }
 
 
-/*
-  IMPORTANT:
-  Deliberately not writing to Supabase yet.
-
-  First we validate that:
-  - etymologies are correct
-  - POS is correct
-  - meanings are correct
-  - pronunciation is correct
-  - headword forms are correct
-  - notes are correct
-
-  After that, this button will save all
-  selected NEW entries in one operation.
-*/
 saveButton.addEventListener(
   "click",
   () => {
