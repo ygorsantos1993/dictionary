@@ -1,6 +1,19 @@
-/* =========================================================
-   RESET / BASE
-   ========================================================= */
+:root {
+  --text: #1d242e;
+  --muted: #60656b;
+  --gold: #b98b49;
+  --gold-light: #d9b36f;
+  --gold-dark: #8d6530;
+  --cream: rgba(255, 250, 244, 0.90);
+  --cream-strong: rgba(255, 252, 248, 0.95);
+  --menu-dark: rgba(45, 56, 68, 0.82);
+  --green: #3b8765;
+  --green-soft: rgba(59, 135, 101, 0.10);
+  --red: #a64b42;
+  --line: rgba(185, 139, 73, 0.34);
+  --accent-1: #3b82f6;
+  --accent-2: #2563eb;
+}
 
 *,
 *::before,
@@ -8,19 +21,15 @@
   box-sizing: border-box;
 }
 
-
-html {
+html,
+body {
   min-height: 100%;
   margin: 0;
-  padding: 0;
 }
-
 
 body {
   min-height: 100vh;
-  margin: 0;
-  padding: 0;
-
+  color: var(--text);
   font-family:
     Inter,
     -apple-system,
@@ -30,13 +39,7 @@ body {
     Helvetica,
     Arial,
     sans-serif;
-
-  color: #29251f;
-
-  background:
-    #e9d3b4;
 }
-
 
 button,
 input,
@@ -45,630 +48,451 @@ textarea {
   font: inherit;
 }
 
-
 button {
-  -webkit-tap-highlight-color:
-    transparent;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
+button:disabled {
+  cursor: default;
+}
 
 img {
   display: block;
-
   max-width: 100%;
 }
 
-
-button,
-a,
-input,
-label {
-  -webkit-tap-highlight-color:
-    transparent;
+a {
+  color: inherit;
 }
-
 
 [hidden] {
   display: none !important;
 }
-
-
-/* =========================================================
-   COLORS
-   ========================================================= */
-
-:root {
-  --gold:
-    #a87d3c;
-
-  --gold-dark:
-    #78521f;
-
-  --gold-light:
-    #d8b77e;
-
-  --cream:
-    #fff8eb;
-
-  --cream-soft:
-    rgba(
-      255,
-      248,
-      235,
-      0.90
-    );
-
-  --cream-glass:
-    rgba(
-      255,
-      250,
-      241,
-      0.78
-    );
-
-  --text:
-    #29251f;
-
-  --text-soft:
-    #6d6254;
-
-  --line:
-    rgba(
-      128,
-      92,
-      45,
-      0.18
-    );
-
-  --green:
-    #52765a;
-
-  --red:
-    #a5544d;
-
-  --shadow:
-    0 14px 34px
-    rgba(
-      67,
-      42,
-      18,
-      0.13
-    );
-}
-
-
-/* =========================================================
-   SHARED PAGE SHELL
-   ========================================================= */
-
-.page-shell {
-  width: 100%;
-  min-height: 100vh;
-}
-
-
-.page-content {
-  width: min(
-    100%,
-    520px
-  );
-
-  margin: 0 auto;
-
-  padding:
-    0 16px
-    calc(
-      38px +
-      env(
-        safe-area-inset-bottom
-      )
-    );
-}
-
 
 /* =========================================================
    LOGIN
    ========================================================= */
 
 .login-page {
-  min-height:
-    100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: grid;
+  place-items: center;
+
+  padding:
+    max(22px, env(safe-area-inset-top))
+    18px
+    max(22px, env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      rgba(9, 18, 31, 0.17),
+      rgba(9, 18, 31, 0.22)
+    ),
+    url("../background.jpg")
+    center / cover
+    no-repeat fixed;
+}
+
+.login-card {
+  width: min(100%, 420px);
+
+  padding: 26px 22px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.22);
+
+  border-radius: 24px;
+
+  background:
+    rgba(8, 20, 38, 0.68);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 18px 44px
+    rgba(2, 8, 18, 0.27);
+
+  color: #f8fbff;
+}
+
+.login-card h1,
+.login-card h2 {
+  margin-top: 0;
+}
+
+.login-card label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  color: #e5edf8;
+}
+
+.login-page input {
+  width: 100%;
+  height: 50px;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.20);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.94);
+
+  color: var(--text);
+
+  outline: none;
+}
+
+.login-page input:focus {
+  border-color:
+    rgba(37, 99, 235, 0.52);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(37, 99, 235, 0.12);
+}
+
+.login-card button {
+  width: 100%;
+  height: 50px;
+
+  border-radius: 14px;
+
+  font-weight: 800;
+}
+
+/* =========================================================
+   DICTIONARY PAGE
+   ========================================================= */
+
+.dictionary-page {
+  position: relative;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  padding:
+    max(20px, env(safe-area-inset-top))
+    22px
+    max(42px, env(safe-area-inset-bottom));
+
+  background:
+    url("../turkey.png")
+    center / cover
+    no-repeat fixed;
+
+  overflow-x: hidden;
+}
+
+.dictionary-page::before {
+  content: "";
+
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      rgba(18, 29, 39, 0.07),
+      rgba(18, 29, 39, 0.17)
+    );
+}
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.dictionary-topbar {
+  position: relative;
+  z-index: 10;
+
+  width: min(100%, 760px);
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.hub-top-button {
+  min-width: 52px;
+  height: 52px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  padding: 0 14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.20);
+
+  border-radius: 17px;
+
+  background:
+    rgba(43, 54, 67, 0.70);
+
+  color: #fff8ed;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 8px 24px
+    rgba(10, 20, 30, 0.14);
+
+  transition:
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.hub-top-button:hover {
+  background:
+    rgba(43, 54, 67, 0.78);
+}
+
+.hub-top-button:active {
+  transform:
+    scale(0.96);
+}
+
+.sync-button {
+  font-weight: 700;
+}
+
+.sync-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.sync-button.is-syncing .sync-icon {
+  animation:
+    sync-spin
+    700ms
+    linear
+    infinite;
+}
+
+@keyframes sync-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   LANGUAGE BUTTON
+   ========================================================= */
+
+.language-selector {
+  position: relative;
+}
+
+.hub-language-button {
+  height: 52px;
+
+  min-width: 62px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding:
-    calc(
-      20px +
-      env(
-        safe-area-inset-top
-      )
-    )
-    18px
-    calc(
-      20px +
-      env(
-        safe-area-inset-bottom
-      )
-    );
+  gap: 7px;
 
-  background:
-    linear-gradient(
-      rgba(
-        38,
-        27,
-        15,
-        0.16
-      ),
-      rgba(
-        38,
-        27,
-        15,
-        0.16
-      )
-    ),
-    url("../background.jpg")
-    center /
-    cover
-    no-repeat
-    fixed;
-}
-
-
-.login-card {
-  width:
-    min(
-      100%,
-      420px
-    );
-
-  padding:
-    28px
-    22px;
+  padding: 0 10px;
 
   border:
     1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.44
-    );
+    rgba(255, 255, 255, 0.20);
 
-  border-radius:
-    28px;
+  border-radius: 17px;
 
   background:
-    rgba(
-      255,
-      250,
-      241,
-      0.84
-    );
+    rgba(43, 54, 67, 0.72);
 
-  backdrop-filter:
-    blur(16px);
+  color: #fff;
 
-  -webkit-backdrop-filter:
-    blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   box-shadow:
-    var(
-      --shadow
-    );
-}
-
-
-.login-title {
-  margin:
-    0 0 8px;
-
-  text-align:
-    center;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
-
-  font-size:
-    2rem;
-
-  color:
-    var(
-      --gold-dark
-    );
-}
-
-
-.login-subtitle {
-  margin:
-    0 0 24px;
-
-  text-align:
-    center;
-
-  color:
-    var(
-      --text-soft
-    );
-
-  line-height:
-    1.45;
-}
-
-
-.form-group {
-  margin-top:
-    16px;
-}
-
-
-.form-label {
-  display:
-    block;
-
-  margin-bottom:
-    7px;
-
-  font-size:
-    0.84rem;
-
-  font-weight:
-    700;
-
-  color:
-    var(
-      --text-soft
-    );
-}
-
-
-.form-input {
-  width:
-    100%;
-
-  min-height:
-    52px;
-
-  padding:
-    0 15px;
-
-  border:
-    1px solid
-    rgba(
-      136,
-      99,
-      52,
-      0.22
-    );
-
-  border-radius:
-    16px;
-
-  outline:
-    none;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.82
-    );
-
-  color:
-    var(
-      --text
-    );
+    0 8px 24px
+    rgba(10, 20, 30, 0.14);
 
   transition:
-    border-color
-    150ms ease,
-    box-shadow
-    150ms ease;
+    background 160ms ease,
+    transform 160ms ease;
 }
 
-
-.form-input:focus {
-  border-color:
-    rgba(
-      168,
-      125,
-      60,
-      0.58
-    );
-
-  box-shadow:
-    0 0 0 4px
-    rgba(
-      168,
-      125,
-      60,
-      0.10
-    );
-}
-
-
-.primary-button {
-  width:
-    100%;
-
-  min-height:
-    52px;
-
-  margin-top:
-    20px;
-
-  border:
-    0;
-
-  border-radius:
-    17px;
-
+.hub-language-button:hover {
   background:
-    linear-gradient(
-      180deg,
-      #c49b59,
-      #9c6f30
-    );
+    rgba(43, 54, 67, 0.79);
+}
 
-  color:
-    #fffaf0;
+.hub-language-button:active {
+  transform:
+    scale(0.97);
+}
 
-  font-weight:
-    800;
+.hub-language-flag {
+  width: 42px;
+  height: 28px;
 
-  cursor:
-    pointer;
+  object-fit: cover;
+
+  border-radius: 6px;
 
   box-shadow:
-    0 8px 20px
-    rgba(
-      107,
-      72,
-      30,
-      0.20
-    );
+    0 3px 9px
+    rgba(0, 0, 0, 0.18);
 }
 
-
-.primary-button:disabled {
-  opacity:
-    0.52;
-
-  cursor:
-    default;
+.hub-language-chevron {
+  width: 17px;
+  height: 17px;
 }
-
 
 /* =========================================================
-   DICTIONARY HUB
+   LANGUAGE MENU
    ========================================================= */
 
-.dictionary-page {
-  min-height:
-    100dvh;
+.language-menu {
+  position: absolute;
 
-  overflow-x:
-    hidden;
+  top: calc(100% + 9px);
+  right: 0;
 
-  background:
-    linear-gradient(
-      rgba(
-        43,
-        29,
-        16,
-        0.10
-      ),
-      rgba(
-        43,
-        29,
-        16,
-        0.20
-      )
-    ),
-    url("../turkey.png")
-    center /
-    cover
-    no-repeat
-    fixed;
-}
+  z-index: 40;
 
+  width: 220px;
 
-.dictionary-shell {
-  width:
-    min(
-      100%,
-      520px
-    );
-
-  min-height:
-    100dvh;
-
-  margin:
-    0 auto;
-
-  padding:
-    calc(
-      14px +
-      env(
-        safe-area-inset-top
-      )
-    )
-    16px
-    calc(
-      34px +
-      env(
-        safe-area-inset-bottom
-      )
-    );
-}
-
-
-.dictionary-topbar {
-  position:
-    relative;
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    auto
-    1fr;
-
-  align-items:
-    center;
-
-  min-height:
-    52px;
-
-  margin-bottom:
-    26px;
-}
-
-
-.dictionary-sync {
-  justify-self:
-    start;
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  gap:
-    7px;
-
-  min-height:
-    42px;
-
-  padding:
-    0 13px;
+  padding: 8px;
 
   border:
     1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.34
-    );
+    rgba(255, 255, 255, 0.52);
 
-  border-radius:
-    16px;
-
-  color:
-    #fff8eb;
+  border-radius: 18px;
 
   background:
-    rgba(
-      70,
-      50,
-      29,
-      0.28
-    );
-
-  backdrop-filter:
-    blur(12px);
-
-  -webkit-backdrop-filter:
-    blur(12px);
-
-  cursor:
-    pointer;
-}
-
-
-.dictionary-language {
-  justify-self:
-    end;
-
-  display:
-    inline-flex;
-
-  align-items:
-    center;
-
-  gap:
-    8px;
-
-  min-height:
-    42px;
-
-  padding:
-    0 11px;
-
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.34
-    );
-
-  border-radius:
-    16px;
-
-  background:
-    rgba(
-      70,
-      50,
-      29,
-      0.28
-    );
-
-  backdrop-filter:
-    blur(12px);
-
-  -webkit-backdrop-filter:
-    blur(12px);
-
-  cursor:
-    pointer;
-}
-
-
-.dictionary-language img {
-  width:
-    29px;
-
-  height:
-    20px;
-
-  object-fit:
-    cover;
-
-  border-radius:
-    4px;
+    rgba(255, 252, 247, 0.97);
 
   box-shadow:
-    0 2px 6px
-    rgba(
-      0,
-      0,
-      0,
-      0.18
+    0 16px 38px
+    rgba(24, 31, 36, 0.18);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.language-option,
+.menu-signout {
+  width: 100%;
+
+  min-height: 48px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 8px 10px;
+
+  border-radius: 12px;
+
+  background: transparent;
+
+  color: #30373d;
+
+  text-align: left;
+}
+
+.language-option:hover,
+.menu-signout:hover {
+  background:
+    rgba(185, 139, 73, 0.10);
+}
+
+.language-option img {
+  width: 38px;
+  height: 25px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+.language-option span {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.menu-signout {
+  margin-top: 5px;
+
+  border-top:
+    1px solid
+    rgba(185, 139, 73, 0.12);
+
+  color: #925149;
+}
+
+/* =========================================================
+   HUB CONTENT
+   ========================================================= */
+
+.dictionary-hub {
+  position: relative;
+  z-index: 2;
+
+  width: min(100%, 680px);
+
+  margin: 0 auto;
+
+  padding-top:
+    clamp(
+      74px,
+      12vh,
+      128px
     );
 }
 
+/* =========================================================
+   TITLE
+   ========================================================= */
 
-.dictionary-heading {
-  margin:
-    4px 0 30px;
+.hub-title-section {
+  margin-bottom:
+    clamp(
+      42px,
+      7vh,
+      64px
+    );
 
-  text-align:
-    center;
+  text-align: center;
 }
 
-
-.dictionary-heading h1 {
-  margin:
-    0;
+.hub-title {
+  margin: 0;
 
   font-family:
     Georgia,
@@ -677,635 +501,241 @@ label {
 
   font-size:
     clamp(
-      2rem,
+      38px,
       8vw,
-      2.65rem
+      58px
     );
 
-  font-weight:
-    600;
+  font-weight: 500;
 
   letter-spacing:
-    0.04em;
+    0.05em;
 
   color:
-    #c49b59;
+    #c99b56;
 
   text-shadow:
-    0 2px 12px
-    rgba(
-      35,
-      23,
-      12,
-      0.24
-    );
+    0 2px 10px
+    rgba(46, 30, 14, 0.23);
 }
 
-
-.dictionary-heading p {
+.hub-subtitle {
   margin:
-    4px 0 0;
+    5px
+    0
+    0;
+
+  color:
+    rgba(59, 71, 82, 0.91);
 
   font-size:
-    0.78rem;
+    clamp(
+      13px,
+      2.9vw,
+      16px
+    );
 
-  font-weight:
-    800;
+  font-weight: 750;
 
   letter-spacing:
-    0.18em;
+    0.28em;
 
-  text-transform:
-    uppercase;
+  text-transform: uppercase;
+
+  text-shadow:
+    0 1px 6px
+    rgba(255, 255, 255, 0.25);
+}
+
+.hub-ornament,
+.hub-bottom-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
 
   color:
-    rgba(
-      255,
-      248,
-      235,
-      0.90
+    #bb8b49;
+}
+
+.hub-ornament {
+  margin-top: 20px;
+}
+
+.hub-ornament span,
+.hub-bottom-ornament span {
+  width: min(22vw, 88px);
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(185, 139, 73, 0.80)
     );
 }
 
-
-.dictionary-menu {
-  display:
-    flex;
-
-  flex-direction:
-    column;
-
-  gap:
-    15px;
+.hub-ornament span:last-child,
+.hub-bottom-ornament span:last-child {
+  background:
+    linear-gradient(
+      to left,
+      transparent,
+      rgba(185, 139, 73, 0.80)
+    );
 }
 
+.hub-ornament strong,
+.hub-bottom-ornament strong {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
 
-.dictionary-menu-card {
-  display:
-    grid;
+  font-size: 16px;
+
+  font-weight: 400;
+}
+
+/* =========================================================
+   MENU
+   ========================================================= */
+
+.hub-menu {
+  display: grid;
+
+  gap: 18px;
+}
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.hub-card {
+  position: relative;
+
+  min-height: 126px;
+
+  display: grid;
 
   grid-template-columns:
-    54px
-    1fr
-    28px;
+    90px
+    minmax(0, 1fr)
+    30px;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    14px;
-
-  min-height:
-    86px;
+  gap: 18px;
 
   padding:
-    14px
-    15px;
+    17px
+    22px;
 
   border:
     1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.45
-    );
+    rgba(255, 255, 255, 0.66);
 
-  border-radius:
-    23px;
+  border-radius: 28px;
 
   background:
-    rgba(
-      255,
-      249,
-      238,
-      0.83
-    );
+    rgba(255, 252, 248, 0.90);
 
-  backdrop-filter:
-    blur(15px);
+  color: inherit;
 
-  -webkit-backdrop-filter:
-    blur(15px);
+  text-decoration: none;
 
   box-shadow:
-    var(
-      --shadow
-    );
+    0 12px 34px
+    rgba(26, 38, 48, 0.13);
 
-  color:
-    inherit;
+  overflow: hidden;
 
-  text-decoration:
-    none;
-
-  cursor:
-    pointer;
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    background 170ms ease;
 }
 
+.hub-card::after {
+  content: "";
 
-.dictionary-menu-card img {
-  width:
-    52px;
+  position: absolute;
+  inset: 0;
 
-  height:
-    52px;
-
-  object-fit:
-    contain;
-}
-
-
-.dictionary-menu-card h2 {
-  margin:
-    0 0 4px;
-
-  font-size:
-    1rem;
-
-  color:
-    #44331e;
-}
-
-
-.dictionary-menu-card p {
-  margin:
-    0;
-
-  font-size:
-    0.83rem;
-
-  line-height:
-    1.38;
-
-  color:
-    var(
-      --text-soft
-    );
-}
-
-
-.dictionary-chevron {
-  justify-self:
-    end;
-
-  font-size:
-    1.55rem;
-
-  color:
-    var(
-      --gold
-    );
-}
-
-
-/* =========================================================
-   LANGUAGE MENU
-   ========================================================= */
-
-.language-menu {
-  position:
-    absolute;
-
-  top:
-    calc(
-      100% +
-      7px
-    );
-
-  right:
-    0;
-
-  z-index:
-    50;
-
-  width:
-    205px;
-
-  padding:
-    8px;
-
-  border:
-    1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.46
-    );
-
-  border-radius:
-    18px;
-
-  background:
-    rgba(
-      255,
-      249,
-      239,
-      0.96
-    );
-
-  box-shadow:
-    0 18px 36px
-    rgba(
-      43,
-      26,
-      11,
-      0.20
-    );
-
-  backdrop-filter:
-    blur(16px);
-
-  -webkit-backdrop-filter:
-    blur(16px);
-}
-
-
-.language-menu button {
-  width:
-    100%;
-
-  display:
-    flex;
-
-  align-items:
-    center;
-
-  gap:
-    10px;
-
-  min-height:
-    46px;
-
-  padding:
-    8px 10px;
-
-  border:
-    0;
-
-  border-radius:
-    12px;
-
-  background:
-    transparent;
-
-  color:
-    var(
-      --text
-    );
-
-  text-align:
-    left;
-
-  cursor:
-    pointer;
-}
-
-
-.language-menu button:hover {
-  background:
-    rgba(
-      168,
-      125,
-      60,
-      0.10
-    );
-}
-
-
-.language-menu img {
-  width:
-    27px;
-
-  height:
-    19px;
-
-  object-fit:
-    cover;
-
-  border-radius:
-    4px;
-}
-
-
-/* =========================================================
-   WIKTIONARY PAGE
-   ========================================================= */
-
-.wiktionary-page {
-  min-height:
-    100dvh;
-
-  overflow-x:
-    hidden;
+  pointer-events: none;
 
   background:
     linear-gradient(
-      rgba(
-        255,
-        246,
-        231,
-        0.13
-      ),
-      rgba(
-        85,
-        57,
-        30,
-        0.18
-      )
-    ),
-    url("../turkey.png")
-    center /
-    cover
-    no-repeat
-    fixed;
-}
-
-
-.wiktionary-shell {
-  width:
-    min(
-      100%,
-      520px
-    );
-
-  min-height:
-    100dvh;
-
-  margin:
-    0 auto;
-
-  padding:
-    0
-    15px
-    calc(
-      38px +
-      env(
-        safe-area-inset-bottom
-      )
+      120deg,
+      rgba(255, 255, 255, 0.23),
+      transparent 48%
     );
 }
 
+.hub-card:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 16px 42px
+    rgba(26, 38, 48, 0.17);
+
+  background:
+    rgba(255, 252, 248, 0.96);
+}
+
+.hub-card:active {
+  transform:
+    scale(0.99);
+}
 
 /* =========================================================
-   WIKTIONARY TOP BAR
+   CARD ICONS
    ========================================================= */
 
-.wiktionary-topbar {
-  position:
-    sticky;
+.hub-card-icon-wrap {
+  position: relative;
+  z-index: 2;
 
-  top:
-    0;
+  width: 90px;
+  height: 90px;
 
-  z-index:
-    30;
-
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    auto
-    1fr;
-
-  align-items:
-    center;
-
-  min-height:
-    calc(
-      62px +
-      env(
-        safe-area-inset-top
-      )
-    );
-
-  padding:
-    env(
-      safe-area-inset-top
-    )
-    2px
-    0;
-
-  margin:
-    0 -3px
-    14px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(
-        232,
-        203,
-        161,
-        0.90
-      ),
-      rgba(
-        232,
-        203,
-        161,
-        0.76
-      )
-    );
-
-  backdrop-filter:
-    blur(15px);
-
-  -webkit-backdrop-filter:
-    blur(15px);
-
-  border-bottom:
-    1px solid
-    rgba(
-      112,
-      78,
-      38,
-      0.13
-    );
+  display: grid;
+  place-items: center;
 }
 
+.hub-card-icon {
+  width: 86px;
+  height: 86px;
 
-.wiktionary-back-button,
-#backButton {
-  justify-self:
-    start;
+  display: block;
 
-  width:
-    43px;
+  object-fit: contain;
 
-  height:
-    43px;
-
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  border:
-    0;
-
-  border-radius:
-    15px;
-
-  color:
-    #6d4a20;
-
-  background:
-    rgba(
-      255,
-      249,
-      239,
-      0.70
-    );
-
-  box-shadow:
-    0 5px 15px
-    rgba(
-      68,
-      42,
-      17,
-      0.09
-    );
-
-  cursor:
-    pointer;
-}
-
-
-#saveButton {
-  justify-self:
-    center;
-
-  min-width:
-    82px;
-
-  min-height:
-    42px;
-
-  padding:
-    0 16px;
-
-  border:
-    1px solid
-    rgba(
-      119,
-      80,
-      31,
-      0.12
-    );
-
-  border-radius:
-    15px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #c99f60,
-      #a87838
-    );
-
-  color:
-    #fffaf0;
-
-  font-weight:
-    800;
-
-  box-shadow:
-    0 6px 16px
-    rgba(
-      91,
-      59,
-      22,
-      0.15
-    );
-
-  cursor:
-    pointer;
-}
-
-
-#saveButton:disabled {
-  opacity:
-    0.46;
-
-  box-shadow:
-    none;
-
-  cursor:
-    default;
-}
-
-
-.wiktionary-top-flag {
-  justify-self:
-    end;
-
-  width:
-    37px;
-
-  height:
-    27px;
-
-  object-fit:
-    cover;
-
-  border-radius:
-    6px;
-
-  box-shadow:
-    0 3px 8px
-    rgba(
-      0,
-      0,
-      0,
-      0.16
+  filter:
+    drop-shadow(
+      0 4px 5px
+      rgba(70, 46, 22, 0.08)
     );
 }
-
 
 /* =========================================================
-   WIKTIONARY SEARCH HEADER
+   CARD TEXT
    ========================================================= */
 
-.wiktionary-search-heading {
-  display:
-    flex;
+.hub-card-content {
+  position: relative;
+  z-index: 2;
 
-  align-items:
-    center;
-
-  gap:
-    13px;
-
-  margin:
-    20px 5px
-    17px;
+  min-width: 0;
 }
 
+.hub-card-title {
+  margin: 0;
 
-.wiktionary-search-heading img {
-  width:
-    52px;
-
-  height:
-    52px;
-
-  object-fit:
-    contain;
-}
-
-
-.wiktionary-search-heading-text {
-  min-width:
-    0;
-}
-
-
-.wiktionary-search-heading h1 {
-  margin:
-    0;
+  color:
+    #384149;
 
   font-family:
     Georgia,
@@ -1313,736 +743,901 @@ label {
     serif;
 
   font-size:
-    1.55rem;
+    clamp(
+      20px,
+      4.4vw,
+      25px
+    );
 
-  font-weight:
-    600;
+  font-weight: 600;
 
-  color:
-    #513a22;
+  line-height: 1.18;
+
+  letter-spacing:
+    -0.025em;
 }
 
-
-.wiktionary-search-heading p {
+.hub-card-subtitle {
   margin:
-    4px 0 0;
-
-  color:
-    #766652;
-
-  font-size:
-    0.82rem;
-}
-
-
-/* =========================================================
-   SEARCH FORM
-   ========================================================= */
-
-#wiktionarySearchForm {
-  display:
-    grid;
-
-  grid-template-columns:
-    1fr
-    auto;
-
-  gap:
-    9px;
-
-  margin-bottom:
-    17px;
-}
-
-
-#wiktionarySearchInput {
-  width:
-    100%;
-
-  min-width:
+    6px
+    0
     0;
 
-  min-height:
-    51px;
+  color:
+    #6a7074;
+
+  font-size:
+    clamp(
+      14px,
+      3.8vw,
+      19px
+    );
+
+  font-weight: 450;
+
+  line-height: 1.25;
+}
+
+/* =========================================================
+   CARD ARROW
+   ========================================================= */
+
+.hub-card-arrow {
+  position: relative;
+  z-index: 2;
+
+  width: 30px;
+  height: 30px;
+
+  color:
+    #bb8b49;
+
+  justify-self: end;
+
+  transition:
+    transform 160ms ease;
+}
+
+.hub-card:hover .hub-card-arrow {
+  transform:
+    translateX(3px);
+}
+
+/* =========================================================
+   BOTTOM ORNAMENT
+   ========================================================= */
+
+.hub-bottom-ornament {
+  margin-top: 32px;
+}
+
+/* =========================================================
+   SYNC TOAST
+   ========================================================= */
+
+.sync-toast {
+  position: fixed;
+
+  left: 50%;
+
+  bottom:
+    max(
+      24px,
+      calc(
+        env(safe-area-inset-bottom) +
+        16px
+      )
+    );
+
+  z-index: 100;
+
+  transform:
+    translateX(-50%);
 
   padding:
-    0 15px;
+    11px
+    17px;
 
   border:
     1px solid
-    rgba(
-      125,
-      87,
-      42,
-      0.20
-    );
+    rgba(255, 255, 255, 0.16);
 
-  border-radius:
-    17px;
-
-  outline:
-    none;
+  border-radius: 999px;
 
   background:
-    rgba(
-      255,
-      250,
-      241,
-      0.91
-    );
+    rgba(39, 48, 57, 0.92);
 
   color:
-    var(
-      --text
-    );
+    #fff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 
   box-shadow:
-    0 6px 18px
-    rgba(
-      70,
-      45,
-      20,
-      0.08
-    );
-
-  font-size:
-    1rem;
+    0 10px 30px
+    rgba(0, 0, 0, 0.18);
 }
 
+/* =========================================================
+   WIKTIONARY SEARCH PAGE
 
-#wiktionarySearchInput:focus {
-  border-color:
-    rgba(
-      168,
-      125,
-      60,
-      0.57
-    );
+   CURRENT MODEL:
+   1 CARD = 1 WORD + ETYMOLOGY
+   PRONUNCIATION / WORD FORMATION = WORD LEVEL
+   POS SECTIONS LIVE INSIDE THE SAME CARD
+   ========================================================= */
 
-  box-shadow:
-    0 0 0 4px
-    rgba(
-      168,
-      125,
-      60,
-      0.10
-    );
-}
+.wiktionary-page {
+  min-height: 100vh;
+  min-height: 100dvh;
 
-
-#wiktionarySearchButton {
-  min-width:
-    88px;
-
-  min-height:
-    51px;
+  margin: 0;
 
   padding:
-    0 14px;
-
-  border:
-    0;
-
-  border-radius:
-    17px;
-
-  color:
-    #fff9ef;
+    max(18px, env(safe-area-inset-top))
+    15px
+    max(42px, env(safe-area-inset-bottom));
 
   background:
     linear-gradient(
-      180deg,
-      #b98c4b,
-      #946629
+      rgba(248, 239, 225, 0.33),
+      rgba(248, 239, 225, 0.23)
+    ),
+    url("../turkey.png");
+
+  background-size: cover;
+  background-position: 58% center;
+  background-attachment: fixed;
+
+  overflow-x: hidden;
+}
+
+.wiktionary-topbar {
+  position: sticky;
+
+  top:
+    max(
+      8px,
+      env(safe-area-inset-top)
     );
 
-  font-weight:
-    800;
+  z-index: 100;
 
-  cursor:
-    pointer;
+  width: 100%;
+  max-width: 520px;
+
+  margin:
+    0 auto
+    18px;
+
+  display: grid;
+
+  grid-template-columns:
+    52px
+    1fr
+    52px;
+
+  align-items: center;
+
+  gap: 10px;
 }
 
+.wiki-round-button,
+.wiki-language-indicator {
+  width: 50px;
+  height: 50px;
 
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.43);
+
+  border-radius: 16px;
+
+  background:
+    rgba(48, 59, 69, 0.72);
+
+  color:
+    #efc681;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 7px 20px
+    rgba(23, 31, 38, 0.16);
+}
+
+.wiki-round-button svg {
+  width: 26px;
+  height: 26px;
+}
+
+.wiki-language-indicator {
+  justify-self: end;
+}
+
+.wiki-language-indicator img {
+  width: 35px;
+  height: 24px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+.wiki-save-button,
+#saveButton {
+  justify-self: center;
+
+  min-width: 104px;
+  height: 46px;
+
+  padding:
+    0
+    18px;
+
+  border:
+    1px solid
+    rgba(255, 244, 220, 0.48);
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d6ab66,
+      #a97839
+    );
+
+  color:
+    #fffdf8;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 22px
+    rgba(95, 66, 30, 0.19);
+}
+
+.wiki-save-button:disabled,
+#saveButton:disabled {
+  opacity: 0.45;
+}
+
+.wiktionary-shell {
+  width: 100%;
+  max-width: 520px;
+
+  margin: 0 auto;
+}
+
+.wiktionary-search-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding:
+    6px
+    6px
+    18px;
+}
+
+.wiktionary-page-logo,
+.wiktionary-search-heading img {
+  width: 66px;
+  height: 66px;
+
+  object-fit: contain;
+}
+
+.wiki-eyebrow {
+  margin-bottom: 3px;
+
+  color:
+    #a5763b;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+}
+
+.wiktionary-search-heading h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #4c5661;
+
+  font-size: 31px;
+
+  font-weight: 500;
+}
+
+.wiktionary-search-heading p {
+  margin:
+    4px
+    0
+    0;
+
+  color:
+    #74716b;
+
+  font-size: 13px;
+}
+
+/* =========================================================
+   SEARCH FORM
+   Supports both old class names and current IDs.
+   ========================================================= */
+
+.wiktionary-search-form,
+#wiktionarySearchForm {
+  padding: 13px;
+
+  display: grid;
+
+  gap: 10px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.66);
+
+  border-radius: 23px;
+
+  background:
+    rgba(255, 250, 244, 0.86);
+
+  backdrop-filter:
+    blur(11px);
+
+  -webkit-backdrop-filter:
+    blur(11px);
+
+  box-shadow:
+    0 11px 30px
+    rgba(38, 45, 51, 0.13);
+}
+
+.wiki-search-input-wrap {
+  position: relative;
+}
+
+.wiki-search-input-wrap svg {
+  position: absolute;
+
+  top: 50%;
+  left: 15px;
+
+  width: 20px;
+  height: 20px;
+
+  transform:
+    translateY(-50%);
+
+  color:
+    #a37845;
+
+  pointer-events: none;
+}
+
+.wiki-search-input-wrap input,
+#wiktionarySearchInput {
+  width: 100%;
+  height: 51px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(163, 119, 65, 0.20);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.84);
+
+  color:
+    #20262b;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+.wiki-search-input-wrap input {
+  padding-left: 45px;
+}
+
+.wiki-search-input-wrap input:focus,
+#wiktionarySearchInput:focus {
+  border-color:
+    rgba(180, 132, 70, 0.54);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(185, 139, 73, 0.10);
+}
+
+.wiki-search-button,
+#wiktionarySearchButton {
+  height: 48px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d5ad6d,
+      #ac7938
+    );
+
+  color: white;
+
+  font-weight: 800;
+}
+
+.wiki-search-button:disabled,
 #wiktionarySearchButton:disabled {
-  opacity:
-    0.58;
-
-  cursor:
-    default;
+  opacity: 0.62;
 }
-
 
 /* =========================================================
    STATUS
    ========================================================= */
 
 .wiki-status {
-  margin:
-    14px 1px
-    18px;
+  margin-top: 15px;
 
   padding:
-    12px
-    14px;
+    14px
+    16px;
 
-  border-radius:
-    14px;
-
-  font-size:
-    0.84rem;
-
-  line-height:
-    1.45;
+  border-radius: 17px;
 
   background:
-    rgba(
-      255,
-      248,
-      235,
-      0.86
-    );
+    rgba(255, 250, 244, 0.91);
 
   color:
-    var(
-      --text-soft
-    );
+    #575d62;
 
-  border:
-    1px solid
-    rgba(
-      126,
-      89,
-      45,
-      0.12
-    );
+  text-align: center;
+
+  font-size: 14px;
+
+  box-shadow:
+    0 8px 22px
+    rgba(38, 45, 51, 0.10);
 }
-
 
 .wiki-status.error {
   color:
-    #7c3733;
-
-  background:
-    rgba(
-      255,
-      232,
-      228,
-      0.92
-    );
+    #9e423b;
 }
-
 
 .wiki-status.success {
   color:
-    #41634a;
-
-  background:
-    rgba(
-      234,
-      247,
-      232,
-      0.92
-    );
+    #347659;
 }
 
+.wiki-status.empty {
+  color:
+    #6d665d;
+}
 
 /* =========================================================
    RESULTS HEADER
    ========================================================= */
 
+.wiki-results-header,
 #wikiResultsHeader {
-  margin:
-    24px 3px
-    15px;
+  padding:
+    34px
+    8px
+    12px;
+
+  text-align: center;
 }
 
-
+.wiki-results-header h2,
 #wikiWordTitle {
-  margin:
-    0;
+  margin: 0;
 
   font-family:
     Georgia,
     "Times New Roman",
     serif;
 
-  font-size:
-    2rem;
-
-  font-weight:
-    600;
-
   color:
-    #49331d;
-}
+    #2d3338;
 
+  font-size: 48px;
+
+  font-weight: 500;
+
+  line-height: 1;
+}
 
 #wikiEntryCount {
-  display:
-    block;
+  display: block;
 
-  margin-top:
-    4px;
+  margin-top: 8px;
 
   color:
-    #786956;
+    #666a6d;
 
-  font-size:
-    0.82rem;
+  font-size: 14px;
 }
 
+.wiki-header-ornament {
+  margin-top: 19px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color:
+    #b88749;
+}
+
+.wiki-header-ornament span {
+  width: 85px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      #b88749
+    );
+}
+
+.wiki-header-ornament span:last-child {
+  background:
+    linear-gradient(
+      to left,
+      transparent,
+      #b88749
+    );
+}
+
+.wiki-header-ornament strong {
+  font-size: 17px;
+
+  font-weight: 400;
+}
 
 /* =========================================================
    ENTRY LIST
    ========================================================= */
 
+.wiki-entry-list,
 #wikiEntries {
-  display:
-    flex;
+  display: grid;
 
-  flex-direction:
-    column;
+  gap: 20px;
 
-  gap:
-    20px;
+  padding-top: 12px;
 }
 
-
 /* =========================================================
-   MAIN CARD
-
-   1 CARD = 1 WORD + ETYMOLOGY
+   WORD CARD
    ========================================================= */
 
 .wiki-entry-card {
-  display:
-    block;
-
-  width:
-    100%;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
-
   padding:
-    22px 18px
+    21px
+    18px
     24px;
 
   border:
     1px solid
-    rgba(
-      255,
-      255,
-      255,
-      0.58
-    );
+    rgba(255, 255, 255, 0.76);
 
-  border-radius:
-    25px;
+  border-radius: 24px;
 
   background:
-    rgba(
-      255,
-      248,
-      235,
-      0.91
+    linear-gradient(
+      145deg,
+      rgba(255, 251, 245, 0.94),
+      rgba(250, 241, 228, 0.89)
     );
 
   backdrop-filter:
-    blur(14px);
+    blur(12px);
 
   -webkit-backdrop-filter:
-    blur(14px);
+    blur(12px);
 
   box-shadow:
-    0 14px 32px
-    rgba(
-      72,
-      45,
-      18,
-      0.12
-    );
+    0 12px 34px
+    rgba(42, 48, 52, 0.13);
+
+  overflow: visible;
 
   transition:
     opacity
-    150ms ease;
+    160ms ease;
 }
 
-
-.wiki-entry-card:last-child {
-  margin-bottom:
-    36px;
+.wiki-entry-card.entry-not-selected {
+  opacity: 0.58;
 }
-
 
 /* =========================================================
    WORD HEADER
    ========================================================= */
 
 .wiki-entry-top {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    flex-start;
+  align-items: flex-start;
 
-  justify-content:
-    space-between;
+  justify-content: space-between;
 
-  gap:
-    18px;
-
-  margin-bottom:
-    26px;
+  gap: 15px;
 }
-
 
 .wiki-word-heading {
-  min-width:
-    0;
+  min-width: 0;
 }
-
 
 .wiki-etymology {
-  margin:
-    0 0 8px;
+  color:
+    #9a703f;
 
-  font-size:
-    0.79rem;
+  font-size: 12px;
 
-  font-weight:
-    900;
+  font-weight: 800;
 
   letter-spacing:
-    0.14em;
+    0.08em;
 
-  color:
-    #9a6d2d;
+  text-transform: uppercase;
 }
-
 
 .wiki-entry-status {
-  margin:
-    0;
+  margin-top: 10px;
 
-  font-size:
-    0.76rem;
+  display: inline-flex;
 
-  line-height:
-    1.35;
+  align-items: center;
+
+  min-height: 28px;
+
+  padding:
+    5px
+    10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 750;
 }
-
 
 .wiki-entry-status.new {
-  color:
-    #846a48;
-}
+  background:
+    rgba(178, 127, 65, 0.10);
 
+  color:
+    #9a6931;
+}
 
 .wiki-entry-status.saved {
-  color:
-    var(
-      --green
-    );
-
-  font-weight:
-    700;
-}
-
-
-.wiki-saved-mark {
-  flex:
-    0 0 auto;
-
-  width:
-    35px;
-
-  height:
-    35px;
-
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  border-radius:
-    50%;
-
-  color:
-    #fff;
-
   background:
-    #66866c;
+    var(--green-soft);
 
-  font-weight:
-    900;
+  color:
+    var(--green);
 }
-
 
 /* =========================================================
    MAIN WORD CHECKBOX
    ========================================================= */
 
 .wiki-entry-select {
-  position:
-    relative;
+  position: relative;
+
+  margin: 0;
 
   flex:
     0 0 auto;
-
-  display:
-    inline-flex;
-
-  width:
-    34px;
-
-  height:
-    34px;
-
-  margin-top:
-    1px;
-
-  cursor:
-    pointer;
 }
-
 
 .wiki-entry-select input {
-  position:
-    absolute;
+  position: absolute;
 
-  opacity:
-    0;
+  opacity: 0;
 
-  pointer-events:
-    none;
+  pointer-events: none;
 }
-
 
 .wiki-entry-select span {
-  width:
-    34px;
+  width: 29px;
+  height: 29px;
 
-  height:
-    34px;
+  display: grid;
 
-  display:
-    block;
+  place-items: center;
 
   border:
-    2px solid
-    rgba(
-      150,
-      104,
-      44,
-      0.42
-    );
+    1px solid
+    rgba(171, 123, 62, 0.42);
 
-  border-radius:
-    11px;
+  border-radius: 9px;
 
   background:
-    rgba(
-      255,
-      255,
-      255,
-      0.55
-    );
-
-  transition:
-    background
-    140ms ease,
-    border-color
-    140ms ease;
+    rgba(255, 255, 255, 0.55);
 }
-
 
 .wiki-entry-select input:checked + span {
-  border-color:
-    #a87738;
-
   background:
     linear-gradient(
-      180deg,
-      #c79d5d,
-      #a97837
+      135deg,
+      #d4aa67,
+      #aa7535
     );
 }
 
-
 .wiki-entry-select input:checked + span::after {
-  content:
-    "✓";
+  content: "✓";
 
-  position:
-    absolute;
+  color: white;
 
-  inset:
-    0;
+  font-size: 18px;
 
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  color:
-    #fffaf1;
-
-  font-size:
-    1rem;
-
-  font-weight:
-    900;
+  font-weight: 900;
 }
 
+.wiki-saved-mark {
+  width: 31px;
+  height: 31px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    rgba(59, 135, 101, 0.12);
+
+  color:
+    var(--green);
+
+  font-size: 18px;
+
+  font-weight: 900;
+}
 
 /* =========================================================
-   WORD LEVEL SECTIONS
+   WORD LEVEL
    ========================================================= */
 
 .wiki-entry-section {
-  margin-top:
-    30px;
+  margin-top: 25px;
 
-  max-height:
-    none;
+  padding-top: 19px;
 
-  overflow:
-    visible;
+  border-top:
+    1px solid
+    rgba(170, 131, 80, 0.15);
 }
 
-
-.wiki-entry-section > h3,
-.wiki-pos-subsection > h3 {
+.wiki-entry-section h3,
+.wiki-pos-subsection h3 {
   margin:
-    0 0 16px;
-
-  font-size:
-    0.78rem;
-
-  font-weight:
-    900;
-
-  letter-spacing:
-    0.08em;
-
-  text-transform:
-    uppercase;
+    0
+    0
+    13px;
 
   color:
-    #8d632c;
-}
+    #9b713d;
 
+  font-size: 12px;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform: uppercase;
+}
 
 /* =========================================================
    WORD FORMATION
    ========================================================= */
 
 .wiki-surface-analysis {
-  margin-top:
-    24px;
+  margin-top: 24px;
 }
-
 
 .wiki-surface-text {
-  margin:
-    0;
+  margin: 0;
 
   color:
-    #3f392f;
+    #4d5053;
 
-  font-size:
-    0.92rem;
+  font-size: 14px;
 
-  line-height:
-    1.58;
+  line-height: 1.48;
 }
-
 
 /* =========================================================
    PRONUNCIATION
    ========================================================= */
 
 .wiki-pronunciation-section {
-  margin-top:
-    32px;
+  margin-top: 27px;
 }
-
 
 .wiki-choice-list {
-  display:
-    flex;
+  display: grid;
 
-  flex-direction:
-    column;
-
-  gap:
-    12px;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
+  gap: 9px;
 }
-
 
 .wiki-choice-row {
-  display:
-    flex;
+  margin: 0;
 
-  align-items:
-    flex-start;
+  display: flex;
 
-  gap:
-    11px;
+  align-items: flex-start;
 
-  margin:
-    0;
-
-  cursor:
-    pointer;
-}
-
-
-.wiki-choice-content {
-  display:
-    flex;
-
-  flex-direction:
-    column;
-
-  gap:
-    3px;
-
-  min-width:
-    0;
-}
-
-
-.wiki-choice-content strong {
-  font-size:
-    0.92rem;
+  gap: 10px;
 
   color:
-    #34302a;
+    #32383d;
+
+  cursor: pointer;
 }
 
+.wiki-choice-row input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.wiki-choice-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
 
 .wiki-choice-content small {
   color:
-    #7b6e5d;
+    #77716b;
 
-  line-height:
-    1.4;
+  font-weight: 500;
 }
-
 
 .wiki-ipa {
   font-family:
@@ -2050,684 +1645,422 @@ label {
     "Times New Roman",
     serif;
 
-  font-size:
-    1rem !important;
+  font-size: 18px;
+
+  font-weight: 500;
 }
 
+/* =========================================================
+   PART OF SPEECH
+   ========================================================= */
+
+.wiki-pos-section {
+  margin-top: 34px;
+
+  padding-top: 24px;
+
+  border-top:
+    1px solid
+    rgba(170, 131, 80, 0.17);
+}
+
+.wiki-pos-title {
+  margin:
+    0
+    0
+    24px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #343b40;
+
+  font-size: 25px;
+
+  font-weight: 500;
+}
+
+.wiki-pos-subsection {
+  margin-top: 28px;
+}
+
+.wiki-pos-title +
+.wiki-pos-subsection {
+  margin-top: 0;
+}
 
 /* =========================================================
    CUSTOM CHECKBOX
    ========================================================= */
 
-.wiki-choice-row input,
 .wiki-meaning-row input,
 .wiki-note input {
-  position:
-    absolute;
+  position: absolute;
 
-  opacity:
-    0;
+  opacity: 0;
 
-  pointer-events:
-    none;
+  pointer-events: none;
 }
 
-
 .wiki-custom-check {
-  position:
-    relative;
+  width: 21px;
+  height: 21px;
 
   flex:
-    0 0 auto;
+    0 0 21px;
 
-  width:
-    22px;
+  display: grid;
 
-  height:
-    22px;
-
-  display:
-    block;
-
-  margin-top:
-    1px;
+  place-items: center;
 
   border:
-    1.7px solid
-    rgba(
-      148,
-      102,
-      44,
-      0.43
-    );
-
-  border-radius:
-    7px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.60
-    );
-}
-
-
-input:checked +
-.wiki-custom-check {
-  border-color:
-    #a67737;
-
-  background:
-    #b98c4b;
-}
-
-
-input:checked +
-.wiki-custom-check::after {
-  content:
-    "✓";
-
-  position:
-    absolute;
-
-  inset:
-    0;
-
-  display:
-    grid;
-
-  place-items:
-    center;
-
-  color:
-    #fffaf0;
-
-  font-size:
-    0.74rem;
-
-  font-weight:
-    900;
-}
-
-
-input:disabled +
-.wiki-custom-check {
-  cursor:
-    default;
-}
-
-
-/* =========================================================
-   PART OF SPEECH
-
-   IMPORTANT:
-   GENEROUS SPACE BETWEEN PRONUNCIATION,
-   NOUN, FORMS, MEANINGS ETC.
-   ========================================================= */
-
-.wiki-pos-section {
-  margin-top:
-    44px;
-
-  padding-top:
-    29px;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
-
-  border-top:
     1px solid
-    rgba(
-      145,
-      105,
-      47,
-      0.24
-    );
+    rgba(169, 122, 63, 0.40);
+
+  border-radius: 6px;
+
+  background:
+    rgba(255, 255, 255, 0.57);
 }
 
+.wiki-choice-row input:checked +
+.wiki-custom-check,
 
-.wiki-pos-title {
-  display:
-    block;
+.wiki-meaning-row input:checked +
+.wiki-custom-check,
 
-  margin:
-    0 0 31px;
+.wiki-note input:checked +
+.wiki-custom-check {
+  background:
+    #b98545;
 
-  font-size:
-    0.86rem;
-
-  font-weight:
-    900;
-
-  letter-spacing:
-    0.15em;
-
-  text-transform:
-    uppercase;
-
-  color:
-    #765020;
+  border-color:
+    #b98545;
 }
 
+.wiki-choice-row input:checked +
+.wiki-custom-check::after,
 
-/* =========================================================
-   POS SUBSECTIONS
-   ========================================================= */
+.wiki-meaning-row input:checked +
+.wiki-custom-check::after,
 
-.wiki-pos-subsection {
-  max-height:
-    none;
+.wiki-note input:checked +
+.wiki-custom-check::after {
+  content: "✓";
 
-  overflow:
-    visible;
+  color: white;
 
-  margin-top:
-    38px;
+  font-size: 14px;
+
+  font-weight: 900;
 }
-
-
-.wiki-pos-title +
-.wiki-pos-subsection {
-  margin-top:
-    0;
-}
-
 
 /* =========================================================
    FORMS
+   Dynamic: whatever Wiktionary gives.
    ========================================================= */
 
 .wiki-forms-section {
-  margin-bottom:
-    40px;
+  margin-bottom: 30px;
 }
 
-
 .wiki-form-grid {
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     repeat(
       2,
-      minmax(
-        0,
-        1fr
-      )
+      minmax(0, 1fr)
     );
 
-  gap:
-    12px;
+  gap: 9px;
 }
-
 
 .wiki-form-chip {
-  position:
-    relative;
+  position: relative;
 
-  display:
-    block;
+  margin: 0;
 
-  min-width:
-    0;
-
-  margin:
-    0;
-
-  cursor:
-    pointer;
+  cursor: pointer;
 }
-
 
 .wiki-form-chip input {
-  position:
-    absolute;
+  position: absolute;
 
-  opacity:
-    0;
+  opacity: 0;
 
-  pointer-events:
-    none;
+  pointer-events: none;
 }
 
-
-.wiki-form-chip > span {
-  display:
-    flex;
-
-  flex-direction:
-    column;
-
-  gap:
-    3px;
-
-  min-height:
-    61px;
+.wiki-form-chip span {
+  min-height: 58px;
 
   padding:
-    10px 11px;
+    9px
+    10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 3px;
 
   border:
     1px solid
-    rgba(
-      142,
-      99,
-      47,
-      0.19
-    );
+    rgba(172, 124, 62, 0.20);
 
-  border-radius:
-    14px;
+  border-radius: 12px;
 
   background:
-    rgba(
-      255,
-      255,
-      255,
-      0.53
-    );
-
-  transition:
-    opacity
-    140ms ease,
-    border-color
-    140ms ease;
+    rgba(255, 255, 255, 0.48);
 }
 
-
-.wiki-form-chip input:checked +
-span {
+.wiki-form-chip input:checked + span {
   border-color:
-    rgba(
-      166,
-      117,
-      54,
-      0.39
-    );
+    rgba(179, 129, 64, 0.46);
 
   background:
-    rgba(
-      252,
-      241,
-      219,
-      0.84
-    );
+    rgba(226, 194, 146, 0.18);
 }
 
-
-.wiki-form-chip input:not(:checked) +
-span {
-  opacity:
-    0.45;
+.wiki-form-chip input:not(:checked) + span {
+  opacity: 0.48;
 }
-
 
 .wiki-form-chip small {
   color:
-    #87745d;
+    #9b713d;
 
-  font-size:
-    0.67rem;
+  font-size: 10px;
 
-  text-transform:
-    uppercase;
+  font-weight: 800;
 
   letter-spacing:
-    0.04em;
-}
+    0.05em;
 
+  text-transform: uppercase;
+}
 
 .wiki-form-chip strong {
-  overflow-wrap:
-    anywhere;
-
   color:
-    #3c342b;
+    #32363a;
 
-  font-size:
-    0.9rem;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 500;
 }
-
 
 /* =========================================================
    MEANINGS
    ========================================================= */
 
 .wiki-meanings-section {
-  margin-top:
-    40px;
+  margin-top: 30px;
 }
-
 
 .wiki-meaning-list {
-  display:
-    flex;
+  display: grid;
 
-  flex-direction:
-    column;
-
-  gap:
-    30px;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
+  gap: 22px;
 }
-
 
 .wiki-meaning-block {
-  display:
-    block;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
-
   transition:
     opacity
-    140ms ease;
+    150ms ease;
 }
-
 
 .wiki-meaning-row {
-  display:
-    grid;
+  min-height: 29px;
 
-  grid-template-columns:
-    22px
-    auto
-    1fr;
+  margin: 0;
 
-  align-items:
-    flex-start;
+  display: flex;
 
-  column-gap:
-    9px;
+  align-items: flex-start;
 
-  margin:
-    0;
+  gap: 10px;
 
-  cursor:
-    pointer;
+  color:
+    #32383d;
+
+  cursor: pointer;
 }
-
 
 .wiki-meaning-number {
-  padding-top:
-    2px;
-
-  font-weight:
-    800;
+  min-width: 21px;
 
   color:
-    #685233;
-}
+    #a8793d;
 
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 17px;
+}
 
 .wiki-meaning-text {
-  min-width:
-    0;
+  padding-top: 1px;
 
   color:
-    #36312a;
+    #33393d;
 
-  font-size:
-    0.92rem;
+  font-size: 15px;
 
-  line-height:
-    1.58;
+  line-height: 1.42;
 }
-
 
 .wiki-usage-label {
-  display:
-    inline-block;
-
-  margin-right:
-    6px;
-
-  padding:
-    2px 7px;
-
-  border-radius:
-    7px;
-
-  background:
-    rgba(
-      167,
-      123,
-      61,
-      0.12
-    );
+  margin-right: 4px;
 
   color:
-    #84602e;
+    #94724d;
 
-  font-size:
-    0.68rem;
-
-  font-weight:
-    700;
-
-  vertical-align:
-    1px;
+  font-style: italic;
 }
 
+.wiki-meaning-not-selected {
+  opacity: 0.42;
+}
 
 /* =========================================================
    EXAMPLES
-
-   EXAMPLES HAVE NO CHECKBOX.
-   THEY FOLLOW THEIR MEANING.
+   No checkbox. They follow the meaning.
    ========================================================= */
 
 .wiki-meaning-examples {
-  margin-top:
-    14px;
-
-  margin-left:
+  margin:
+    11px
+    0
+    0
     31px;
 
-  padding:
-    2px 0
-    2px 14px;
+  padding-left: 13px;
 
   border-left:
     2px solid
-    rgba(
-      145,
-      105,
-      47,
-      0.18
-    );
+    rgba(170, 131, 80, 0.17);
 }
-
-
-.wiki-example-item {
-  margin:
-    0;
-}
-
 
 .wiki-example-item +
 .wiki-example-item {
-  margin-top:
-    15px;
+  margin-top: 12px;
 }
-
 
 .wiki-example-source {
   color:
-    #463c31;
+    #4d5357;
 
-  font-size:
-    0.85rem;
+  font-size: 14px;
 
-  line-height:
-    1.52;
+  line-height: 1.45;
 }
-
 
 .wiki-example-translation {
-  margin-top:
-    4px;
+  margin-top: 3px;
 
   color:
-    #786b5b;
+    #77716b;
 
-  font-size:
-    0.80rem;
+  font-size: 13px;
 
-  line-height:
-    1.50;
+  line-height: 1.43;
 }
-
-
-/* =========================================================
-   UNSELECTED MEANING
-   ========================================================= */
-
-.wiki-meaning-not-selected {
-  opacity:
-    0.42;
-}
-
 
 /* =========================================================
    NOTES
    ========================================================= */
 
 .wiki-notes-section {
-  margin-top:
-    40px;
+  margin-top: 30px;
 }
-
 
 .wiki-note-list {
-  display:
-    flex;
+  display: grid;
 
-  flex-direction:
-    column;
-
-  gap:
-    16px;
-
-  max-height:
-    none;
-
-  overflow:
-    visible;
+  gap: 11px;
 }
-
 
 .wiki-note {
-  display:
-    flex;
+  margin: 0;
 
-  align-items:
-    flex-start;
+  padding: 11px;
 
-  gap:
-    11px;
+  display: flex;
 
-  margin:
-    0;
+  align-items: flex-start;
 
-  cursor:
-    pointer;
+  gap: 10px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.42);
+
+  color:
+    #32383d;
+
+  cursor: pointer;
 }
-
 
 .wiki-note > span:last-child {
-  display:
-    flex;
-
-  flex-direction:
-    column;
-
-  gap:
-    5px;
-
-  min-width:
-    0;
+  min-width: 0;
 }
-
 
 .wiki-note small {
+  display: block;
+
+  margin-bottom: 4px;
+
   color:
-    #8b704f;
+    #a07642;
 
-  font-size:
-    0.68rem;
+  font-size: 10px;
 
-  font-weight:
-    800;
+  font-weight: 850;
 
   letter-spacing:
-    0.04em;
+    0.07em;
 
-  text-transform:
-    uppercase;
+  text-transform: uppercase;
 }
-
 
 .wiki-note strong {
+  display: block;
+
   color:
-    #433b31;
+    #4d5053;
 
-  font-size:
-    0.84rem;
+  font-size: 13px;
 
-  font-weight:
-    500;
+  font-weight: 500;
 
-  line-height:
-    1.52;
+  line-height: 1.45;
 }
-
 
 /* =========================================================
    WORD DISABLED
-
-   If all meanings are removed:
-   WORD is unchecked.
-   Internal fields become disabled.
-
-   User must re-check WORD to unlock them.
    ========================================================= */
-
-.wiki-entry-card.entry-not-selected {
-  opacity:
-    0.70;
-}
-
-
-.wiki-entry-card.entry-not-selected
-.wiki-entry-top {
-  opacity:
-    1;
-}
-
 
 .wiki-content-disabled
 .wiki-entry-section,
 
 .wiki-content-disabled
 .wiki-pos-section {
-  opacity:
-    0.56;
+  opacity: 0.55;
 }
-
 
 .wiki-content-disabled
 .wiki-choice-row,
@@ -2740,10 +2073,8 @@ span {
 
 .wiki-content-disabled
 .wiki-note {
-  cursor:
-    default;
+  cursor: default;
 }
-
 
 /* =========================================================
    EXISTING WORD
@@ -2751,219 +2082,334 @@ span {
 
 .wiki-entry-existing {
   background:
-    rgba(
-      249,
-      245,
-      234,
-      0.91
+    linear-gradient(
+      145deg,
+      rgba(255, 252, 247, 0.95),
+      rgba(245, 242, 233, 0.91)
     );
 }
-
 
 .wiki-library-placeholder {
-  width:
-    100%;
+  width: 100%;
 
-  min-height:
-    45px;
+  min-height: 44px;
 
-  margin-top:
-    32px;
+  margin-top: 25px;
 
-  border:
-    1px solid
-    rgba(
-      159,
-      112,
-      50,
-      0.26
-    );
-
-  border-radius:
-    14px;
+  border-radius: 13px;
 
   background:
-    rgba(
-      255,
-      255,
-      255,
-      0.42
-    );
+    rgba(59, 135, 101, 0.10);
 
   color:
-    #886231;
+    #39795c;
 
-  font-weight:
-    700;
+  font-weight: 750;
+
+  opacity: 0.72;
 }
 
-
 /* =========================================================
-   REMOVE OLD CONTROLS
-
-   NO SELECT ALL
-   NO SHOW MORE
+   OLD WIKTIONARY CONTROLS REMOVED
    ========================================================= */
 
 .wiki-toggle-all-button,
+.wiki-details-wrap,
 .wiki-details-toggle,
-.wiki-details-content,
-.wiki-details-wrap {
-  display:
-    none !important;
+.wiki-details-content {
+  display: none !important;
 }
-
 
 /* =========================================================
    NATURAL PAGE SCROLL
-
-   NO INTERNAL SCROLL AREAS.
    ========================================================= */
 
-.wiktionary-page,
-.wiktionary-shell,
-#wikiEntries,
 .wiki-entry-card,
 .wiki-entry-section,
 .wiki-pos-section,
 .wiki-pos-subsection,
-.wiki-meaning-list,
 .wiki-choice-list,
-.wiki-note-list,
-.wiki-details-content {
-  max-height:
-    none;
+.wiki-meaning-list,
+.wiki-note-list {
+  max-height: none;
 
-  overflow-y:
-    visible;
+  overflow: visible;
 }
 
-
 /* =========================================================
-   SMALL MOBILE
+   MOBILE HUB
    ========================================================= */
 
-@media (
-  max-width:
-  390px
-) {
+@media (max-width: 520px) {
 
-  .wiktionary-shell {
-    padding-left:
-      12px;
+  .dictionary-page {
+    padding-left: 16px;
+    padding-right: 16px;
 
-    padding-right:
-      12px;
+    background-position:
+      59% center;
   }
 
+  .dictionary-topbar {
+    width: 100%;
+  }
+
+  .hub-top-button {
+    width: 50px;
+    height: 50px;
+
+    min-width: 50px;
+
+    padding: 0;
+
+    border-radius: 16px;
+  }
+
+  .sync-button .sync-label {
+    display: none;
+  }
+
+  .sync-icon {
+    width: 27px;
+    height: 27px;
+  }
+
+  .hub-language-button {
+    height: 50px;
+
+    min-width: 58px;
+
+    border-radius: 16px;
+  }
+
+  .hub-language-flag {
+    width: 40px;
+    height: 27px;
+  }
+
+  .dictionary-hub {
+    padding-top: 112px;
+  }
+
+  .hub-title-section {
+    margin-bottom: 48px;
+  }
+
+  .hub-title {
+    font-size: 42px;
+  }
+
+  .hub-ornament {
+    margin-top: 24px;
+  }
+
+  .hub-menu {
+    gap: 14px;
+  }
+
+  .hub-card {
+    min-height: 104px;
+
+    grid-template-columns:
+      70px
+      minmax(0, 1fr)
+      24px;
+
+    gap: 12px;
+
+    padding:
+      13px
+      15px;
+
+    border-radius: 23px;
+  }
+
+  .hub-card-icon-wrap {
+    width: 68px;
+    height: 68px;
+  }
+
+  .hub-card-icon {
+    width: 66px;
+    height: 66px;
+  }
+
+  .hub-card-title {
+    font-size: 19px;
+  }
+
+  .hub-card-subtitle {
+    margin-top: 4px;
+
+    font-size: 14px;
+  }
+
+  .hub-card-arrow {
+    width: 24px;
+    height: 24px;
+  }
+
+  .hub-bottom-ornament {
+    margin-top: 27px;
+  }
+}
+
+/* =========================================================
+   MOBILE WIKTIONARY
+   ========================================================= */
+
+@media (max-width: 520px) {
+
+  .wiktionary-page {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    background-position:
+      59% center;
+  }
+
+  .wiktionary-topbar {
+    grid-template-columns:
+      50px
+      1fr
+      50px;
+  }
+
+  .wiktionary-search-heading {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .wiktionary-search-form,
+  #wiktionarySearchForm {
+    padding: 11px;
+  }
 
   .wiki-entry-card {
     padding:
-      20px 15px
-      23px;
+      18px
+      15px
+      22px;
   }
-
-
-  .wiki-form-grid {
-    grid-template-columns:
-      1fr
-      1fr;
-
-    gap:
-      9px;
-  }
-
 
   .wiki-pos-section {
-    margin-top:
-      40px;
+    margin-top: 31px;
 
-    padding-top:
-      27px;
+    padding-top: 22px;
   }
-
 
   .wiki-pos-title {
-    margin-bottom:
-      28px;
+    margin-bottom: 22px;
   }
-
 
   .wiki-meaning-list {
-    gap:
-      27px;
+    gap: 20px;
   }
-
-
-  .wiki-meaning-examples {
-    margin-left:
-      28px;
-  }
-
 }
 
-
 /* =========================================================
-   VERY NARROW MOBILE
+   VERY SMALL MOBILE
    ========================================================= */
 
-@media (
-  max-width:
-  340px
-) {
+@media (max-width: 370px) {
+
+  .dictionary-hub {
+    padding-top: 92px;
+  }
+
+  .hub-title-section {
+    margin-bottom: 42px;
+  }
+
+  .hub-card {
+    grid-template-columns:
+      62px
+      minmax(0, 1fr)
+      22px;
+
+    padding:
+      12px
+      13px;
+  }
+
+  .hub-card-icon-wrap {
+    width: 60px;
+    height: 60px;
+  }
+
+  .hub-card-icon {
+    width: 58px;
+    height: 58px;
+  }
+
+  .hub-card-title {
+    font-size: 17px;
+  }
+
+  .hub-card-subtitle {
+    font-size: 13px;
+  }
 
   .wiki-form-grid {
     grid-template-columns:
       1fr;
   }
 
-
-  #wiktionarySearchForm {
-    grid-template-columns:
-      1fr;
+  .wiki-results-header h2,
+  #wikiWordTitle {
+    font-size: 42px;
   }
-
-
-  #wiktionarySearchButton {
-    width:
-      100%;
-  }
-
 }
-
 
 /* =========================================================
    DESKTOP
-
-   KEEP MOBILE CARD WIDTH.
    ========================================================= */
 
-@media (
-  min-width:
-  760px
-) {
+@media (min-width: 850px) {
 
-  .dictionary-shell,
-  .wiktionary-shell {
-    width:
-      min(
-        100%,
-        540px
-      );
-  }
-
-
-  .wiki-entry-card {
+  .dictionary-page {
     padding:
-      26px
-      23px
-      28px;
+      30px
+      34px
+      50px;
   }
 
-
-  .wiki-form-grid {
-    gap:
-      14px;
+  .dictionary-hub {
+    padding-top: 82px;
   }
 
+  .hub-title-section {
+    margin-bottom: 55px;
+  }
+
+  .hub-menu {
+    gap: 16px;
+  }
+
+  .hub-card {
+    min-height: 118px;
+
+    padding:
+      15px
+      24px;
+
+    grid-template-columns:
+      90px
+      minmax(0, 1fr)
+      34px;
+  }
+
+  .hub-card-icon-wrap {
+    width: 84px;
+    height: 84px;
+  }
+
+  .hub-card-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .wiktionary-page {
+    padding-top: 24px;
+  }
 }
