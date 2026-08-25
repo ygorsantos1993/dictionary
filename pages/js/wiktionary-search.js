@@ -796,6 +796,18 @@ function parsePartOfSpeech(
   }
 
 
+  if (
+    partOfSpeech === "Adjective"
+  ) {
+
+    forms =
+      parseAdjectiveForms(
+        posSection
+      );
+
+  }
+
+
   const meanings =
     extractMeanings(
       posSection
@@ -1280,6 +1292,258 @@ function parseNounForms(
 
 
   return forms;
+
+}
+
+
+/* =========================================================
+   ADJECTIVE FORMS
+
+   Wiktionary only. Never generate or infer a Turkish form.
+
+   Declension
+   -> Predicative forms
+   -> present tense
+   -> positive declarative
+   -> ben (I am)
+   ========================================================= */
+
+function parseAdjectiveForms(
+  posSection
+) {
+
+  const declensionSections =
+    findDeclensionSections(
+      posSection
+    );
+
+
+  for (
+    const section
+    of declensionSections
+  ) {
+
+    const tables =
+      Array.from(
+        section.querySelectorAll(
+          "table"
+        )
+      );
+
+
+    for (
+      const table
+      of tables
+    ) {
+
+      const value =
+        extractAdjectivePredicativeFromTable(
+          table
+        );
+
+
+      if (!value) {
+
+        continue;
+
+      }
+
+
+      return [
+        {
+
+          key:
+            "predicative",
+
+          label:
+            "Predicative",
+
+          value,
+
+          source:
+            "wiktionary_declension",
+
+          selected:
+            true
+
+        }
+      ];
+
+    }
+
+  }
+
+
+  return [];
+
+}
+
+
+function extractAdjectivePredicativeFromTable(
+  table
+) {
+
+  const tableText =
+    cleanTableText(
+      table.textContent
+    );
+
+
+  if (
+    !/\bPredicative\s+forms\s+of\b/i.test(
+      tableText
+    )
+  ) {
+
+    return null;
+
+  }
+
+
+  const grid =
+    buildTableGrid(
+      table
+    );
+
+
+  if (
+    !grid.length
+  ) {
+
+    return null;
+
+  }
+
+
+  const presentRow =
+    findDeclensionRow(
+      grid,
+      [
+        /^present\s+tense$/i
+      ]
+    );
+
+
+  if (
+    presentRow === null
+  ) {
+
+    return null;
+
+  }
+
+
+  const declarativeCell =
+    findTableCellPosition(
+      grid,
+      /^positive\s+declarative$/i,
+      presentRow + 1
+    );
+
+
+  if (!declarativeCell) {
+
+    return null;
+
+  }
+
+
+  const benRow =
+    findDeclensionRow(
+      grid,
+      [
+        /^ben(?:\s|\()/i
+      ],
+      declarativeCell.row + 1
+    );
+
+
+  if (
+    benRow === null
+  ) {
+
+    return null;
+
+  }
+
+
+  return extractDeclensionCellValue(
+    grid[benRow]?.[
+      declarativeCell.column
+    ]
+  );
+
+}
+
+
+function findTableCellPosition(
+  grid,
+  pattern,
+  startRow = 0
+) {
+
+  for (
+    let rowIndex = startRow;
+    rowIndex < grid.length;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    for (
+      let columnIndex = 0;
+      columnIndex < row.length;
+      columnIndex += 1
+    ) {
+
+      const cell =
+        row[columnIndex];
+
+
+      if (!cell) {
+
+        continue;
+
+      }
+
+
+      const text =
+        normalizeTableLabel(
+          cell.text
+        );
+
+
+      if (
+        pattern.test(
+          text
+        )
+      ) {
+
+        return {
+          row:
+            rowIndex,
+
+          column:
+            columnIndex
+        };
+
+      }
+
+    }
+
+  }
+
+
+  return null;
 
 }
 
@@ -2252,11 +2516,12 @@ function findSingularPluralColumns(
 
 function findDeclensionRow(
   grid,
-  patterns
+  patterns,
+  startRow = 0
 ) {
 
   for (
-    let rowIndex = 0;
+    let rowIndex = startRow;
     rowIndex < grid.length;
     rowIndex += 1
   ) {
@@ -3404,6 +3669,7 @@ function renderForms(
 
                 <div
                   class="wiki-form-group"
+                  data-form-key="${escapeAttribute(group.key)}"
                 >
 
                   <div
