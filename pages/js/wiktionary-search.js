@@ -483,12 +483,6 @@ function buildEtymologyGroups(
       numberedIndexes[0];
 
 
-    /*
-      If Wiktionary puts one shared Pronunciation
-      before all numbered etymologies, keep it
-      as fallback.
-    */
-
     const sharedPronunciationSections =
       directSections
         .slice(
@@ -569,10 +563,6 @@ function buildEtymologyGroups(
 
   }
 
-
-  /*
-    SINGLE UNNUMBERED ETYMOLOGY
-  */
 
   const etymologySection =
     directSections.find(
@@ -879,10 +869,6 @@ function getSectionTitle(
 
 /* =========================================================
    WORD FORMATION
-
-   KEEP ONLY WHAT COMES AFTER:
-
-   By surface analysis,
    ========================================================= */
 
 function extractSurfaceAnalysis(
@@ -947,10 +933,6 @@ function extractSurfaceAnalysis(
         )
         .trim();
 
-
-    /*
-      Keep only that sentence.
-    */
 
     const sentence =
       result.match(
@@ -1254,12 +1236,6 @@ function parseNounForms(
   searchedWord
 ) {
 
-  /*
-    STEP 1:
-    everything Wiktionary explicitly displays
-    in the headword line.
-  */
-
   const forms =
     extractHeadwordForms(
       headwordLine,
@@ -1283,14 +1259,6 @@ function parseNounForms(
     );
 
 
-  /*
-    If both are already present,
-    Wiktionary has given us everything
-    we wanted.
-
-    Do not inspect declension unnecessarily.
-  */
-
   if (
     hasAccusative &&
     hasPlural
@@ -1300,14 +1268,6 @@ function parseNounForms(
 
   }
 
-
-  /*
-    STEP 2:
-    ask Wiktionary's Declension table only
-    for whichever core form is missing.
-
-    WE DO NOT CALCULATE ANYTHING.
-  */
 
   const declensionForms =
     extractMissingFormsFromDeclension(
@@ -1342,17 +1302,6 @@ function parseNounForms(
 
 /* =========================================================
    HEADWORD FORMS
-
-   Example:
-
-   vakit
-   (
-     definite accusative vakti,
-     plural vakitler
-   )
-
-   Also preserves extra explicit forms such as:
-   obsolete / rare / alternative etc.
    ========================================================= */
 
 function extractHeadwordForms(
@@ -1369,14 +1318,6 @@ function extractHeadwordForms(
 
   const forms = [];
 
-
-  /*
-    Forms in Wiktionary's Turkish headword line
-    are normally bold elements following an
-    italic label.
-
-    We intentionally do NOT use a fixed whitelist.
-  */
 
   const formElements =
     Array.from(
@@ -1406,10 +1347,6 @@ function extractHeadwordForms(
           searchedWord
         )
     ) {
-
-      /*
-        Skip the headword itself.
-      */
 
       continue;
 
@@ -1485,15 +1422,6 @@ function findPreviousHeadwordLabel(
   formElement
 ) {
 
-  /*
-    Usually:
-
-    <i>definite accusative</i>
-    <b>vakti</b>
-
-    There may be whitespace/text nodes between them.
-  */
-
   let current =
     formElement.previousSibling;
 
@@ -1504,11 +1432,6 @@ function findPreviousHeadwordLabel(
       current.nodeType ===
       Node.TEXT_NODE
     ) {
-
-      /*
-        Ignore whitespace and punctuation between
-        the label and the form.
-      */
 
       current =
         current.previousSibling;
@@ -1532,11 +1455,6 @@ function findPreviousHeadwordLabel(
 
       }
 
-
-      /*
-        Some Wiktionary output may wrap the italic
-        label in another inline element.
-      */
 
       const italic =
         current.querySelector?.(
@@ -1569,13 +1487,6 @@ function findPreviousHeadwordLabel(
 
 /* =========================================================
    NORMALIZE FORM LABEL
-
-   We normalize the two important keys:
-
-   definite accusative -> accusative
-   plural              -> plural
-
-   Everything else is PRESERVED rather than discarded.
    ========================================================= */
 
 function normalizeFormLabel(
@@ -1647,11 +1558,6 @@ function normalizeFormLabel(
   }
 
 
-  /*
-    Rare / obsolete / alternative etc.
-    remain generic and flexible.
-  */
-
   return {
 
     key:
@@ -1673,10 +1579,8 @@ function normalizeFormLabel(
    DECLENSION FALLBACK
 
    IMPORTANT:
-   "fallback" here means LOOKING ELSEWHERE
-   ON WIKTIONARY.
-
-   It does NOT mean generating a Turkish form.
+   This only looks elsewhere on Wiktionary.
+   It never generates a Turkish form.
    ========================================================= */
 
 function extractMissingFormsFromDeclension(
@@ -1850,16 +1754,6 @@ function findDeclensionSections(
 
 /* =========================================================
    DECLENSION TABLE PARSER
-
-   Conservative.
-
-   It only reads values if the Wiktionary table itself
-   gives us identifiable Singular / Plural columns.
-
-   If table structure is ambiguous:
-   RETURN NOTHING.
-
-   Never guess.
    ========================================================= */
 
 function extractCoreFormsFromDeclensionTable(
@@ -1893,12 +1787,6 @@ function extractCoreFormsFromDeclensionTable(
       grid
     );
 
-
-  /*
-    If we cannot confidently identify
-    Singular and Plural columns,
-    do not use this table.
-  */
 
   if (
     columns.singular === null ||
@@ -1973,10 +1861,6 @@ function extractCoreFormsFromDeclensionTable(
     needPlural
   ) {
 
-    /*
-      "Plural" form means nominative plural.
-    */
-
     const nominativeRow =
       findDeclensionRow(
         grid,
@@ -2038,11 +1922,6 @@ function extractCoreFormsFromDeclensionTable(
 
 /* =========================================================
    BUILD TABLE GRID
-
-   Handles rowspan / colspan enough to preserve
-   the logical table coordinates.
-
-   No linguistic inference is performed.
    ========================================================= */
 
 function buildTableGrid(
@@ -2056,10 +1935,6 @@ function buildTableGrid(
       )
     );
 
-
-  /*
-    Some Parsoid tables may not match :scope structure.
-  */
 
   const actualRows =
     rows.length
@@ -2284,11 +2159,6 @@ function findSingularPluralColumns(
     );
 
 
-    /*
-      Require BOTH on the same header row.
-      This makes the lookup conservative.
-    */
-
     if (
       rowSingular !== null &&
       rowPlural !== null &&
@@ -2354,10 +2224,6 @@ function findDeclensionRow(
       }
 
 
-      /*
-        Prefer header cells as grammatical labels.
-      */
-
       if (
         cell.tag !== "TH"
       ) {
@@ -2398,12 +2264,6 @@ function findDeclensionRow(
 
 /* =========================================================
    EXTRACT DECLENSION CELL VALUE
-
-   Still conservative:
-   - reject empty cells
-   - reject dashes
-   - reject overly long prose
-   - preserve actual Wiktionary text
    ========================================================= */
 
 function extractDeclensionCellValue(
@@ -2459,12 +2319,6 @@ function extractDeclensionCellValue(
 
   }
 
-
-  /*
-    A Turkish inflected form should not be a paragraph.
-    If the cell is huge, table identification was likely
-    wrong, so do not use it.
-  */
 
   if (
     value.length > 80
@@ -2612,11 +2466,6 @@ function extractMeanings(
         ensureTerminalPunctuation(
           meaningText
         ),
-
-      /*
-        Examples always belong to the meaning.
-        No independent checkbox.
-      */
 
       examples:
         extractExamples(
@@ -3451,17 +3300,6 @@ function renderPartOfSpeech(
 
 /* =========================================================
    FORMS UI
-
-   Completely dynamic.
-
-   If Wiktionary gave 1 form:
-   show 1.
-
-   If Wiktionary gave 4:
-   show 4.
-
-   If Wiktionary gave none:
-   section disappears.
    ========================================================= */
 
 function renderForms(
@@ -3849,8 +3687,21 @@ function wireWordCard(
         freeze all internal controls.
 
         WORD ON:
-        unlock exactly the old state.
+        reset every selectable field to checked,
+        then unlock the card.
       */
+
+      if (
+        wordEntry.selected
+      ) {
+
+        resetWordSelection(
+          card,
+          wordEntry
+        );
+
+      }
+
 
       setInternalControlsDisabled(
         card,
@@ -3892,6 +3743,98 @@ function wireWordCard(
     card,
     wordEntry
   );
+
+}
+
+
+/* =========================================================
+   RESET WORD SELECTION
+
+   Re-checking the main WORD checkbox starts again
+   with every selectable field selected.
+   ========================================================= */
+
+function resetWordSelection(
+  card,
+  wordEntry
+) {
+
+  wordEntry.pronunciation.forEach(
+    (item) => {
+
+      item.selected =
+        true;
+
+    }
+  );
+
+
+  wordEntry.partsOfSpeech.forEach(
+    (pos) => {
+
+      pos.forms.forEach(
+        (form) => {
+
+          form.selected =
+            true;
+
+        }
+      );
+
+
+      pos.meanings.forEach(
+        (meaning) => {
+
+          meaning.selected =
+            true;
+
+        }
+      );
+
+
+      pos.notes.forEach(
+        (note) => {
+
+          note.selected =
+            true;
+
+        }
+      );
+
+    }
+  );
+
+
+  card
+    .querySelectorAll(`
+      input[data-kind="pronunciation"],
+      input[data-kind="form"],
+      input[data-kind="meaning"],
+      input[data-kind="pos-note"]
+    `)
+    .forEach(
+      (inputElement) => {
+
+        inputElement.checked =
+          true;
+
+      }
+    );
+
+
+  card
+    .querySelectorAll(
+      ".wiki-meaning-not-selected"
+    )
+    .forEach(
+      (element) => {
+
+        element.classList.remove(
+          "wiki-meaning-not-selected"
+        );
+
+      }
+    );
 
 }
 
