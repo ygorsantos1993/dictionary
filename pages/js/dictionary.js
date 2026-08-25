@@ -119,10 +119,6 @@ function updateLanguageUI() {
   document.title =
     `${language.name} Dictionary`;
 
-
-  document.body.dataset.language =
-    currentLanguage;
-
 }
 
 
@@ -177,9 +173,13 @@ function closeLanguageMenu() {
 function toggleLanguageMenu() {
 
   if (languageMenu.hidden) {
+
     openLanguageMenu();
+
   } else {
+
     closeLanguageMenu();
+
   }
 
 }
@@ -217,7 +217,10 @@ function showSyncToast(message) {
 
   window.setTimeout(
     () => {
-      syncToast.hidden = true;
+
+      syncToast.hidden =
+        true;
+
     },
     1800
   );
@@ -304,18 +307,14 @@ syncButton.addEventListener(
     );
 
 
-    /*
-      IndexedDB synchronization
-      will be implemented here.
-    */
-
-
     await new Promise(
       (resolve) => {
+
         window.setTimeout(
           resolve,
           650
         );
+
       }
     );
 
@@ -333,20 +332,9 @@ syncButton.addEventListener(
 );
 
 
-/*
-  These pages will be created next.
-  For now the buttons are ready.
-*/
-
 onlineCard.addEventListener(
   "click",
   () => {
-
-    /*
-    window.location.href =
-      "./online-search.html";
-    */
-
   }
 );
 
@@ -355,10 +343,15 @@ wiktionaryCard.addEventListener(
   "click",
   () => {
 
-    /*
+    if (currentLanguage !== "turkish") {
+
+      return;
+
+    }
+
+
     window.location.href =
       "./wiktionary-search.html";
-    */
 
   }
 );
@@ -367,12 +360,6 @@ wiktionaryCard.addEventListener(
 dictionarySearchCard.addEventListener(
   "click",
   () => {
-
-    /*
-    window.location.href =
-      "./dictionary-search.html";
-    */
-
   }
 );
 
@@ -380,12 +367,6 @@ dictionarySearchCard.addEventListener(
 libraryCard.addEventListener(
   "click",
   () => {
-
-    /*
-    window.location.href =
-      "./library.html";
-    */
-
   }
 );
 
