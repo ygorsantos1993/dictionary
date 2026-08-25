@@ -2729,14 +2729,32 @@ function findThirdPersonSingularColumn(
       }
 
 
+      /*
+        Do NOT use normalizeTableLabel() here.
+
+        normalizeTableLabel() intentionally strips trailing
+        punctuation, including the closing ")" from:
+
+        3rd person (o)
+
+        That turns it into:
+
+        3rd person (o
+
+        and prevents the conjugation parser from finding the
+        third-person singular column.
+
+        Use the real cleaned table text instead.
+      */
+
       const text =
-        normalizeTableLabel(
+        cleanTableText(
           cell.text
         );
 
 
       if (
-        /^3rd\s+person\s*\(o\)$/i.test(
+        /^3rd\s+person\s*\(\s*o\s*\)$/i.test(
           text
         )
       ) {
