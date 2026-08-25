@@ -2147,6 +2147,25 @@ input:not(:checked) + span {
   overflow: visible;
 }
 
+.wiki-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wiki-form-group + .wiki-form-group {
+  margin-top: 18px;
+}
+
+.wiki-form-group .wiki-etymology {
+  margin: 0;
+}
+
+.wiki-form-group .wiki-choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
 
 /* =========================================================
    MOBILE HUB
