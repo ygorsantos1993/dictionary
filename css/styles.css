@@ -1,22 +1,28 @@
 :root {
   --text: #1d242e;
-  --muted: #60656b;
+  --muted: #646b71;
 
   --gold: #b98b49;
-  --gold-light: #d9b36f;
+  --gold-light: #dfbd80;
   --gold-dark: #8d6530;
 
   --cream:
-    rgba(255, 250, 244, 0.90);
+    rgba(255, 250, 244, 0.91);
 
   --cream-strong:
-    rgba(255, 252, 248, 0.95);
+    rgba(255, 252, 248, 0.97);
 
-  --menu-dark:
-    rgba(45, 56, 68, 0.82);
+  --green:
+    #3b8765;
+
+  --green-soft:
+    rgba(59, 135, 101, 0.10);
+
+  --red:
+    #a64b42;
 
   --line:
-    rgba(185, 139, 73, 0.34);
+    rgba(185, 139, 73, 0.31);
 
   --accent-1: #3b82f6;
   --accent-2: #2563eb;
@@ -61,6 +67,16 @@ button {
   font: inherit;
 
   cursor: pointer;
+}
+
+
+button:disabled {
+  cursor: default;
+}
+
+
+input {
+  font: inherit;
 }
 
 
@@ -173,14 +189,16 @@ label {
   margin-bottom: 8px;
 
   font-size: 13px;
+
   font-weight: 700;
 
   color: #334155;
 }
 
 
-input {
+.login-page input {
   width: 100%;
+
   height: 50px;
 
   padding: 0 14px;
@@ -196,13 +214,11 @@ input {
 
   color: var(--text);
 
-  font: inherit;
-
   outline: none;
 }
 
 
-input:focus {
+.login-page input:focus {
   border-color:
     rgba(37, 99, 235, 0.52);
 
@@ -216,6 +232,7 @@ input:focus {
 
 .login-card button {
   width: 100%;
+
   height: 50px;
 
   border-radius: 14px;
@@ -284,10 +301,6 @@ input:focus {
 }
 
 
-/*
-  Very subtle veil only to make text readable.
-  The background stays strongly visible.
-*/
 .dictionary-page::before {
   content: "";
 
@@ -307,10 +320,6 @@ input:focus {
 }
 
 
-/* =========================================================
-   TOP BAR
-   ========================================================= */
-
 .dictionary-topbar {
   position: relative;
 
@@ -323,6 +332,7 @@ input:focus {
   display: flex;
 
   align-items: flex-start;
+
   justify-content: space-between;
 }
 
@@ -362,12 +372,6 @@ input:focus {
 }
 
 
-.hub-top-button:hover {
-  background:
-    rgba(43, 54, 67, 0.78);
-}
-
-
 .hub-top-button:active {
   transform:
     scale(0.96);
@@ -380,7 +384,8 @@ input:focus {
 }
 
 
-.sync-button.is-syncing .sync-icon {
+.sync-button.is-syncing
+.sync-icon {
   animation:
     sync-spin
     700ms
@@ -403,10 +408,6 @@ input:focus {
 
 }
 
-
-/* =========================================================
-   LANGUAGE BUTTON
-   ========================================================= */
 
 .language-selector {
   position: relative;
@@ -446,22 +447,6 @@ input:focus {
   box-shadow:
     0 8px 24px
     rgba(10, 20, 30, 0.14);
-
-  transition:
-    background 160ms ease,
-    transform 160ms ease;
-}
-
-
-.hub-language-button:hover {
-  background:
-    rgba(43, 54, 67, 0.79);
-}
-
-
-.hub-language-button:active {
-  transform:
-    scale(0.97);
 }
 
 
@@ -498,10 +483,6 @@ input:focus {
     rotate(180deg);
 }
 
-
-/* =========================================================
-   LANGUAGE MENU
-   ========================================================= */
 
 .language-menu {
   position: absolute;
@@ -568,13 +549,6 @@ input:focus {
 }
 
 
-.language-option:hover,
-.menu-signout:hover {
-  background:
-    rgba(185, 139, 73, 0.10);
-}
-
-
 .language-option img {
   width: 38px;
   height: 25px;
@@ -609,10 +583,6 @@ input:focus {
 }
 
 
-/* =========================================================
-   HUB CONTENT
-   ========================================================= */
-
 .dictionary-hub {
   position: relative;
 
@@ -632,10 +602,6 @@ input:focus {
     );
 }
 
-
-/* =========================================================
-   TITLE
-   ========================================================= */
 
 .hub-title-section {
   margin-bottom:
@@ -698,10 +664,6 @@ input:focus {
 
   letter-spacing:
     0.28em;
-
-  text-shadow:
-    0 1px 6px
-    rgba(255, 255, 255, 0.25);
 }
 
 
@@ -715,6 +677,7 @@ input:focus {
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 12px;
@@ -767,20 +730,12 @@ input:focus {
 }
 
 
-/* =========================================================
-   MENU
-   ========================================================= */
-
 .hub-menu {
   display: grid;
 
   gap: 18px;
 }
 
-
-/* =========================================================
-   CARD
-   ========================================================= */
 
 .hub-card {
   position: relative;
@@ -833,60 +788,10 @@ input:focus {
     rgba(26, 38, 48, 0.13);
 
   overflow: hidden;
-
-  transition:
-    transform 170ms ease,
-    box-shadow 170ms ease,
-    background 170ms ease;
 }
 
-
-.hub-card::after {
-  content: "";
-
-  position: absolute;
-
-  inset: 0;
-
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      120deg,
-      rgba(255, 255, 255, 0.23),
-      transparent 48%
-    );
-}
-
-
-.hub-card:hover {
-  transform:
-    translateY(-2px);
-
-  box-shadow:
-    0 16px 42px
-    rgba(26, 38, 48, 0.17);
-
-  background:
-    rgba(255, 252, 248, 0.96);
-}
-
-
-.hub-card:active {
-  transform:
-    scale(0.99);
-}
-
-
-/* =========================================================
-   CARD ICONS
-   ========================================================= */
 
 .hub-card-icon-wrap {
-  position: relative;
-
-  z-index: 2;
-
   width: 90px;
   height: 90px;
 
@@ -903,24 +808,10 @@ input:focus {
   display: block;
 
   object-fit: contain;
-
-  filter:
-    drop-shadow(
-      0 4px 5px
-      rgba(70, 46, 22, 0.08)
-    );
 }
 
 
-/* =========================================================
-   CARD TEXT
-   ========================================================= */
-
 .hub-card-content {
-  position: relative;
-
-  z-index: 2;
-
   min-width: 0;
 }
 
@@ -939,9 +830,6 @@ input:focus {
   font-weight: 600;
 
   line-height: 1.18;
-
-  letter-spacing:
-    -0.025em;
 }
 
 
@@ -958,45 +846,17 @@ input:focus {
       3.8vw,
       19px
     );
-
-  font-weight: 450;
-
-  line-height: 1.25;
 }
 
 
-/* =========================================================
-   CARD ARROW
-   ========================================================= */
-
 .hub-card-arrow {
-  position: relative;
-
-  z-index: 2;
-
   width: 30px;
   height: 30px;
 
   color:
     #bb8b49;
-
-  justify-self: end;
-
-  transition:
-    transform 160ms ease;
 }
 
-
-.hub-card:hover
-.hub-card-arrow {
-  transform:
-    translateX(3px);
-}
-
-
-/* =========================================================
-   BOTTOM ORNAMENT
-   ========================================================= */
 
 .hub-bottom-ornament {
   margin-top:
@@ -1007,14 +867,11 @@ input:focus {
 }
 
 
-/* =========================================================
-   SYNC TOAST
-   ========================================================= */
-
 .sync-toast {
   position: fixed;
 
   left: 50%;
+
   bottom:
     max(
       24px,
@@ -1030,10 +887,6 @@ input:focus {
     11px
     17px;
 
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.16);
-
   border-radius: 999px;
 
   background:
@@ -1047,16 +900,6 @@ input:focus {
   font-weight: 700;
 
   white-space: nowrap;
-
-  backdrop-filter:
-    blur(12px);
-
-  -webkit-backdrop-filter:
-    blur(12px);
-
-  box-shadow:
-    0 10px 30px
-    rgba(0, 0, 0, 0.18);
 }
 
 
@@ -1066,74 +909,1187 @@ input:focus {
 
 
 /* =========================================================
-   DESKTOP
+   WIKTIONARY SEARCH PAGE
    ========================================================= */
 
-@media (min-width: 850px) {
+.wiktionary-page {
+  min-height: 100vh;
+  min-height: 100dvh;
 
-  .dictionary-page {
-    padding:
-      30px
-      34px
-      50px;
-  }
+  margin: 0;
+
+  padding:
+    max(
+      18px,
+      env(safe-area-inset-top)
+    )
+    15px
+    max(
+      42px,
+      env(safe-area-inset-bottom)
+    );
+
+  background:
+    linear-gradient(
+      rgba(248, 239, 225, 0.33),
+      rgba(248, 239, 225, 0.23)
+    ),
+    url("../turkey.png");
+
+  background-size: cover;
+
+  background-position:
+    58% center;
+
+  background-attachment: fixed;
+
+  overflow-x: hidden;
+}
 
 
-  .dictionary-hub {
-    padding-top:
-      82px;
-  }
+.wiktionary-topbar {
+  position: sticky;
+
+  top:
+    max(
+      8px,
+      env(safe-area-inset-top)
+    );
+
+  z-index: 100;
+
+  width: 100%;
+
+  max-width: 520px;
+
+  margin:
+    0 auto
+    18px;
+
+  display: grid;
+
+  grid-template-columns:
+    52px
+    1fr
+    52px;
+
+  align-items: center;
+
+  gap: 10px;
+}
 
 
-  .hub-title-section {
-    margin-bottom:
-      55px;
-  }
+.wiki-round-button,
+.wiki-language-indicator {
+  width: 50px;
+  height: 50px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.43);
+
+  border-radius: 16px;
+
+  background:
+    rgba(48, 59, 69, 0.72);
+
+  color:
+    #efc681;
+
+  backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  box-shadow:
+    0 7px 20px
+    rgba(23, 31, 38, 0.16);
+}
 
 
-  .hub-menu {
-    gap:
-      16px;
-  }
+.wiki-round-button svg {
+  width: 26px;
+  height: 26px;
+}
 
 
-  .hub-card {
-    min-height:
-      118px;
+.wiki-language-indicator {
+  justify-self: end;
+}
 
-    padding:
-      15px
-      24px;
 
-    grid-template-columns:
-      90px
+.wiki-language-indicator img {
+  width: 35px;
+  height: 24px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+
+.wiki-save-button {
+  justify-self: center;
+
+  min-width: 104px;
+  height: 46px;
+
+  padding:
+    0
+    18px;
+
+  border:
+    1px solid
+    rgba(255, 244, 220, 0.48);
+
+  border-radius: 15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d6ab66,
+      #a97839
+    );
+
+  color:
+    #fffdf8;
+
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 22px
+    rgba(95, 66, 30, 0.19);
+}
+
+
+.wiki-save-button:disabled {
+  opacity: 0.45;
+}
+
+
+.wiktionary-shell {
+  width: 100%;
+
+  max-width: 520px;
+
+  margin: 0 auto;
+}
+
+
+.wiktionary-search-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding:
+    6px
+    6px
+    18px;
+}
+
+
+.wiktionary-page-logo {
+  width: 66px;
+  height: 66px;
+
+  object-fit: contain;
+}
+
+
+.wiki-eyebrow {
+  margin-bottom: 3px;
+
+  color:
+    #a5763b;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+}
+
+
+.wiktionary-search-heading h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #4c5661;
+
+  font-size: 31px;
+
+  font-weight: 500;
+}
+
+
+.wiktionary-search-form {
+  padding:
+    13px;
+
+  display: grid;
+
+  gap: 10px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.66);
+
+  border-radius: 23px;
+
+  background:
+    rgba(255, 250, 244, 0.86);
+
+  backdrop-filter:
+    blur(11px);
+
+  -webkit-backdrop-filter:
+    blur(11px);
+
+  box-shadow:
+    0 11px 30px
+    rgba(38, 45, 51, 0.13);
+}
+
+
+.wiki-search-input-wrap {
+  position: relative;
+}
+
+
+.wiki-search-input-wrap svg {
+  position: absolute;
+
+  top: 50%;
+  left: 15px;
+
+  width: 20px;
+  height: 20px;
+
+  transform:
+    translateY(-50%);
+
+  color:
+    #a37845;
+
+  pointer-events: none;
+}
+
+
+.wiki-search-input-wrap input {
+  width: 100%;
+  height: 51px;
+
+  padding:
+    0
+    14px
+    0
+    45px;
+
+  border:
+    1px solid
+    rgba(163, 119, 65, 0.20);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.84);
+
+  color:
+    #20262b;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+
+.wiki-search-input-wrap input:focus {
+  border-color:
+    rgba(180, 132, 70, 0.54);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(185, 139, 73, 0.10);
+}
+
+
+.wiki-search-button {
+  height: 48px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d5ad6d,
+      #ac7938
+    );
+
+  color: white;
+
+  font-weight: 800;
+}
+
+
+.wiki-search-button:disabled {
+  opacity: 0.62;
+}
+
+
+.wiki-status {
+  margin-top: 15px;
+
+  padding:
+    14px
+    16px;
+
+  border-radius: 17px;
+
+  background:
+    rgba(255, 250, 244, 0.91);
+
+  color:
+    #575d62;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  box-shadow:
+    0 8px 22px
+    rgba(38, 45, 51, 0.10);
+}
+
+
+.wiki-status.error {
+  color:
+    #9e423b;
+}
+
+
+.wiki-status.success {
+  color:
+    #347659;
+}
+
+
+.wiki-status.empty {
+  color:
+    #6d665d;
+}
+
+
+.wiki-results-header {
+  padding:
+    34px
+    8px
+    12px;
+
+  text-align: center;
+}
+
+
+.wiki-results-header h2 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #2d3338;
+
+  font-size: 48px;
+
+  font-weight: 500;
+
+  line-height: 1;
+}
+
+
+#wikiEntryCount {
+  margin-top: 8px;
+
+  color:
+    #666a6d;
+
+  font-size: 14px;
+}
+
+
+.wiki-header-ornament {
+  margin-top: 19px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  color:
+    #b88749;
+}
+
+
+.wiki-header-ornament span {
+  width: 85px;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      #b88749
+    );
+}
+
+
+.wiki-header-ornament span:last-child {
+  background:
+    linear-gradient(
+      to left,
+      transparent,
+      #b88749
+    );
+}
+
+
+.wiki-header-ornament strong {
+  font-size: 17px;
+
+  font-weight: 400;
+}
+
+
+.wiki-entry-list {
+  display: grid;
+
+  gap: 20px;
+
+  padding-top: 12px;
+}
+
+
+.wiki-entry-card {
+  padding:
+    19px
+    17px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.76);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 251, 245, 0.94),
+      rgba(250, 241, 228, 0.89)
+    );
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  box-shadow:
+    0 12px 34px
+    rgba(42, 48, 52, 0.13);
+
+  transition:
+    opacity 160ms ease;
+}
+
+
+.wiki-entry-card.entry-not-selected {
+  opacity: 0.58;
+}
+
+
+.wiki-entry-top {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 15px;
+}
+
+
+.wiki-entry-top.compact {
+  align-items: center;
+}
+
+
+.wiki-etymology {
+  color:
+    #9a703f;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.08em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-pos {
+  margin-top: 4px;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #343b40;
+
+  font-size: 25px;
+
+  font-weight: 500;
+}
+
+
+.wiki-entry-select {
+  margin: 0;
+}
+
+
+.wiki-entry-select input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+.wiki-entry-select span {
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(171, 123, 62, 0.42);
+
+  border-radius: 9px;
+
+  background:
+    rgba(255, 255, 255, 0.55);
+}
+
+
+.wiki-entry-select
+input:checked + span {
+  background:
+    linear-gradient(
+      135deg,
+      #d4aa67,
+      #aa7535
+    );
+}
+
+
+.wiki-entry-select
+input:checked + span::after {
+  content: "✓";
+
+  color: white;
+
+  font-size: 18px;
+
+  font-weight: 900;
+}
+
+
+.wiki-entry-status {
+  margin-top: 10px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 28px;
+
+  padding:
+    5px
+    10px;
+
+  border-radius: 999px;
+
+  font-size: 12px;
+
+  font-weight: 750;
+}
+
+
+.wiki-entry-status.new {
+  background:
+    rgba(178, 127, 65, 0.10);
+
+  color:
+    #9a6931;
+}
+
+
+.wiki-entry-status.saved {
+  background:
+    var(--green-soft);
+
+  color:
+    var(--green);
+}
+
+
+.wiki-saved-mark {
+  width: 31px;
+  height: 31px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background:
+    rgba(59, 135, 101, 0.12);
+
+  color:
+    var(--green);
+
+  font-size: 18px;
+
+  font-weight: 900;
+}
+
+
+.wiki-entry-section {
+  margin-top: 21px;
+
+  padding-top: 17px;
+
+  border-top:
+    1px solid
+    rgba(170, 131, 80, 0.15);
+}
+
+
+.wiki-entry-section h3 {
+  margin:
+    0
+    0
+    12px;
+
+  color:
+    #9b713d;
+
+  font-size: 12px;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-choice-list,
+.wiki-meaning-list {
+  display: grid;
+
+  gap: 8px;
+}
+
+
+.wiki-choice-row,
+.wiki-meaning-row,
+.wiki-note {
+  margin: 0;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  color:
+    #32383d;
+
+  cursor: pointer;
+}
+
+
+.wiki-choice-row input,
+.wiki-meaning-row input,
+.wiki-note input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+.wiki-custom-check {
+  width: 21px;
+  height: 21px;
+
+  flex: 0 0 21px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.40);
+
+  border-radius: 6px;
+
+  background:
+    rgba(255, 255, 255, 0.57);
+}
+
+
+.wiki-choice-row
+input:checked +
+.wiki-custom-check,
+.wiki-meaning-row
+input:checked +
+.wiki-custom-check,
+.wiki-note
+input:checked +
+.wiki-custom-check {
+  background:
+    #b98545;
+
+  border-color:
+    #b98545;
+}
+
+
+.wiki-choice-row
+input:checked +
+.wiki-custom-check::after,
+.wiki-meaning-row
+input:checked +
+.wiki-custom-check::after,
+.wiki-note
+input:checked +
+.wiki-custom-check::after {
+  content: "✓";
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 900;
+}
+
+
+.wiki-choice-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+
+.wiki-choice-content small {
+  color:
+    #77716b;
+
+  font-weight: 500;
+}
+
+
+.wiki-ipa {
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 500;
+}
+
+
+.wiki-form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
       minmax(0, 1fr)
-      34px;
-  }
+    );
+
+  gap: 9px;
+}
 
 
-  .hub-card-icon-wrap {
-    width:
-      84px;
+.wiki-form-chip {
+  margin: 0;
 
-    height:
-      84px;
-  }
+  position: relative;
+
+  cursor: pointer;
+}
 
 
-  .hub-card-icon {
-    width:
-      80px;
+.wiki-form-chip input {
+  position: absolute;
 
-    height:
-      80px;
-  }
+  opacity: 0;
 
+  pointer-events: none;
+}
+
+
+.wiki-form-chip span {
+  min-height: 58px;
+
+  padding:
+    9px
+    10px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  border:
+    1px solid
+    rgba(172, 124, 62, 0.20);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.48);
+}
+
+
+.wiki-form-chip
+input:checked + span {
+  border-color:
+    rgba(179, 129, 64, 0.46);
+
+  background:
+    rgba(226, 194, 146, 0.18);
+}
+
+
+.wiki-form-chip small {
+  color:
+    #9b713d;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.05em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-form-chip strong {
+  color:
+    #32363a;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 500;
+}
+
+
+.wiki-meaning-row {
+  min-height: 29px;
+}
+
+
+.wiki-meaning-number {
+  min-width: 21px;
+
+  color:
+    #a8793d;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 17px;
+}
+
+
+.wiki-meaning-text {
+  padding-top: 1px;
+
+  color:
+    #33393d;
+
+  font-size: 15px;
+
+  line-height: 1.38;
+}
+
+
+.wiki-usage-label {
+  margin-right: 4px;
+
+  color:
+    #94724d;
+
+  font-style: italic;
+}
+
+
+.wiki-details-wrap {
+  margin-top: 18px;
+}
+
+
+.wiki-details-toggle {
+  width: 100%;
+
+  min-height: 43px;
+
+  padding:
+    0
+    12px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(179, 133, 72, 0.09);
+
+  color:
+    #9a6f3a;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+
+.wiki-details-toggle svg {
+  width: 18px;
+  height: 18px;
+
+  transition:
+    transform 160ms ease;
+}
+
+
+.wiki-details-toggle[
+  aria-expanded="true"
+] svg {
+  transform:
+    rotate(180deg);
+}
+
+
+.wiki-details-content[hidden] {
+  display: none;
+}
+
+
+.detail-section {
+  margin-top: 16px;
+}
+
+
+.wiki-example-list {
+  display: grid;
+
+  gap: 13px;
+}
+
+
+.wiki-example-group {
+  padding:
+    11px
+    12px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.45);
+}
+
+
+.wiki-example-heading {
+  margin-bottom: 5px;
+
+  color:
+    #9a703e;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-example {
+  color:
+    #4d5357;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+}
+
+
+.wiki-note-list {
+  display: grid;
+
+  gap: 11px;
+}
+
+
+.wiki-note {
+  padding:
+    11px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.42);
+}
+
+
+.wiki-note small {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color:
+    #a07642;
+
+  font-size: 10px;
+
+  font-weight: 850;
+
+  letter-spacing:
+    0.07em;
+
+  text-transform:
+    uppercase;
+}
+
+
+.wiki-note strong {
+  display: block;
+
+  color:
+    #4d5053;
+
+  font-size: 13px;
+
+  font-weight: 500;
+
+  line-height: 1.45;
+}
+
+
+.wiki-existing-meaning-list {
+  margin:
+    0;
+
+  padding-left:
+    23px;
+
+  color:
+    #4c5155;
+}
+
+
+.wiki-existing-meaning-list li {
+  margin:
+    5px
+    0;
+
+  padding-left:
+    3px;
+
+  line-height: 1.4;
+}
+
+
+.wiki-library-placeholder {
+  width: 100%;
+
+  min-height: 44px;
+
+  margin-top: 17px;
+
+  border-radius: 13px;
+
+  background:
+    rgba(59, 135, 101, 0.10);
+
+  color:
+    #39795c;
+
+  font-weight: 750;
+
+  opacity: 0.72;
 }
 
 
 /* =========================================================
-   SMALL MOBILE
+   MOBILE HUB
    ========================================================= */
 
 @media (max-width: 520px) {
@@ -1147,12 +2103,6 @@ input:focus {
 
     background-position:
       59% center;
-  }
-
-
-  .dictionary-topbar {
-    width:
-      100%;
   }
 
 
@@ -1226,12 +2176,6 @@ input:focus {
 
     letter-spacing:
       0.25em;
-  }
-
-
-  .hub-ornament {
-    margin-top:
-      24px;
   }
 
 
@@ -1310,68 +2254,6 @@ input:focus {
 
     max-width:
       calc(100vw - 32px);
-  }
-
-}
-
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 370px) {
-
-  .dictionary-hub {
-    padding-top:
-      92px;
-  }
-
-
-  .hub-title-section {
-    margin-bottom:
-      42px;
-  }
-
-
-  .hub-card {
-    grid-template-columns:
-      62px
-      minmax(0, 1fr)
-      22px;
-
-    padding:
-      12px
-      13px;
-  }
-
-
-  .hub-card-icon-wrap {
-    width:
-      60px;
-
-    height:
-      60px;
-  }
-
-
-  .hub-card-icon {
-    width:
-      58px;
-
-    height:
-      58px;
-  }
-
-
-  .hub-card-title {
-    font-size:
-      17px;
-  }
-
-
-  .hub-card-subtitle {
-    font-size:
-      13px;
   }
 
 }
