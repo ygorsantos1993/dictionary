@@ -844,6 +844,20 @@ function parsePartOfSpeech(
 
 
   if (
+    partOfSpeech === "Verb"
+  ) {
+
+    forms =
+      parseVerbForms(
+        posSection,
+        headwordLine,
+        searchedWord
+      );
+
+  }
+
+
+  if (
     INVARIABLE_POS_NAMES.has(
       partOfSpeech
     )
@@ -1963,6 +1977,730 @@ function findTableCellPosition(
           column:
             columnIndex
         };
+
+      }
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+/* =========================================================
+   VERB FORMS
+
+   Wiktionary only. Never generate or infer a Turkish form.
+
+   Aorist:
+   1. Prefer the form explicitly shown in the headword line:
+      third-person singular simple present
+   2. If absent, use positive conjugation -> aorist ->
+      3rd person singular (o)
+
+   Continuous:
+   positive conjugation -> continuous ->
+   3rd person singular (o)
+   ========================================================= */
+
+function parseVerbForms(
+  posSection,
+  headwordLine,
+  searchedWord
+) {
+
+  const forms = [];
+
+
+  const headwordAorist =
+    extractVerbAoristFromHeadword(
+      headwordLine,
+      searchedWord
+    );
+
+
+  if (headwordAorist) {
+
+    addFormIfMissing(
+      forms,
+      {
+
+        key:
+          "aorist",
+
+        label:
+          "Aorist",
+
+        value:
+          headwordAorist,
+
+        source:
+          "wiktionary_headword",
+
+        selected:
+          true
+
+      }
+    );
+
+  }
+
+
+  const needAorist =
+    !forms.some(
+      (form) =>
+        form.key ===
+        "aorist"
+    );
+
+
+  const conjugationForms =
+    extractVerbFormsFromConjugation(
+      posSection,
+      {
+        needAorist
+      }
+    );
+
+
+  for (
+    const form
+    of conjugationForms
+  ) {
+
+    addFormIfMissing(
+      forms,
+      form
+    );
+
+  }
+
+
+  return forms;
+
+}
+
+
+function extractVerbAoristFromHeadword(
+  headwordLine,
+  searchedWord
+) {
+
+  const headwordForms =
+    extractHeadwordForms(
+      headwordLine,
+      searchedWord
+    );
+
+
+  const aorist =
+    headwordForms.find(
+      (form) => {
+
+        const label =
+          normalizeTableLabel(
+            form.label
+          );
+
+
+        return (
+          label ===
+            "third-person singular simple present" ||
+          label ===
+            "third person singular simple present" ||
+          label ===
+            "third-person singular aorist" ||
+          label ===
+            "third person singular aorist"
+        );
+
+      }
+    );
+
+
+  return aorist
+    ? aorist.value
+    : null;
+
+}
+
+
+function extractVerbFormsFromConjugation(
+  posSection,
+  {
+    needAorist
+  }
+) {
+
+  const forms = [];
+
+
+  const conjugationSections =
+    findConjugationSections(
+      posSection
+    );
+
+
+  for (
+    const section
+    of conjugationSections
+  ) {
+
+    const tables =
+      Array.from(
+        section.querySelectorAll(
+          "table"
+        )
+      );
+
+
+    for (
+      const table
+      of tables
+    ) {
+
+      const extracted =
+        extractVerbCoreFormsFromConjugationTable(
+          table,
+          {
+            needAorist:
+              needAorist &&
+              !forms.some(
+                (form) =>
+                  form.key ===
+                  "aorist"
+              ),
+
+            needContinuous:
+              !forms.some(
+                (form) =>
+                  form.key ===
+                  "continuous"
+              )
+          }
+        );
+
+
+      for (
+        const form
+        of extracted
+      ) {
+
+        addFormIfMissing(
+          forms,
+          form
+        );
+
+      }
+
+
+      const gotAorist =
+        !needAorist ||
+        forms.some(
+          (form) =>
+            form.key ===
+            "aorist"
+        );
+
+
+      const gotContinuous =
+        forms.some(
+          (form) =>
+            form.key ===
+            "continuous"
+        );
+
+
+      if (
+        gotAorist &&
+        gotContinuous
+      ) {
+
+        return forms;
+
+      }
+
+    }
+
+  }
+
+
+  return forms;
+
+}
+
+
+function findConjugationSections(
+  posSection
+) {
+
+  const result = [];
+
+
+  if (
+    getSectionTitle(
+      posSection
+    ) === "Conjugation"
+  ) {
+
+    result.push(
+      posSection
+    );
+
+  }
+
+
+  for (
+    const section
+    of posSection.querySelectorAll(
+      "section"
+    )
+  ) {
+
+    if (
+      getSectionTitle(
+        section
+      ) === "Conjugation"
+    ) {
+
+      result.push(
+        section
+      );
+
+    }
+
+  }
+
+
+  return result;
+
+}
+
+
+function extractVerbCoreFormsFromConjugationTable(
+  table,
+  {
+    needAorist,
+    needContinuous
+  }
+) {
+
+  const results = [];
+
+
+  if (
+    !needAorist &&
+    !needContinuous
+  ) {
+
+    return results;
+
+  }
+
+
+  const grid =
+    buildTableGrid(
+      table
+    );
+
+
+  if (
+    !grid.length
+  ) {
+
+    return results;
+
+  }
+
+
+  const positiveRange =
+    findConjugationBlockRange(
+      grid,
+      "positive conjugation"
+    );
+
+
+  if (!positiveRange) {
+
+    return results;
+
+  }
+
+
+  const thirdPersonColumn =
+    findThirdPersonSingularColumn(
+      grid,
+      positiveRange.start,
+      positiveRange.end
+    );
+
+
+  if (
+    thirdPersonColumn === null
+  ) {
+
+    return results;
+
+  }
+
+
+  if (needAorist) {
+
+    const aoristRow =
+      findTableRowInRange(
+        grid,
+        /^aorist$/i,
+        positiveRange.start,
+        positiveRange.end
+      );
+
+
+    if (
+      aoristRow !== null
+    ) {
+
+      const value =
+        extractDeclensionCellValue(
+          grid[aoristRow]?.[
+            thirdPersonColumn
+          ]
+        );
+
+
+      if (value) {
+
+        results.push({
+
+          key:
+            "aorist",
+
+          label:
+            "Aorist",
+
+          value,
+
+          source:
+            "wiktionary_conjugation",
+
+          selected:
+            true
+
+        });
+
+      }
+
+    }
+
+  }
+
+
+  if (needContinuous) {
+
+    const continuousRow =
+      findTableRowInRange(
+        grid,
+        /^continuous$/i,
+        positiveRange.start,
+        positiveRange.end
+      );
+
+
+    if (
+      continuousRow !== null
+    ) {
+
+      const value =
+        extractDeclensionCellValue(
+          grid[continuousRow]?.[
+            thirdPersonColumn
+          ]
+        );
+
+
+      if (value) {
+
+        results.push({
+
+          key:
+            "continuous",
+
+          label:
+            "Continuous",
+
+          value,
+
+          source:
+            "wiktionary_conjugation",
+
+          selected:
+            true
+
+        });
+
+      }
+
+    }
+
+  }
+
+
+  return results;
+
+}
+
+
+function findConjugationBlockRange(
+  grid,
+  blockLabel
+) {
+
+  const target =
+    normalizeTableLabel(
+      blockLabel
+    );
+
+
+  let start = null;
+
+
+  for (
+    let rowIndex = 0;
+    rowIndex < grid.length;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    const hasTarget =
+      row.some(
+        (cell) =>
+          cell &&
+          normalizeTableLabel(
+            cell.text
+          ) === target
+      );
+
+
+    if (hasTarget) {
+
+      start =
+        rowIndex;
+
+      break;
+
+    }
+
+  }
+
+
+  if (
+    start === null
+  ) {
+
+    return null;
+
+  }
+
+
+  let end =
+    grid.length;
+
+
+  for (
+    let rowIndex = start + 1;
+    rowIndex < grid.length;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    const hasAnotherBlock =
+      row.some(
+        (cell) => {
+
+          if (!cell) {
+
+            return false;
+
+          }
+
+
+          const text =
+            normalizeTableLabel(
+              cell.text
+            );
+
+
+          return (
+            text !== target &&
+            /conjugation$/i.test(
+              text
+            )
+          );
+
+        }
+      );
+
+
+    if (hasAnotherBlock) {
+
+      end =
+        rowIndex;
+
+      break;
+
+    }
+
+  }
+
+
+  return {
+    start,
+    end
+  };
+
+}
+
+
+function findThirdPersonSingularColumn(
+  grid,
+  startRow,
+  endRow
+) {
+
+  for (
+    let rowIndex = startRow;
+    rowIndex < endRow;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    for (
+      let columnIndex = 0;
+      columnIndex < row.length;
+      columnIndex += 1
+    ) {
+
+      const cell =
+        row[columnIndex];
+
+
+      if (!cell) {
+
+        continue;
+
+      }
+
+
+      const text =
+        normalizeTableLabel(
+          cell.text
+        );
+
+
+      if (
+        /^3rd\s+person\s*\(o\)$/i.test(
+          text
+        )
+      ) {
+
+        return columnIndex;
+
+      }
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+function findTableRowInRange(
+  grid,
+  pattern,
+  startRow,
+  endRow
+) {
+
+  for (
+    let rowIndex = startRow;
+    rowIndex < endRow;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    for (
+      const cell
+      of row
+    ) {
+
+      if (
+        !cell ||
+        cell.tag !== "TH"
+      ) {
+
+        continue;
+
+      }
+
+
+      const text =
+        normalizeTableLabel(
+          cell.text
+        );
+
+
+      if (
+        pattern.test(
+          text
+        )
+      ) {
+
+        return rowIndex;
 
       }
 
