@@ -1303,26 +1303,6 @@ function extractHeadwordForms(
   const forms = [];
 
 
-  /*
-    Read the headword line in document order.
-
-    Example:
-
-    definite accusative kütübü or kütüpü,
-    plural kütüpler
-
-    The same grammatical label remains active for every
-    alternative until Wiktionary introduces a new label.
-
-    Therefore:
-    - kütübü -> Accusative
-    - kütüpü -> Accusative
-    - kütüpler -> Plural
-
-    The word "or" is only connecting text and is never
-    stored as part of a form.
-  */
-
   const elements =
     Array.from(
       headwordLine.querySelectorAll(
@@ -1344,6 +1324,20 @@ function extractHeadwordForms(
       element.tagName;
 
 
+    /*
+      Italic text can be either:
+
+      - a grammatical label:
+        definite accusative
+        plural
+
+      - merely a connector:
+        or
+        and
+
+      Connectors MUST NEVER become form labels.
+    */
+
     if (
       tag === "I" ||
       tag === "EM"
@@ -1355,12 +1349,49 @@ function extractHeadwordForms(
         );
 
 
-      if (labelText) {
+      if (!labelText) {
 
-        currentLabel =
-          labelText;
+        continue;
 
       }
+
+
+      const normalizedConnector =
+        labelText
+          .toLowerCase()
+          .replace(
+            /^[,;:()\s]+|[,;:()\s]+$/g,
+            ""
+          );
+
+
+      if (
+        normalizedConnector === "or" ||
+        normalizedConnector === "and"
+      ) {
+
+        /*
+          IMPORTANT:
+          Do not clear currentLabel.
+
+          Example:
+
+          definite accusative
+          kütübü
+          or
+          kütüpü
+
+          kütüpü still belongs to
+          definite accusative.
+        */
+
+        continue;
+
+      }
+
+
+      currentLabel =
+        labelText;
 
 
       continue;
@@ -1384,8 +1415,14 @@ function extractHeadwordForms(
       );
 
 
+    if (!value) {
+
+      continue;
+
+    }
+
+
     if (
-      !value ||
       normalizeSearchWord(
         value
       ) ===
