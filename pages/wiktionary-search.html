@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <meta name="theme-color" content="#68788a" />
+
+  <title>Search Wiktionary</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/styles.css"
+  />
+</head>
+
+<body class="wiktionary-page">
+
+  <header class="wiktionary-topbar">
+
+    <button
+      id="backButton"
+      class="wiki-round-button"
+      type="button"
+      aria-label="Go back"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+
+    <button
+      id="saveButton"
+      class="wiki-save-button"
+      type="button"
+      disabled
+    >
+      Save
+    </button>
+
+
+    <div class="wiki-language-indicator">
+      <img
+        src="../turkish-flag.png"
+        alt="Turkish"
+      />
+    </div>
+
+  </header>
+
+
+  <main class="wiktionary-shell">
+
+    <section class="wiktionary-search-heading">
+
+      <img
+        src="../wiktionary.png"
+        class="wiktionary-page-logo"
+        alt=""
+      />
+
+      <div>
+
+        <div class="wiki-eyebrow">
+          WIKTIONARY
+        </div>
+
+        <h1>
+          Search Turkish
+        </h1>
+
+      </div>
+
+    </section>
+
+
+    <form
+      id="wiktionarySearchForm"
+      class="wiktionary-search-form"
+    >
+
+      <div class="wiki-search-input-wrap">
+
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <input
+          id="wiktionarySearchInput"
+          type="text"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          placeholder="Type a Turkish word..."
+        />
+
+      </div>
+
+
+      <button
+        id="wiktionarySearchButton"
+        class="wiki-search-button"
+        type="submit"
+      >
+        Search
+      </button>
+
+    </form>
+
+
+    <section
+      id="wikiStatus"
+      class="wiki-status"
+      hidden
+    ></section>
+
+
+    <section
+      id="wikiResultsHeader"
+      class="wiki-results-header"
+      hidden
+    >
+
+      <h2 id="wikiWordTitle"></h2>
+
+      <div id="wikiEntryCount"></div>
+
+      <div
+        class="wiki-header-ornament"
+        aria-hidden="true"
+      >
+        <span></span>
+        <strong>◇</strong>
+        <span></span>
+      </div>
+
+    </section>
+
+
+    <section
+      id="wikiEntries"
+      class="wiki-entry-list"
+    ></section>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="./js/wiktionary-search.js"
+  ></script>
+
+</body>
+</html>
