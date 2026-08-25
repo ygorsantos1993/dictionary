@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <title>Wiktionary API Debug</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #f5f2ec;
+      color: #222;
+    }
+
+    main {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+    }
+
+    form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+
+      min-width: 0;
+      height: 46px;
+
+      padding: 0 14px;
+
+      border: 1px solid #bbb;
+      border-radius: 10px;
+
+      font-size: 16px;
+    }
+
+    button {
+      height: 46px;
+
+      padding: 0 18px;
+
+      border: 0;
+      border-radius: 10px;
+
+      background: #333;
+      color: white;
+
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    section {
+      margin-top: 18px;
+      padding: 16px;
+
+      border-radius: 12px;
+
+      background: white;
+
+      box-shadow:
+        0 3px 12px
+        rgba(0, 0, 0, 0.07);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    pre {
+      margin: 0;
+
+      overflow: auto;
+
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .error {
+      color: #a40000;
+    }
+
+    .success {
+      color: #08783e;
+    }
+
+    .heading-row {
+      padding: 5px 0;
+
+      border-bottom:
+        1px solid #eee;
+
+      font-family: monospace;
+
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+
+    <h1>
+      Wiktionary API Debug
+    </h1>
+
+    <form id="searchForm">
+
+      <input
+        id="wordInput"
+        value="ev"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+      />
+
+      <button type="submit">
+        Search
+      </button>
+
+    </form>
+
+
+    <section>
+      <h2>Status</h2>
+
+      <pre id="status">
+Ready
+      </pre>
+    </section>
+
+
+    <section>
+      <h2>Response JSON keys</h2>
+
+      <pre id="jsonKeys">
+-
+      </pre>
+    </section>
+
+
+    <section>
+      <h2>HTML headings found</h2>
+
+      <div id="headings">
+        -
+      </div>
+    </section>
+
+
+    <section>
+      <h2>Turkish heading information</h2>
+
+      <pre id="turkishInfo">
+-
+      </pre>
+    </section>
+
+
+    <section>
+      <h2>Turkish section HTML</h2>
+
+      <pre id="turkishHtml">
+-
+      </pre>
+    </section>
+
+
+    <section>
+      <h2>First 20,000 characters of API HTML</h2>
+
+      <pre id="rawHtml">
+-
+      </pre>
+    </section>
+
+
+    <section>
+      <h2>Complete JSON metadata</h2>
+
+      <pre id="rawJson">
+-
+      </pre>
+    </section>
+
+  </main>
+
+
+  <script>
+
+    const form =
+      document.getElementById(
+        "searchForm"
+      );
+
+    const wordInput =
+      document.getElementById(
+        "wordInput"
+      );
+
+    const status =
+      document.getElementById(
+        "status"
+      );
+
+    const jsonKeys =
+      document.getElementById(
+        "jsonKeys"
+      );
+
+    const headings =
+      document.getElementById(
+        "headings"
+      );
+
+    const turkishInfo =
+      document.getElementById(
+        "turkishInfo"
+      );
+
+    const turkishHtml =
+      document.getElementById(
+        "turkishHtml"
+      );
+
+    const rawHtml =
+      document.getElementById(
+        "rawHtml"
+      );
+
+    const rawJson =
+      document.getElementById(
+        "rawJson"
+      );
+
+
+    form.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+        await inspectWord(
+          wordInput.value.trim()
+        );
+
+      }
+    );
+
+
+    async function inspectWord(word) {
+
+      if (!word) {
+        return;
+      }
+
+
+      resetOutput();
+
+
+      const url =
+        `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/with_html`;
+
+
+      status.textContent =
+        `Requesting:\n${url}`;
+
+
+      try {
+
+        const response =
+          await fetch(
+            url,
+            {
+              headers: {
+                Accept:
+                  "application/json"
+              }
+            }
+          );
+
+
+        status.textContent =
+          [
+            `HTTP status: ${response.status}`,
+            `OK: ${response.ok}`,
+            `Content-Type: ${response.headers.get("content-type")}`,
+            `URL: ${response.url}`
+          ].join("\n");
+
+
+        const data =
+          await response.json();
+
+
+        jsonKeys.textContent =
+          Object.keys(data)
+            .map(
+              (key) => {
+
+                const value =
+                  data[key];
+
+                let description =
+                  typeof value;
+
+                if (
+                  typeof value === "string"
+                ) {
+
+                  description +=
+                    ` (${value.length} characters)`;
+
+                }
+
+                if (
+                  Array.isArray(value)
+                ) {
+
+                  description +=
+                    ` (${value.length} items)`;
+
+                }
+
+                return `${key}: ${description}`;
+
+              }
+            )
+            .join("\n");
+
+
+        const html =
+          data.html || "";
+
+
+        rawHtml.textContent =
+          html.slice(
+            0,
+            20000
+          );
+
+
+        const metadata =
+          {
+            ...data
+          };
+
+
+        if (
+          typeof metadata.html ===
+          "string"
+        ) {
+
+          metadata.html =
+            `[HTML removed here — ${metadata.html.length} characters]`;
+
+        }
+
+
+        rawJson.textContent =
+          JSON.stringify(
+            metadata,
+            null,
+            2
+          );
+
+
+        inspectHtml(
+          html
+        );
+
+      } catch (error) {
+
+        status.className =
+          "error";
+
+
+        status.textContent =
+          [
+            "ERROR",
+            "",
+            error.name,
+            error.message,
+            "",
+            error.stack || ""
+          ].join("\n");
+
+      }
+
+    }
+
+
+    function inspectHtml(html) {
+
+      const parser =
+        new DOMParser();
+
+
+      const doc =
+        parser.parseFromString(
+          html,
+          "text/html"
+        );
+
+
+      const allHeadings =
+        Array.from(
+          doc.querySelectorAll(
+            "h1, h2, h3, h4, h5, h6"
+          )
+        );
+
+
+      headings.innerHTML =
+        "";
+
+
+      for (
+        const heading
+        of allHeadings
+      ) {
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+
+        row.className =
+          "heading-row";
+
+
+        row.textContent =
+          [
+            heading.tagName,
+            `"${cleanText(heading.textContent)}"`,
+            `id="${heading.id || ""}"`,
+            `parent=${heading.parentElement?.tagName || "none"}`,
+            `parent.class="${heading.parentElement?.className || ""}"`
+          ].join(" | ");
+
+
+        headings.appendChild(
+          row
+        );
+
+      }
+
+
+      const turkishHeading =
+        allHeadings.find(
+          (heading) =>
+            cleanText(
+              heading.textContent
+            ) === "Turkish"
+        );
+
+
+      if (!turkishHeading) {
+
+        turkishInfo.textContent =
+          "NO TURKISH HEADING FOUND";
+
+        turkishHtml.textContent =
+          "-";
+
+        return;
+
+      }
+
+
+      const info = {
+
+        tag:
+          turkishHeading.tagName,
+
+        id:
+          turkishHeading.id,
+
+        text:
+          cleanText(
+            turkishHeading.textContent
+          ),
+
+        className:
+          turkishHeading.className,
+
+        parentTag:
+          turkishHeading
+            .parentElement
+            ?.tagName,
+
+        parentId:
+          turkishHeading
+            .parentElement
+            ?.id,
+
+        parentClass:
+          turkishHeading
+            .parentElement
+            ?.className,
+
+        parentChildren:
+          Array.from(
+            turkishHeading
+              .parentElement
+              ?.children || []
+          )
+          .map(
+            (element) => ({
+              tag:
+                element.tagName,
+
+              id:
+                element.id,
+
+              className:
+                element.className,
+
+              text:
+                cleanText(
+                  element.textContent
+                )
+                .slice(
+                  0,
+                  100
+                )
+            })
+          ),
+
+        nextElementSibling:
+          turkishHeading
+            .nextElementSibling
+            ? {
+                tag:
+                  turkishHeading
+                    .nextElementSibling
+                    .tagName,
+
+                id:
+                  turkishHeading
+                    .nextElementSibling
+                    .id,
+
+                className:
+                  turkishHeading
+                    .nextElementSibling
+                    .className,
+
+                text:
+                  cleanText(
+                    turkishHeading
+                      .nextElementSibling
+                      .textContent
+                  )
+                  .slice(
+                    0,
+                    300
+                  )
+              }
+            : null
+
+      };
+
+
+      turkishInfo.textContent =
+        JSON.stringify(
+          info,
+          null,
+          2
+        );
+
+
+      const likelySection =
+        findTurkishContainer(
+          turkishHeading
+        );
+
+
+      if (likelySection) {
+
+        turkishHtml.textContent =
+          likelySection.outerHTML
+            .slice(
+              0,
+              30000
+            );
+
+      } else {
+
+        turkishHtml.textContent =
+          turkishHeading
+            .parentElement
+            ?.outerHTML
+            ?.slice(
+              0,
+              30000
+            ) || "No container found";
+
+      }
+
+    }
+
+
+    function findTurkishContainer(
+      heading
+    ) {
+
+      let current =
+        heading;
+
+
+      while (
+        current &&
+        current !==
+          document.body
+      ) {
+
+        if (
+          current.tagName ===
+          "SECTION"
+        ) {
+
+          return current;
+
+        }
+
+
+        current =
+          current.parentElement;
+
+      }
+
+
+      return heading.parentElement;
+
+    }
+
+
+    function cleanText(value) {
+
+      return String(
+        value || ""
+      )
+      .replace(
+        /\s+/g,
+        " "
+      )
+      .trim();
+
+    }
+
+
+    function resetOutput() {
+
+      status.className = "";
+
+      status.textContent =
+        "Loading...";
+
+      jsonKeys.textContent =
+        "-";
+
+      headings.textContent =
+        "-";
+
+      turkishInfo.textContent =
+        "-";
+
+      turkishHtml.textContent =
+        "-";
+
+      rawHtml.textContent =
+        "-";
+
+      rawJson.textContent =
+        "-";
+
+    }
+
+  </script>
+
+</body>
+</html>
