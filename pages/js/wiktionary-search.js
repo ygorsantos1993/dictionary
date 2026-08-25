@@ -67,10 +67,6 @@ let parsedEntries = [];
 let existingEntries = [];
 
 
-/*
-  For now the interface is prepared for several POS,
-  but Noun is our first fully supported Turkish entry.
-*/
 const POS_NAMES = new Set([
   "Noun",
   "Proper noun",
@@ -156,6 +152,18 @@ form.addEventListener(
     }
 
 
+    /*
+      Keep the input visually normalized too.
+
+      Examples:
+        "  EV  " -> "ev"
+        "Ev" -> "ev"
+        "İSTANBUL" -> "istanbul"
+    */
+    input.value =
+      word;
+
+
     await searchWiktionary(
       word
     );
@@ -164,11 +172,30 @@ form.addEventListener(
 );
 
 
+/*
+  IMPORTANT FOR TURKISH
+
+  Turkish casing is locale-sensitive:
+
+    I -> ı
+    İ -> i
+
+  So we use tr-TR rather than plain toLowerCase().
+*/
 function normalizeSearchWord(value) {
 
-  return String(value || "")
+  return String(
+    value || ""
+  )
+    .normalize("NFC")
     .trim()
-    .replace(/\s+/g, " ");
+    .replace(
+      /\s+/g,
+      " "
+    )
+    .toLocaleLowerCase(
+      "tr-TR"
+    );
 
 }
 
@@ -198,7 +225,9 @@ async function searchWiktionary(word) {
       );
 
 
-    if (response.status === 404) {
+    if (
+      response.status === 404
+    ) {
 
       showStatus(
         `No entry found for “${word}”.`,
@@ -303,6 +332,12 @@ async function searchWiktionary(word) {
 
 async function loadExistingEntries(word) {
 
+  const normalizedWord =
+    normalizeSearchWord(
+      word
+    );
+
+
   const {
     data,
     error
@@ -318,7 +353,7 @@ async function loadExistingEntries(word) {
     )
     .eq(
       "word",
-      word
+      normalizedWord
     );
 
 
@@ -359,37 +394,19 @@ function parseTurkishEntries(
     );
 
 
-  /*
-    REAL WIKTIONARY STRUCTURE:
-
-    <section>
-      <h2 id="Turkish">Turkish</h2>
-
-      <section>
-        <h3>Etymology</h3>
-      </section>
-
-      <section>
-        <h3>Pronunciation</h3>
-      </section>
-
-      <section>
-        <h3>Noun</h3>
-        ...
-      </section>
-    </section>
-  */
-
   const turkishHeading =
-    Array.from(
-      doc.querySelectorAll("h2")
-    )
-    .find(
-      (heading) =>
-        cleanText(
-          heading.textContent
-        ) === "Turkish"
-    );
+    Array
+      .from(
+        doc.querySelectorAll(
+          "h2"
+        )
+      )
+      .find(
+        (heading) =>
+          cleanText(
+            heading.textContent
+          ) === "Turkish"
+      );
 
 
   if (!turkishHeading) {
@@ -412,35 +429,25 @@ function parseTurkishEntries(
   }
 
 
-  /*
-    First check whether the Turkish entry has:
-
-      Etymology 1
-      Etymology 2
-      Etymology 3
-
-    Those sections normally contain their own POS subsections.
-  */
-
   const numberedEtymologySections =
     getAllSections(
       turkishSection
     )
-    .filter(
-      (section) => {
+      .filter(
+        (section) => {
 
-        const title =
-          getSectionTitle(
-            section
+          const title =
+            getSectionTitle(
+              section
+            );
+
+
+          return /^Etymology\s+\d+$/i.test(
+            title
           );
 
-
-        return /^Etymology\s+\d+$/i.test(
-          title
-        );
-
-      }
-    );
+        }
+      );
 
 
   const entries = [];
@@ -469,7 +476,9 @@ function parseTurkishEntries(
 
       const etymologyNumber =
         match
-          ? Number(match[1])
+          ? Number(
+              match[1]
+            )
           : 1;
 
 
@@ -490,17 +499,9 @@ function parseTurkishEntries(
 
 
   /*
-    No numbered etymologies.
-
-    Example: ev
-
-    Turkish
-      Etymology
-      Pronunciation
-      Noun
-
-    Database convention:
-      etymology = 1
+    If Wiktionary has only "Etymology"
+    rather than "Etymology 1",
+    our database convention is etymology = 1.
   */
 
   entries.push(
@@ -529,11 +530,6 @@ function parseEtymologyContainer(
 
   const entries = [];
 
-
-  /*
-    Pronunciation can belong to the etymology as a whole,
-    rather than being inside the Noun section.
-  */
 
   const pronunciation =
     extractPronunciationsFromContainer(
@@ -740,14 +736,6 @@ function getAllSections(container) {
 
 function getSectionTitle(section) {
 
-  /*
-    We need only the heading that belongs directly
-    to this section.
-
-    querySelector("h3") alone could accidentally
-    pick a heading from a nested child section.
-  */
-
   for (
     const child
     of section.children
@@ -785,21 +773,18 @@ function extractPronunciationsFromContainer(
     getAllSections(
       container
     )
-    .filter(
-      (section) =>
-        getSectionTitle(section) ===
-        "Pronunciation"
-    );
+      .filter(
+        (section) =>
+          getSectionTitle(
+            section
+          ) === "Pronunciation"
+      );
 
-
-  /*
-    container itself might already be
-    the Pronunciation section.
-  */
 
   if (
-    getSectionTitle(container) ===
-    "Pronunciation"
+    getSectionTitle(
+      container
+    ) === "Pronunciation"
   ) {
 
     pronunciationSections.unshift(
@@ -819,12 +804,6 @@ function extractPronunciationsFromContainer(
     const section
     of pronunciationSections
   ) {
-
-    /*
-      Actual Wiktionary HTML:
-
-      <span class="IPA nowrap">/ˈev/</span>
-    */
 
     const ipaElements =
       section.querySelectorAll(
@@ -850,11 +829,6 @@ function extractPronunciationsFromContainer(
       }
 
 
-      /*
-        We only want actual IPA values,
-        not the link whose text is "IPA".
-      */
-
       if (
         !(
           ipa.startsWith("/") ||
@@ -868,7 +842,9 @@ function extractPronunciationsFromContainer(
 
 
       if (
-        seen.has(ipa)
+        seen.has(
+          ipa
+        )
       ) {
 
         continue;
@@ -876,20 +852,19 @@ function extractPronunciationsFromContainer(
       }
 
 
-      seen.add(ipa);
-
-
-      const label =
-        extractPronunciationQualifier(
-          element
-        );
+      seen.add(
+        ipa
+      );
 
 
       results.push({
 
         ipa,
 
-        label,
+        label:
+          extractPronunciationQualifier(
+            element
+          ),
 
         selected:
           true
@@ -911,7 +886,9 @@ function extractPronunciationQualifier(
 ) {
 
   const parent =
-    ipaElement.closest("li");
+    ipaElement.closest(
+      "li"
+    );
 
 
   if (!parent) {
@@ -959,17 +936,20 @@ function parseNounHeadwordForms(
 
 
   /*
-    Actual Wiktionary:
+    Real structure for ev:
 
-    ev
-    (definite accusative evi, plural evler)
+      <i>definite accusative</i>
+      <b>evi</b>
 
-    We first try to read the DOM structurally.
+      <i>plural</i>
+      <b>evler</b>
+
+    Read only the immediately preceding semantic label.
   */
 
   if (headwordElement) {
 
-    const boldForms =
+    const formElements =
       Array.from(
         headwordElement.querySelectorAll(
           "b"
@@ -978,13 +958,13 @@ function parseNounHeadwordForms(
 
 
     for (
-      const bold
-      of boldForms
+      const formElement
+      of formElements
     ) {
 
       const value =
         cleanText(
-          bold.textContent
+          formElement.textContent
         );
 
 
@@ -998,17 +978,31 @@ function parseNounHeadwordForms(
       }
 
 
-      const previousText =
-        getTextBeforeElement(
-          bold
+      const labelElement =
+        findPreviousLabelElement(
+          formElement
+        );
+
+
+      if (!labelElement) {
+
+        continue;
+
+      }
+
+
+      const label =
+        cleanText(
+          labelElement.textContent
         )
-        .toLowerCase();
+          .toLowerCase();
 
 
       if (
-        previousText.includes(
+        label ===
+          "definite accusative" ||
+        label ===
           "accusative"
-        )
       ) {
 
         addFormIfMissing(
@@ -1030,9 +1024,7 @@ function parseNounHeadwordForms(
 
 
       if (
-        previousText.includes(
-          "plural"
-        )
+        label === "plural"
       ) {
 
         addFormIfMissing(
@@ -1054,9 +1046,7 @@ function parseNounHeadwordForms(
 
 
       if (
-        previousText.includes(
-          "genitive"
-        )
+        label === "genitive"
       ) {
 
         addFormIfMissing(
@@ -1080,100 +1070,106 @@ function parseNounHeadwordForms(
 
 
   /*
-    Fallback parser in case Wiktionary changes
-    part of the headword markup.
+    Fallback only if the structural parser
+    found nothing.
   */
 
-  const text =
-    cleanText(
-      headwordText
-    );
-
-
-  const regexDefinitions = [
-
-    {
-      key:
-        "accusative",
-
-      label:
-        "Accusative",
-
-      regex:
-        /(?:definite\s+)?accusative\s+([^,;)]+)/i
-    },
-
-    {
-      key:
-        "plural",
-
-      label:
-        "Plural",
-
-      regex:
-        /plural\s+([^,;)]+)/i
-    },
-
-    {
-      key:
-        "genitive",
-
-      label:
-        "Genitive",
-
-      regex:
-        /genitive\s+([^,;)]+)/i
-    }
-
-  ];
-
-
-  for (
-    const definition
-    of regexDefinitions
+  if (
+    forms.length === 0
   ) {
 
-    const match =
-      text.match(
-        definition.regex
-      );
-
-
-    if (!match) {
-
-      continue;
-
-    }
-
-
-    const value =
+    const text =
       cleanText(
-        match[1]
+        headwordText
       );
 
 
-    if (
-      !value ||
-      value === searchedWord
-    ) {
+    const definitions = [
 
-      continue;
-
-    }
-
-
-    addFormIfMissing(
-      forms,
       {
         key:
-          definition.key,
+          "accusative",
 
         label:
-          definition.label,
+          "Accusative",
 
-        value
+        regex:
+          /(?:definite\s+)?accusative\s+([^,;)]+)/i
+      },
+
+      {
+        key:
+          "plural",
+
+        label:
+          "Plural",
+
+        regex:
+          /plural\s+([^,;)]+)/i
+      },
+
+      {
+        key:
+          "genitive",
+
+        label:
+          "Genitive",
+
+        regex:
+          /genitive\s+([^,;)]+)/i
       }
-    );
+
+    ];
+
+
+    for (
+      const definition
+      of definitions
+    ) {
+
+      const match =
+        text.match(
+          definition.regex
+        );
+
+
+      if (!match) {
+
+        continue;
+
+      }
+
+
+      const value =
+        cleanText(
+          match[1]
+        );
+
+
+      if (
+        !value ||
+        value === searchedWord
+      ) {
+
+        continue;
+
+      }
+
+
+      addFormIfMissing(
+        forms,
+        {
+          key:
+            definition.key,
+
+          label:
+            definition.label,
+
+          value
+        }
+      );
+
+    }
 
   }
 
@@ -1189,49 +1185,42 @@ function parseNounHeadwordForms(
 }
 
 
-function getTextBeforeElement(element) {
+function findPreviousLabelElement(
+  element
+) {
 
-  const parent =
-    element.parentElement;
-
-
-  if (!parent) {
-
-    return "";
-
-  }
+  let current =
+    element.previousSibling;
 
 
-  let text = "";
-
-
-  for (
-    const node
-    of parent.childNodes
-  ) {
+  while (current) {
 
     if (
-      node === element
+      current.nodeType ===
+      Node.ELEMENT_NODE
     ) {
 
-      break;
+      if (
+        current.tagName === "I"
+      ) {
+
+        return current;
+
+      }
+
+
+      return null;
 
     }
 
 
-    text +=
-      node.textContent || "";
+    current =
+      current.previousSibling;
 
   }
 
 
-  /*
-    Only the last part matters.
-  */
-
-  return cleanText(
-    text.slice(-80)
-  );
+  return null;
 
 }
 
@@ -1270,29 +1259,8 @@ function extractMeanings(
   posSection
 ) {
 
-  /*
-    Actual structure:
-
-    <section>
-      <h3>Noun</h3>
-
-      <p class/headword...></p>
-
-      <ol>
-        <li>meaning</li>
-        <li>meaning</li>
-      </ol>
-
-      <section>
-        <h4>Declension</h4>
-      </section>
-    </section>
-
-    We want the OL that belongs directly
-    to the Noun section.
-  */
-
-  let meaningsList = null;
+  let meaningsList =
+    null;
 
 
   for (
@@ -1322,34 +1290,30 @@ function extractMeanings(
 
 
   const meaningItems =
-    Array.from(
-      meaningsList.children
-    )
-    .filter(
-      (element) =>
-        element.tagName === "LI"
-    );
+    Array
+      .from(
+        meaningsList.children
+      )
+      .filter(
+        (element) =>
+          element.tagName ===
+          "LI"
+      );
 
 
   const meanings = [];
 
 
   meaningItems.forEach(
-    (item, index) => {
+    (item) => {
 
-      const usageLabel =
-        extractMeaningUsageLabel(
-          item
-        );
-
-
-      const meaning =
+      const meaningText =
         extractMeaningText(
           item
         );
 
 
-      if (!meaning) {
+      if (!meaningText) {
 
         return;
 
@@ -1359,11 +1323,17 @@ function extractMeanings(
       meanings.push({
 
         position:
-          index + 1,
+          meanings.length + 1,
 
-        usageLabel,
+        usageLabel:
+          extractMeaningUsageLabel(
+            item
+          ),
 
-        meaning,
+        meaning:
+          ensureTerminalPunctuation(
+            meaningText
+          ),
 
         examples:
           extractExamples(
@@ -1391,14 +1361,6 @@ function extractMeanings(
 function extractMeaningUsageLabel(
   item
 ) {
-
-  /*
-    Real Wiktionary:
-
-    <span class="usage-label-sense">
-      (architecture)
-    </span>
-  */
 
   const label =
     item.querySelector(
@@ -1449,12 +1411,10 @@ function extractMeaningText(
 ) {
 
   const clone =
-    item.cloneNode(true);
+    item.cloneNode(
+      true
+    );
 
-
-  /*
-    Remove examples, synonyms and other nested material.
-  */
 
   clone
     .querySelectorAll(
@@ -1465,11 +1425,6 @@ function extractMeaningText(
         element.remove()
     );
 
-
-  /*
-    We'll save usage_label separately,
-    so remove it from meaning text.
-  */
 
   clone
     .querySelectorAll(
@@ -1489,6 +1444,60 @@ function extractMeaningText(
 
 
 /* =========================================================
+   PUNCTUATION NORMALIZATION
+   ========================================================= */
+
+/*
+  Fixed rule for:
+    - meanings
+    - examples in Turkish
+    - English translations of examples
+    - notes
+
+  If text already ends with:
+    .
+    !
+    ?
+    …
+
+  keep it.
+
+  Otherwise add a period.
+*/
+function ensureTerminalPunctuation(
+  value
+) {
+
+  const text =
+    cleanText(
+      value
+    );
+
+
+  if (!text) {
+
+    return "";
+
+  }
+
+
+  if (
+    /[.!?…]$/.test(
+      text
+    )
+  ) {
+
+    return text;
+
+  }
+
+
+  return `${text}.`;
+
+}
+
+
+/* =========================================================
    EXAMPLES
    ========================================================= */
 
@@ -1501,17 +1510,6 @@ function extractExamples(
   const seen =
     new Set();
 
-
-  /*
-    Wiktionary usage examples are specifically marked
-    with classes like:
-
-      h-usage-example
-      h-usage-example collocation
-
-    This avoids accidentally saving Synonym blocks
-    as examples.
-  */
 
   const exampleElements =
     meaningItem.querySelectorAll(
@@ -1536,9 +1534,15 @@ function extractExamples(
       );
 
 
+    /*
+      NEW:
+      punctuation is normalized for both
+      Turkish sentence and English translation.
+    */
+
     const source =
       sourceElement
-        ? cleanText(
+        ? ensureTerminalPunctuation(
             sourceElement.textContent
           )
         : null;
@@ -1546,7 +1550,7 @@ function extractExamples(
 
     const translation =
       translationElement
-        ? cleanText(
+        ? ensureTerminalPunctuation(
             translationElement.textContent
           )
         : null;
@@ -1567,7 +1571,9 @@ function extractExamples(
 
 
     if (
-      seen.has(key)
+      seen.has(
+        key
+      )
     ) {
 
       continue;
@@ -1575,7 +1581,9 @@ function extractExamples(
     }
 
 
-    seen.add(key);
+    seen.add(
+      key
+    );
 
 
     results.push({
@@ -1583,7 +1591,10 @@ function extractExamples(
       text:
         source,
 
-      translation
+      translation,
+
+      selected:
+        true
 
     });
 
@@ -1619,22 +1630,22 @@ function extractNotes(
     getAllSections(
       posSection
     )
-    .filter(
-      (section) => {
+      .filter(
+        (section) => {
 
-        const title =
-          getSectionTitle(
-            section
+          const title =
+            getSectionTitle(
+              section
+            );
+
+
+          return (
+            title === "Usage notes" ||
+            title === "Declension"
           );
 
-
-        return (
-          title === "Usage notes" ||
-          title === "Declension"
-        );
-
-      }
-    );
+        }
+      );
 
 
   for (
@@ -1647,12 +1658,6 @@ function extractNotes(
         section
       );
 
-
-    /*
-      We only want prose notes.
-
-      Do NOT save the giant declension table here.
-    */
 
     for (
       const child
@@ -1684,11 +1689,6 @@ function extractNotes(
 
       }
 
-
-      /*
-        A DIV containing a declension table
-        must also be ignored.
-      */
 
       if (
         child.querySelector &&
@@ -1723,7 +1723,10 @@ function extractNotes(
         section:
           sectionTitle,
 
-        text,
+        text:
+          ensureTerminalPunctuation(
+            text
+          ),
 
         selected:
           true
@@ -1756,7 +1759,9 @@ function dedupeNotes(notes) {
 
 
       if (
-        seen.has(key)
+        seen.has(
+          key
+        )
       ) {
 
         return false;
@@ -1764,7 +1769,10 @@ function dedupeNotes(notes) {
       }
 
 
-      seen.add(key);
+      seen.add(
+        key
+      );
+
 
       return true;
 
@@ -1841,14 +1849,20 @@ function renderEntries() {
    FIND SAVED ENTRY
    ========================================================= */
 
-function findExistingEntry(entry) {
+function findExistingEntry(
+  entry
+) {
 
   return existingEntries.find(
     (saved) => {
 
       return (
-        Number(saved.etymology) ===
-          Number(entry.etymology) &&
+        Number(
+          saved.etymology
+        ) ===
+          Number(
+            entry.etymology
+          ) &&
         normalizePos(
           saved.part_of_speech
         ) ===
@@ -1930,6 +1944,14 @@ function renderNewCard(entry) {
     </div>
 
 
+    <button
+      type="button"
+      class="wiki-toggle-all-button"
+    >
+      Deselect all
+    </button>
+
+
     ${renderPronunciation(entry)}
 
     ${renderForms(entry)}
@@ -1966,6 +1988,12 @@ function renderNewCard(entry) {
   );
 
 
+  wireToggleAll(
+    card,
+    entry
+  );
+
+
   wireDetailToggle(
     card
   );
@@ -1977,7 +2005,175 @@ function renderNewCard(entry) {
   );
 
 
+  refreshToggleAllButton(
+    card
+  );
+
+
   return card;
+
+}
+
+
+/* =========================================================
+   SELECT ALL / DESELECT ALL
+   ========================================================= */
+
+function getSelectableItemCheckboxes(
+  card
+) {
+
+  /*
+    Do not include the main entry checkbox.
+
+    Main checkbox:
+      save this lexical entry or not
+
+    Toggle all:
+      select/deselect the contents inside it
+  */
+
+  return Array.from(
+    card.querySelectorAll(
+      `
+        input[data-kind="pronunciation"],
+        input[data-kind="form"],
+        input[data-kind="meaning"],
+        input[data-kind="example"],
+        input[data-kind="note"]
+      `
+    )
+  );
+
+}
+
+
+function wireToggleAll(
+  card,
+  entry
+) {
+
+  const button =
+    card.querySelector(
+      ".wiki-toggle-all-button"
+    );
+
+
+  if (!button) {
+
+    return;
+
+  }
+
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      const checkboxes =
+        getSelectableItemCheckboxes(
+          card
+        );
+
+
+      if (
+        checkboxes.length === 0
+      ) {
+
+        return;
+
+      }
+
+
+      const everythingSelected =
+        checkboxes.every(
+          (checkbox) =>
+            checkbox.checked
+        );
+
+
+      const newValue =
+        !everythingSelected;
+
+
+      for (
+        const checkbox
+        of checkboxes
+      ) {
+
+        checkbox.checked =
+          newValue;
+
+
+        checkbox.dispatchEvent(
+          new Event(
+            "change",
+            {
+              bubbles:
+                true
+            }
+          )
+        );
+
+      }
+
+
+      refreshToggleAllButton(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+function refreshToggleAllButton(
+  card
+) {
+
+  const button =
+    card.querySelector(
+      ".wiki-toggle-all-button"
+    );
+
+
+  if (!button) {
+
+    return;
+
+  }
+
+
+  const checkboxes =
+    getSelectableItemCheckboxes(
+      card
+    );
+
+
+  if (
+    checkboxes.length === 0
+  ) {
+
+    button.hidden =
+      true;
+
+    return;
+
+  }
+
+
+  const everythingSelected =
+    checkboxes.every(
+      (checkbox) =>
+        checkbox.checked
+    );
+
+
+  button.textContent =
+    everythingSelected
+      ? "Deselect all"
+      : "Select all";
 
 }
 
@@ -2000,14 +2196,6 @@ function renderExistingCard(
   card.className =
     "wiki-entry-card wiki-entry-existing";
 
-
-  /*
-    Existing entries stay compact.
-
-    User decided:
-      show only enough meanings
-      to identify what this entry is.
-  */
 
   const meanings =
     entry.meanings.slice(
@@ -2094,7 +2282,9 @@ function renderExistingCard(
    PRONUNCIATION UI
    ========================================================= */
 
-function renderPronunciation(entry) {
+function renderPronunciation(
+  entry
+) {
 
   if (
     !entry.pronunciation.length
@@ -2127,11 +2317,7 @@ function renderPronunciation(entry) {
                     type="checkbox"
                     data-kind="pronunciation"
                     data-index="${index}"
-                    ${
-                      pronunciation.selected
-                        ? "checked"
-                        : ""
-                    }
+                    checked
                   />
 
                   <span class="wiki-custom-check"></span>
@@ -2173,7 +2359,9 @@ function renderPronunciation(entry) {
    FORMS UI
    ========================================================= */
 
-function renderForms(entry) {
+function renderForms(
+  entry
+) {
 
   if (
     !entry.forms.length
@@ -2206,11 +2394,7 @@ function renderForms(entry) {
                     type="checkbox"
                     data-kind="form"
                     data-index="${index}"
-                    ${
-                      form.selected
-                        ? "checked"
-                        : ""
-                    }
+                    checked
                   />
 
                   <span>
@@ -2243,7 +2427,9 @@ function renderForms(entry) {
    VISIBLE MEANINGS
    ========================================================= */
 
-function renderVisibleMeanings(entry) {
+function renderVisibleMeanings(
+  entry
+) {
 
   if (
     !entry.meanings.length
@@ -2253,11 +2439,6 @@ function renderVisibleMeanings(entry) {
 
   }
 
-
-  /*
-    Decision:
-      maximum 4 meanings visible.
-  */
 
   const visibleMeanings =
     entry.meanings.slice(
@@ -2309,11 +2490,7 @@ function renderMeaningRow(
         type="checkbox"
         data-kind="meaning"
         data-position="${meaning.position}"
-        ${
-          meaning.selected
-            ? "checked"
-            : ""
-        }
+        checked
       />
 
       <span class="wiki-custom-check"></span>
@@ -2350,7 +2527,9 @@ function renderMeaningRow(
    SHOW ALL DETAILS
    ========================================================= */
 
-function renderHiddenDetails(entry) {
+function renderHiddenDetails(
+  entry
+) {
 
   const extraMeanings =
     entry.meanings.slice(
@@ -2367,15 +2546,6 @@ function renderHiddenDetails(entry) {
         meaning.examples.length > 0
     );
 
-
-  /*
-    Decision:
-
-    Show all details appears only if:
-      - there are more than 4 meanings
-      - examples exist
-      - notes exist
-  */
 
   const hasDetails =
     extraMeanings.length > 0 ||
@@ -2509,11 +2679,7 @@ function renderHiddenDetails(entry) {
                               type="checkbox"
                               data-kind="note"
                               data-index="${index}"
-                              ${
-                                note.selected
-                                  ? "checked"
-                                  : ""
-                              }
+                              checked
                             />
 
                             <span class="wiki-custom-check"></span>
@@ -2570,31 +2736,30 @@ function renderExampleGroup(
       ${
         meaning.examples
           .map(
-            (example) => {
+            (
+              example,
+              exampleIndex
+            ) => `
+              <label class="wiki-choice-row wiki-example-choice">
 
-              if (
-                typeof example ===
-                "string"
-              ) {
+                <input
+                  type="checkbox"
+                  data-kind="example"
+                  data-meaning-position="${meaning.position}"
+                  data-example-index="${exampleIndex}"
+                  checked
+                />
 
-                return `
-                  <div class="wiki-example">
-                    ${escapeHtml(example)}
-                  </div>
-                `;
+                <span class="wiki-custom-check"></span>
 
-              }
-
-
-              return `
-                <div class="wiki-example">
+                <span class="wiki-choice-content">
 
                   ${
                     example.text
                       ? `
-                        <div>
+                        <strong>
                           ${escapeHtml(example.text)}
-                        </div>
+                        </strong>
                       `
                       : ""
                   }
@@ -2602,17 +2767,17 @@ function renderExampleGroup(
                   ${
                     example.translation
                       ? `
-                        <div>
+                        <small>
                           ${escapeHtml(example.translation)}
-                        </div>
+                        </small>
                       `
                       : ""
                   }
 
-                </div>
-              `;
+                </span>
 
-            }
+              </label>
+            `
           )
           .join("")
       }
@@ -2627,7 +2792,9 @@ function renderExampleGroup(
    DETAIL TOGGLE
    ========================================================= */
 
-function wireDetailToggle(card) {
+function wireDetailToggle(
+  card
+) {
 
   const button =
     card.querySelector(
@@ -2664,7 +2831,9 @@ function wireDetailToggle(card) {
 
       button.setAttribute(
         "aria-expanded",
-        String(nextOpen)
+        String(
+          nextOpen
+        )
       );
 
 
@@ -2730,6 +2899,11 @@ function wireItemCheckboxes(
 
             }
 
+
+            refreshToggleAllButton(
+              card
+            );
+
           }
         );
 
@@ -2764,6 +2938,11 @@ function wireItemCheckboxes(
                   checkbox.checked;
 
             }
+
+
+            refreshToggleAllButton(
+              card
+            );
 
           }
         );
@@ -2804,6 +2983,72 @@ function wireItemCheckboxes(
 
             }
 
+
+            refreshToggleAllButton(
+              card
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  card
+    .querySelectorAll(
+      'input[data-kind="example"]'
+    )
+    .forEach(
+      (checkbox) => {
+
+        checkbox.addEventListener(
+          "change",
+          () => {
+
+            const meaningPosition =
+              Number(
+                checkbox.dataset
+                  .meaningPosition
+              );
+
+
+            const exampleIndex =
+              Number(
+                checkbox.dataset
+                  .exampleIndex
+              );
+
+
+            const meaning =
+              entry.meanings.find(
+                (item) =>
+                  item.position ===
+                  meaningPosition
+              );
+
+
+            if (
+              meaning &&
+              meaning.examples[
+                exampleIndex
+              ]
+            ) {
+
+              meaning
+                .examples[
+                  exampleIndex
+                ]
+                .selected =
+                  checkbox.checked;
+
+            }
+
+
+            refreshToggleAllButton(
+              card
+            );
+
           }
         );
 
@@ -2839,6 +3084,11 @@ function wireItemCheckboxes(
 
             }
 
+
+            refreshToggleAllButton(
+              card
+            );
+
           }
         );
 
@@ -2860,7 +3110,9 @@ function updateSelectedCount() {
 
         return (
           entry.selected &&
-          !findExistingEntry(entry)
+          !findExistingEntry(
+            entry
+          )
         );
 
       }
@@ -2874,7 +3126,9 @@ function updateSelectedCount() {
 }
 
 
-function updateSaveButton(count) {
+function updateSaveButton(
+  count
+) {
 
   if (
     count <= 0
@@ -2908,15 +3162,15 @@ function updateSaveButton(count) {
    ========================================================= */
 
 /*
-  Still intentionally NOT writing to Supabase.
+  Database write is still intentionally disabled.
 
-  This search/parser version must first be validated
-  with real words.
-
-  When confirmed, this button will send all selected
-  NEW entries together.
+  We are validating:
+    - parsing
+    - forms
+    - meanings
+    - examples
+    - selection controls
 */
-
 saveButton.addEventListener(
   "click",
   () => {
@@ -2927,7 +3181,9 @@ saveButton.addEventListener(
 
           return (
             entry.selected &&
-            !findExistingEntry(entry)
+            !findExistingEntry(
+              entry
+            )
           );
 
         }
@@ -2957,7 +3213,9 @@ saveButton.addEventListener(
    LOADING
    ========================================================= */
 
-function setLoading(loading) {
+function setLoading(
+  loading
+) {
 
   searchButton.disabled =
     loading;
