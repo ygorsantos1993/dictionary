@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <meta name="theme-color" content="#64778a" />
+
+  <title>English</title>
+
+  <link
+    rel="stylesheet"
+    href="../css/styles.css"
+  />
+</head>
+
+<body class="english-page">
+
+  <header class="english-topbar">
+
+    <button
+      id="englishBackButton"
+      class="wiki-round-button"
+      type="button"
+      aria-label="Back to dictionary"
+      title="Back"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
+
+
+    <div
+      class="english-language-indicator"
+      aria-label="English"
+      title="English"
+    >
+      <img
+        src="../english-flag.png"
+        alt="English"
+      />
+    </div>
+
+  </header>
+
+
+  <main class="english-shell">
+
+    <section class="english-title-section">
+
+      <h1>
+        ENGLISH
+      </h1>
+
+      <div class="english-index-label">
+        WORD INDEX
+      </div>
+
+      <div
+        class="hub-ornament"
+        aria-hidden="true"
+      >
+        <span></span>
+        <strong>◇</strong>
+        <span></span>
+      </div>
+
+    </section>
+
+
+    <section class="english-search-card">
+
+      <div class="english-search-heading">
+
+        <img
+          src="../globe.png"
+          alt=""
+          class="english-search-icon"
+        />
+
+        <div>
+          <div class="english-search-eyebrow">
+            SEARCH
+          </div>
+
+          <h2>
+            English word
+          </h2>
+        </div>
+
+      </div>
+
+
+      <form
+        id="englishSearchForm"
+        class="english-search-form"
+      >
+
+        <div class="english-search-input-wrap">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="6.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+
+            <path
+              d="M16 16l4 4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          <input
+            id="englishSearchInput"
+            type="search"
+            placeholder="Search an English word"
+            autocomplete="off"
+            spellcheck="false"
+          />
+
+        </div>
+
+
+        <button
+          id="englishSearchButton"
+          class="english-search-button"
+          type="submit"
+        >
+          Search
+        </button>
+
+      </form>
+
+
+      <div
+        id="englishSearchStatus"
+        class="english-search-status"
+        hidden
+      ></div>
+
+    </section>
+
+
+    <section
+      id="englishResults"
+      class="english-results-placeholder"
+      hidden
+    ></section>
+
+  </main>
+
+
+  <script
+    type="module"
+    src="./js/english.js"
+  ></script>
+
+</body>
+</html>
