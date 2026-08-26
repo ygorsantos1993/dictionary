@@ -7086,7 +7086,7 @@ function updateSaveButton(
       true;
 
     saveButton.textContent =
-      "Save";
+      "💾 Save";
 
     return;
 
@@ -7099,19 +7099,26 @@ function updateSaveButton(
 
   saveButton.textContent =
     count === 1
-      ? "Save 1"
-      : `Save ${count}`;
+      ? "💾 Save 1 word"
+      : `💾 Save ${count} words`;
 
 }
 
 
 /* =========================================================
-   SAVE PREVIEW
+   SAVE TO SUPABASE
+
+   ATOMIC SAVE:
+   every selected word + every selected meaning is sent in
+   one RPC call.
+
+   PostgreSQL executes the RPC in one transaction.
+   If any insert fails, NOTHING from this Save is committed.
    ========================================================= */
 
 saveButton.addEventListener(
   "click",
-  () => {
+  async () => {
 
     const selected =
       parsedWords.filter(
@@ -7126,33 +7133,246 @@ saveButton.addEventListener(
       );
 
 
+    if (
+      !selected.length
+    ) {
+
+      return;
+
+    }
+
+
     const payload =
       selected.map(
         buildSelectedPayload
       );
 
 
-    console.log(
-      "Words ready to save:",
-      payload
-    );
+    const rpcPayload =
+      payload.map(
+        buildAtomicSaveWordPayload
+      );
 
 
-    showStatus(
-      `${payload.length} new ${
-        payload.length === 1
-          ? "word is"
-          : "words are"
-      } ready to save.`,
-      "success"
-    );
+    saveButton.disabled =
+      true;
+
+    saveButton.textContent =
+      selected.length === 1
+        ? "💾 Saving 1 word..."
+        : `💾 Saving ${selected.length} words...`;
+
+
+    try {
+
+      const {
+        data,
+        error
+      } = await supabase
+        .rpc(
+          "save_turkish_words_batch",
+          {
+            p_words:
+              rpcPayload
+          }
+        );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      console.log(
+        "Atomic save result:",
+        data
+      );
+
+
+      showStatus(
+        `${selected.length} ${
+          selected.length === 1
+            ? "word was"
+            : "words were"
+        } saved to My Dictionary.`,
+        "success"
+      );
+
+
+      existingWords =
+        await loadExistingWords(
+          currentWord
+        );
+
+
+      renderWords();
+
+    } catch (error) {
+
+      console.error(
+        "Atomic save failed:",
+        error
+      );
+
+
+      showStatus(
+        error?.message ||
+        "Nothing was saved because the operation failed.",
+        "error"
+      );
+
+
+      updateSelectedCount();
+
+    }
 
   }
 );
 
 
 /* =========================================================
-   FUTURE SAVE PAYLOAD
+   ATOMIC RPC PAYLOAD
+
+   This is the exact structure expected by
+   public.save_turkish_words_batch(jsonb).
+   ========================================================= */
+
+function buildAtomicSaveWordPayload(
+  payload
+) {
+
+  const selectedForms =
+    payload.partsOfSpeech
+      .filter(
+        (pos) =>
+          pos.forms.length > 0
+      )
+      .map(
+        (pos) => ({
+
+          part_of_speech:
+            pos.partOfSpeech,
+
+          forms:
+            pos.forms
+
+        })
+      );
+
+
+  const selectedNotes =
+    payload.partsOfSpeech
+      .filter(
+        (pos) =>
+          pos.notes.length > 0
+      )
+      .map(
+        (pos) => ({
+
+          part_of_speech:
+            pos.partOfSpeech,
+
+          notes:
+            pos.notes
+
+        })
+      );
+
+
+  const meanings = [];
+
+
+  for (
+    const pos
+    of payload.partsOfSpeech
+  ) {
+
+    for (
+      const meaning
+      of pos.meanings
+    ) {
+
+      meanings.push({
+
+        part_of_speech:
+          pos.partOfSpeech,
+
+        position:
+          meaning.position,
+
+        usage_label:
+          meaning.usageLabel || null,
+
+        meaning:
+          meaning.meaning,
+
+        examples:
+          meaning.examples.length
+            ? meaning.examples
+            : null
+
+      });
+
+    }
+
+  }
+
+
+  return {
+
+    word:
+      normalizeSearchWord(
+        payload.word
+      ),
+
+    etymology:
+      payload.etymology,
+
+    pronunciation:
+      payload.pronunciation.length
+        ? payload.pronunciation
+        : null,
+
+    forms:
+      selectedForms.length
+        ? selectedForms
+        : null,
+
+    notes:
+      selectedNotes.length
+        ? selectedNotes
+        : null,
+
+    /*
+      The database column is still named surface_analysis.
+      The UI currently presents it as editable "Etymology".
+    */
+
+    surface_analysis:
+      payload.etymologyText,
+
+    base_word_text:
+      payload.baseWordText,
+
+    base_word_id:
+      payload.baseWordId,
+
+    alternative_forms:
+      payload.alternativeForms.length
+        ? payload.alternativeForms
+        : null,
+
+    meanings
+
+  };
+
+}
+
+
+/* =========================================================
+   SELECTED SAVE PAYLOAD
    ========================================================= */
 
 function buildSelectedPayload(
@@ -7409,7 +7629,7 @@ function clearResults() {
     true;
 
   saveButton.textContent =
-    "Save";
+    "💾 Save";
 
 
   hideStatus();
