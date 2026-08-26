@@ -2426,6 +2426,221 @@ input:checked +
 }
 
 
+
+/* =========================================================
+   BASE WORD
+   ========================================================= */
+
+.wiki-etymology-edit-button:disabled {
+  opacity: 0.38;
+
+  cursor: default;
+}
+
+
+.wiki-base-word-search-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  gap: 9px;
+
+  align-items: center;
+}
+
+
+.wiki-base-word-input {
+  width: 100%;
+  height: 45px;
+
+  padding:
+    0
+    13px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.24);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.78);
+
+  color:
+    #30363b;
+
+  outline: none;
+}
+
+
+.wiki-base-word-input:focus {
+  border-color:
+    rgba(185, 139, 73, 0.55);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(185, 139, 73, 0.09);
+}
+
+
+.wiki-base-word-search-button {
+  height: 45px;
+
+  padding:
+    0
+    15px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d5ad6d,
+      #ac7938
+    );
+
+  color: white;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+
+.wiki-base-word-search-button:disabled {
+  opacity: 0.55;
+}
+
+
+.wiki-base-word-results {
+  margin-top: 12px;
+
+  display: grid;
+
+  gap: 8px;
+}
+
+
+.wiki-base-word-results[hidden] {
+  display: none;
+}
+
+
+.wiki-base-word-message {
+  padding:
+    10px
+    12px;
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.44);
+
+  color:
+    #716b64;
+
+  font-size: 13px;
+}
+
+
+.wiki-base-word-option {
+  margin: 0;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding:
+    10px
+    11px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.16);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.44);
+
+  cursor: pointer;
+}
+
+
+.wiki-base-word-option input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+.wiki-base-word-radio {
+  width: 19px;
+  height: 19px;
+
+  flex:
+    0 0 19px;
+
+  margin-top: 1px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.44);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.65);
+}
+
+
+.wiki-base-word-option
+input:checked +
+.wiki-base-word-radio {
+  border:
+    5px solid
+    #b98545;
+
+  background:
+    white;
+}
+
+
+.wiki-base-word-option-content {
+  min-width: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+
+.wiki-base-word-option-content strong {
+  color:
+    #373c40;
+
+  font-size: 13px;
+}
+
+
+.wiki-base-word-option-content small {
+  color:
+    #706b65;
+
+  font-size: 12px;
+
+  line-height: 1.4;
+}
+
+
 /* =========================================================
    MOBILE HUB
    ========================================================= */
