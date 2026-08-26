@@ -2182,6 +2182,34 @@ input:not(:checked) + span {
   grid-row: 1;
 }
 
+
+/*
+  Pronoun declension uses the same generic Forms grid.
+
+  The parser emits each case as:
+  Case Singular
+  Case Plural
+
+  Singular stays on the left and the matching plural
+  goes on the right. Because the forms are emitted in
+  singular/plural pairs, CSS Grid naturally advances
+  to the next row for the next case.
+*/
+
+.wiki-form-group[
+  data-form-key$="_singular"
+] {
+  grid-column: 1;
+  grid-row: auto;
+}
+
+.wiki-form-group[
+  data-form-key$="_plural"
+] {
+  grid-column: 2;
+  grid-row: auto;
+}
+
 .wiki-form-group .wiki-etymology {
   margin: 0;
 }
