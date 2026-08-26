@@ -25,14 +25,8 @@ const logoutButton =
 const hubLanguageTitle =
   document.getElementById("hubLanguageTitle");
 
-const onlineDirection =
-  document.getElementById("onlineDirection");
-
 const wiktionaryDirection =
   document.getElementById("wiktionaryDirection");
-
-const onlineCard =
-  document.getElementById("onlineCard");
 
 const wiktionaryCard =
   document.getElementById("wiktionaryCard");
@@ -108,10 +102,6 @@ function updateLanguageUI() {
     language.name;
 
 
-  onlineDirection.textContent =
-    `English → ${language.name}`;
-
-
   wiktionaryDirection.textContent =
     `${language.name} → English`;
 
@@ -142,6 +132,16 @@ function setLanguage(languageKey) {
   closeLanguageMenu();
 
   updateLanguageUI();
+
+}
+
+
+function openEnglishIndex() {
+
+  closeLanguageMenu();
+
+  window.location.href =
+    "./english.html";
 
 }
 
@@ -247,8 +247,23 @@ languageOptions.forEach(
       "click",
       () => {
 
+        const languageKey =
+          option.dataset.language;
+
+
+        if (
+          languageKey === "english"
+        ) {
+
+          openEnglishIndex();
+
+          return;
+
+        }
+
+
         setLanguage(
-          option.dataset.language
+          languageKey
         );
 
       }
@@ -328,13 +343,6 @@ syncButton.addEventListener(
       "Dictionary synchronized"
     );
 
-  }
-);
-
-
-onlineCard.addEventListener(
-  "click",
-  () => {
   }
 );
 
