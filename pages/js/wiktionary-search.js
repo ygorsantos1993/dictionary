@@ -861,6 +861,18 @@ function parsePartOfSpeech(
 
 
   if (
+    partOfSpeech === "Pronoun"
+  ) {
+
+    forms =
+      parsePronounForms(
+        posSection
+      );
+
+  }
+
+
+  if (
     INVARIABLE_POS_NAMES.has(
       partOfSpeech
     )
@@ -1737,6 +1749,351 @@ function parseNounForms(
 
 
   return forms;
+
+}
+
+
+/* =========================================================
+   PRONOUN FORMS
+
+   Wiktionary only. Never generate or infer a Turkish form.
+
+   Uses the same generic Forms UI as every other POS.
+
+   For each explicit declension row:
+   - Case Singular
+   - Case Plural
+
+   Example:
+   Nominative Singular / Nominative Plural
+   Accusative Singular / Accusative Plural
+   ========================================================= */
+
+function parsePronounForms(
+  posSection
+) {
+
+  const forms = [];
+
+
+  const declensionSections =
+    findDeclensionSections(
+      posSection
+    );
+
+
+  for (
+    const section
+    of declensionSections
+  ) {
+
+    const tables =
+      Array.from(
+        section.querySelectorAll(
+          "table"
+        )
+      );
+
+
+    for (
+      const table
+      of tables
+    ) {
+
+      const extracted =
+        extractPronounFormsFromDeclensionTable(
+          table
+        );
+
+
+      for (
+        const form
+        of extracted
+      ) {
+
+        addFormIfMissing(
+          forms,
+          form
+        );
+
+      }
+
+    }
+
+  }
+
+
+  return forms;
+
+}
+
+
+function extractPronounFormsFromDeclensionTable(
+  table
+) {
+
+  const results = [];
+
+
+  const grid =
+    buildTableGrid(
+      table
+    );
+
+
+  if (
+    !grid.length
+  ) {
+
+    return results;
+
+  }
+
+
+  const columns =
+    findSingularPluralColumns(
+      grid
+    );
+
+
+  if (
+    columns.singular === null &&
+    columns.plural === null
+  ) {
+
+    return results;
+
+  }
+
+
+  for (
+    let rowIndex = 0;
+    rowIndex < grid.length;
+    rowIndex += 1
+  ) {
+
+    const row =
+      grid[rowIndex];
+
+
+    if (!row) {
+
+      continue;
+
+    }
+
+
+    const caseLabel =
+      extractPronounCaseLabel(
+        row,
+        columns
+      );
+
+
+    if (!caseLabel) {
+
+      continue;
+
+    }
+
+
+    if (
+      columns.singular !== null
+    ) {
+
+      const singularValue =
+        extractDeclensionCellValue(
+          row[
+            columns.singular
+          ]
+        );
+
+
+      if (singularValue) {
+
+        addFormIfMissing(
+          results,
+          {
+
+            key:
+              `${slugifyFormKey(caseLabel)}_singular`,
+
+            label:
+              `${caseLabel} Singular`,
+
+            value:
+              singularValue,
+
+            source:
+              "wiktionary_declension",
+
+            selected:
+              true
+
+          }
+        );
+
+      }
+
+    }
+
+
+    if (
+      columns.plural !== null
+    ) {
+
+      const pluralValue =
+        extractDeclensionCellValue(
+          row[
+            columns.plural
+          ]
+        );
+
+
+      if (pluralValue) {
+
+        addFormIfMissing(
+          results,
+          {
+
+            key:
+              `${slugifyFormKey(caseLabel)}_plural`,
+
+            label:
+              `${caseLabel} Plural`,
+
+            value:
+              pluralValue,
+
+            source:
+              "wiktionary_declension",
+
+            selected:
+              true
+
+          }
+        );
+
+      }
+
+    }
+
+  }
+
+
+  return results;
+
+}
+
+
+function extractPronounCaseLabel(
+  row,
+  columns
+) {
+
+  const formColumns =
+    [
+      columns.singular,
+      columns.plural
+    ]
+      .filter(
+        (value) =>
+          value !== null
+      );
+
+
+  if (
+    !formColumns.length
+  ) {
+
+    return null;
+
+  }
+
+
+  const firstFormColumn =
+    Math.min(
+      ...formColumns
+    );
+
+
+  const seen =
+    new Set();
+
+
+  for (
+    let columnIndex = 0;
+    columnIndex < firstFormColumn;
+    columnIndex += 1
+  ) {
+
+    const cell =
+      row[columnIndex];
+
+
+    if (
+      !cell ||
+      !cell.element ||
+      seen.has(
+        cell.element
+      )
+    ) {
+
+      continue;
+
+    }
+
+
+    seen.add(
+      cell.element
+    );
+
+
+    const text =
+      normalizeTableLabel(
+        cell.text
+      );
+
+
+    if (!text) {
+
+      continue;
+
+    }
+
+
+    if (
+      text === "singular" ||
+      text === "plural" ||
+      /^declension\s+of\b/i.test(
+        text
+      )
+    ) {
+
+      continue;
+
+    }
+
+
+    if (
+      cell.tag !== "TH"
+    ) {
+
+      continue;
+
+    }
+
+
+    return capitalizeFirst(
+      cleanTableText(
+        cell.text
+      )
+    );
+
+  }
+
+
+  return null;
 
 }
 
