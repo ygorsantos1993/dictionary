@@ -2641,6 +2641,376 @@ input:checked +
 }
 
 
+
+
+/* =========================================================
+   ENGLISH WORD INDEX
+   ========================================================= */
+
+.english-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  margin: 0;
+
+  padding:
+    max(
+      18px,
+      env(safe-area-inset-top)
+    )
+    15px
+    max(
+      42px,
+      env(safe-area-inset-bottom)
+    );
+
+  background:
+    linear-gradient(
+      rgba(248, 239, 225, 0.33),
+      rgba(248, 239, 225, 0.23)
+    ),
+    url("../background.jpg");
+
+  background-size: cover;
+
+  background-position:
+    center center;
+
+  background-attachment: fixed;
+
+  overflow-x: hidden;
+}
+
+
+.english-topbar {
+  position: sticky;
+
+  top:
+    max(
+      8px,
+      env(safe-area-inset-top)
+    );
+
+  z-index: 100;
+
+  width: 100%;
+
+  max-width: 520px;
+
+  margin:
+    0 auto
+    22px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+
+.english-language-indicator {
+  width: 50px;
+  height: 50px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.43);
+
+  border-radius: 16px;
+
+  background:
+    rgba(48, 59, 69, 0.72);
+
+  backdrop-filter: blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  box-shadow:
+    0 7px 20px
+    rgba(23, 31, 38, 0.16);
+}
+
+
+.english-language-indicator img {
+  width: 35px;
+  height: 24px;
+
+  object-fit: cover;
+
+  border-radius: 5px;
+}
+
+
+.english-shell {
+  width: 100%;
+
+  max-width: 520px;
+
+  margin: 0 auto;
+}
+
+
+.english-title-section {
+  padding:
+    38px
+    6px
+    44px;
+
+  text-align: center;
+}
+
+
+.english-title-section h1 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #c69a58;
+
+  font-size:
+    clamp(
+      52px,
+      14vw,
+      76px
+    );
+
+  font-weight: 400;
+
+  line-height: 0.95;
+
+  letter-spacing:
+    -0.035em;
+
+  text-shadow:
+    0 2px 14px
+    rgba(66, 43, 18, 0.14);
+}
+
+
+.english-index-label {
+  margin-top: 20px;
+
+  color:
+    #4a5663;
+
+  font-size:
+    17px;
+
+  font-weight: 500;
+
+  letter-spacing:
+    0.24em;
+}
+
+
+.english-search-card {
+  padding: 18px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.72);
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 251, 245, 0.94),
+      rgba(250, 241, 228, 0.89)
+    );
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  box-shadow:
+    0 12px 34px
+    rgba(42, 48, 52, 0.13);
+}
+
+
+.english-search-heading {
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+}
+
+
+.english-search-icon {
+  width: 60px;
+  height: 60px;
+
+  object-fit: contain;
+}
+
+
+.english-search-eyebrow {
+  margin-bottom: 3px;
+
+  color:
+    #a5763b;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+}
+
+
+.english-search-heading h2 {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  color:
+    #4c5661;
+
+  font-size: 29px;
+
+  font-weight: 500;
+}
+
+
+.english-search-form {
+  display: grid;
+
+  gap: 10px;
+}
+
+
+.english-search-input-wrap {
+  position: relative;
+}
+
+
+.english-search-input-wrap svg {
+  position: absolute;
+
+  top: 50%;
+  left: 15px;
+
+  width: 20px;
+  height: 20px;
+
+  transform:
+    translateY(-50%);
+
+  color:
+    #a37845;
+
+  pointer-events: none;
+}
+
+
+.english-search-input-wrap input {
+  width: 100%;
+  height: 51px;
+
+  padding:
+    0
+    14px
+    0
+    45px;
+
+  border:
+    1px solid
+    rgba(163, 119, 65, 0.20);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.84);
+
+  color:
+    #20262b;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+
+.english-search-input-wrap input:focus {
+  border-color:
+    rgba(180, 132, 70, 0.54);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(185, 139, 73, 0.10);
+}
+
+
+.english-search-button {
+  height: 48px;
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #d5ad6d,
+      #ac7938
+    );
+
+  color: white;
+
+  font-weight: 800;
+}
+
+
+.english-search-status {
+  margin-top: 13px;
+
+  padding:
+    12px
+    14px;
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.48);
+
+  color:
+    #6d665d;
+
+  font-size: 13px;
+
+  text-align: center;
+}
+
+
+.english-search-status[hidden],
+.english-results-placeholder[hidden] {
+  display: none;
+}
+
+
+.english-results-placeholder {
+  margin-top: 18px;
+}
+
+
 /* =========================================================
    MOBILE HUB
    ========================================================= */
