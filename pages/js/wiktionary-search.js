@@ -690,10 +690,17 @@ function parseEtymologyGroup(
         group
       ),
 
-    surfaceAnalysis:
-      extractSurfaceAnalysis(
-        group.etymologySection
+    etymologyText:
+      getCachedEtymologyText(
+        searchedWord,
+        group.etymology,
+        extractEtymologyText(
+          group.etymologySection
+        )
       ),
+
+    etymologySelected:
+      true,
 
     pronunciation:
       extractPronunciationsForEtymology(
@@ -855,18 +862,6 @@ function parsePartOfSpeech(
         headwordLine,
         searchedWord,
         group
-      );
-
-  }
-
-
-  if (
-    partOfSpeech === "Pronoun"
-  ) {
-
-    forms =
-      parsePronounForms(
-        posSection
       );
 
   }
@@ -1333,36 +1328,79 @@ function extractAlternativeFormUsageLabel(
 
 
 /* =========================================================
-   WORD FORMATION
+   ETYMOLOGY TEXT
+
+   Pull the text that belongs directly to the Wiktionary
+   Etymology section.
+
+   The user may edit this text later. The original Wiktionary
+   text is only the starting value.
+
+   Nested POS / Pronunciation / Declension sections are not
+   included here.
    ========================================================= */
 
-function extractSurfaceAnalysis(
+function extractEtymologyText(
   etymologySection
 ) {
 
   if (!etymologySection) {
 
-    return null;
+    return "";
 
   }
 
 
-  const candidates =
-    Array.from(
-      etymologySection.querySelectorAll(
-        ":scope > p, :scope > div, :scope > ul"
-      )
-    );
+  const parts = [];
 
 
   for (
-    const element
-    of candidates
+    const child
+    of etymologySection.children
   ) {
+
+    if (
+      /^H[1-6]$/.test(
+        child.tagName
+      )
+    ) {
+
+      continue;
+
+    }
+
+
+    if (
+      child.tagName === "SECTION" ||
+      child.tagName === "STYLE" ||
+      child.tagName === "TABLE" ||
+      child.tagName === "FIGURE"
+    ) {
+
+      continue;
+
+    }
+
+
+    const clone =
+      child.cloneNode(
+        true
+      );
+
+
+    clone
+      .querySelectorAll(
+        "sup, style, .mw-ref, section, table, figure"
+      )
+      .forEach(
+        (element) =>
+          element.remove()
+      );
+
 
     const text =
       cleanText(
-        element.textContent
+        clone.textContent
       );
 
 
@@ -1373,54 +1411,110 @@ function extractSurfaceAnalysis(
     }
 
 
-    const markerMatch =
-      /By\s+surface\s+analysis\s*,?\s*/i.exec(
-        text
-      );
-
-
-    if (!markerMatch) {
-
-      continue;
-
-    }
-
-
-    const start =
-      markerMatch.index +
-      markerMatch[0].length;
-
-
-    let result =
+    parts.push(
       text
-        .slice(
-          start
-        )
-        .trim();
-
-
-    const sentence =
-      result.match(
-        /^.*?[.!?](?=\s|$)/
-      );
-
-
-    if (sentence) {
-
-      result =
-        sentence[0];
-
-    }
-
-
-    return ensureTerminalPunctuation(
-      result
     );
 
   }
 
 
-  return null;
+  return parts
+    .join(" ")
+    .trim();
+
+}
+
+
+/* =========================================================
+   ETYMOLOGY LOCAL DRAFT CACHE
+
+   Drafts are kept locally on the device/browser so editing
+   is independent from the Etymology checkbox.
+   ========================================================= */
+
+function getEtymologyCacheKey(
+  word,
+  etymology
+) {
+
+  return [
+    "dictionary",
+    "turkish",
+    "wiktionary",
+    "etymology",
+    normalizeSearchWord(
+      word
+    ),
+    String(
+      etymology
+    )
+  ].join(":");
+
+}
+
+
+function getCachedEtymologyText(
+  word,
+  etymology,
+  fallbackText
+) {
+
+  try {
+
+    const cached =
+      localStorage.getItem(
+        getEtymologyCacheKey(
+          word,
+          etymology
+        )
+      );
+
+
+    if (
+      cached !== null
+    ) {
+
+      return cached;
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Could not read etymology draft cache:",
+      error
+    );
+
+  }
+
+
+  return fallbackText || "";
+
+}
+
+
+function cacheEtymologyText(
+  wordEntry
+) {
+
+  try {
+
+    localStorage.setItem(
+      getEtymologyCacheKey(
+        wordEntry.word,
+        wordEntry.etymology
+      ),
+      wordEntry.etymologyText || ""
+    );
+
+  } catch (error) {
+
+    console.warn(
+      "Could not save etymology draft cache:",
+      error
+    );
+
+  }
 
 }
 
@@ -1749,371 +1843,6 @@ function parseNounForms(
 
 
   return forms;
-
-}
-
-
-/* =========================================================
-   PRONOUN FORMS
-
-   Wiktionary only. Never generate or infer a Turkish form.
-
-   Uses the same generic Forms UI as every other POS.
-
-   For each explicit declension row:
-   - Case Singular
-   - Case Plural
-
-   Example:
-   Nominative Singular / Nominative Plural
-   Accusative Singular / Accusative Plural
-   ========================================================= */
-
-function parsePronounForms(
-  posSection
-) {
-
-  const forms = [];
-
-
-  const declensionSections =
-    findDeclensionSections(
-      posSection
-    );
-
-
-  for (
-    const section
-    of declensionSections
-  ) {
-
-    const tables =
-      Array.from(
-        section.querySelectorAll(
-          "table"
-        )
-      );
-
-
-    for (
-      const table
-      of tables
-    ) {
-
-      const extracted =
-        extractPronounFormsFromDeclensionTable(
-          table
-        );
-
-
-      for (
-        const form
-        of extracted
-      ) {
-
-        addFormIfMissing(
-          forms,
-          form
-        );
-
-      }
-
-    }
-
-  }
-
-
-  return forms;
-
-}
-
-
-function extractPronounFormsFromDeclensionTable(
-  table
-) {
-
-  const results = [];
-
-
-  const grid =
-    buildTableGrid(
-      table
-    );
-
-
-  if (
-    !grid.length
-  ) {
-
-    return results;
-
-  }
-
-
-  const columns =
-    findSingularPluralColumns(
-      grid
-    );
-
-
-  if (
-    columns.singular === null &&
-    columns.plural === null
-  ) {
-
-    return results;
-
-  }
-
-
-  for (
-    let rowIndex = 0;
-    rowIndex < grid.length;
-    rowIndex += 1
-  ) {
-
-    const row =
-      grid[rowIndex];
-
-
-    if (!row) {
-
-      continue;
-
-    }
-
-
-    const caseLabel =
-      extractPronounCaseLabel(
-        row,
-        columns
-      );
-
-
-    if (!caseLabel) {
-
-      continue;
-
-    }
-
-
-    if (
-      columns.singular !== null
-    ) {
-
-      const singularValue =
-        extractDeclensionCellValue(
-          row[
-            columns.singular
-          ]
-        );
-
-
-      if (singularValue) {
-
-        addFormIfMissing(
-          results,
-          {
-
-            key:
-              `${slugifyFormKey(caseLabel)}_singular`,
-
-            label:
-              `${caseLabel} Singular`,
-
-            value:
-              singularValue,
-
-            source:
-              "wiktionary_declension",
-
-            selected:
-              true
-
-          }
-        );
-
-      }
-
-    }
-
-
-    if (
-      columns.plural !== null
-    ) {
-
-      const pluralValue =
-        extractDeclensionCellValue(
-          row[
-            columns.plural
-          ]
-        );
-
-
-      if (pluralValue) {
-
-        addFormIfMissing(
-          results,
-          {
-
-            key:
-              `${slugifyFormKey(caseLabel)}_plural`,
-
-            label:
-              `${caseLabel} Plural`,
-
-            value:
-              pluralValue,
-
-            source:
-              "wiktionary_declension",
-
-            selected:
-              true
-
-          }
-        );
-
-      }
-
-    }
-
-  }
-
-
-  return results;
-
-}
-
-
-function extractPronounCaseLabel(
-  row,
-  columns
-) {
-
-  const formColumns =
-    [
-      columns.singular,
-      columns.plural
-    ]
-      .filter(
-        (value) =>
-          value !== null
-      );
-
-
-  if (
-    !formColumns.length
-  ) {
-
-    return null;
-
-  }
-
-
-  const firstFormColumn =
-    Math.min(
-      ...formColumns
-    );
-
-
-  const seen =
-    new Set();
-
-
-  for (
-    let columnIndex = 0;
-    columnIndex < firstFormColumn;
-    columnIndex += 1
-  ) {
-
-    const cell =
-      row[columnIndex];
-
-
-    if (
-      !cell ||
-      !cell.element ||
-      seen.has(
-        cell.element
-      )
-    ) {
-
-      continue;
-
-    }
-
-
-    seen.add(
-      cell.element
-    );
-
-
-    const text =
-      normalizeTableLabel(
-        cell.text
-      );
-
-
-    if (!text) {
-
-      continue;
-
-    }
-
-
-    if (
-      text === "singular" ||
-      text === "plural" ||
-      /^declension\s+of\b/i.test(
-        text
-      )
-    ) {
-
-      continue;
-
-    }
-
-
-    if (
-      cell.tag !== "TH"
-    ) {
-
-      continue;
-
-    }
-
-
-    const rawCaseLabel =
-      cleanTableText(
-        cell.text
-      );
-
-
-    const normalizedCase =
-      normalizeTableLabel(
-        rawCaseLabel
-      );
-
-
-    if (
-      normalizedCase === "definite accusative" ||
-      normalizedCase === "accusative"
-    ) {
-
-      return "Accusative";
-
-    }
-
-
-    return capitalizeFirst(
-      rawCaseLabel
-    );
-
-  }
-
-
-  return null;
 
 }
 
@@ -5054,9 +4783,10 @@ function renderWordCard(
 
 
     ${
-      wordEntry.surfaceAnalysis
-        ? renderSurfaceAnalysis(
-            wordEntry.surfaceAnalysis
+      wordEntry.etymologyText
+        ? renderEtymology(
+            wordEntry,
+            existing
           )
         : ""
     }
@@ -5213,28 +4943,140 @@ function renderAlternativeForms(
 
 
 /* =========================================================
-   WORD FORMATION UI
+   ETYMOLOGY UI
    ========================================================= */
 
-function renderSurfaceAnalysis(
-  surfaceAnalysis
+function renderEtymology(
+  wordEntry,
+  existing
 ) {
 
   return `
 
     <section
-      class="wiki-entry-section wiki-surface-analysis"
+      class="wiki-entry-section wiki-etymology-section"
     >
 
-      <h3>
-        Word formation
-      </h3>
+      <div
+        class="wiki-etymology-section-head"
+      >
 
-      <p class="wiki-surface-text">
-        ${escapeHtml(surfaceAnalysis)}
+        <div
+          class="wiki-etymology-title-wrap"
+        >
+
+          ${
+            existing
+              ? ""
+              : `
+                <label
+                  class="wiki-etymology-toggle"
+                  title="Include etymology"
+                >
+
+                  <input
+                    type="checkbox"
+                    data-kind="etymology"
+                    checked
+                  />
+
+                  <span
+                    class="wiki-custom-check"
+                  ></span>
+
+                </label>
+              `
+          }
+
+          <h3>
+            Etymology
+          </h3>
+
+        </div>
+
+
+        ${
+          existing
+            ? ""
+            : `
+              <button
+                type="button"
+                class="wiki-etymology-edit-button"
+                data-action="edit-etymology"
+              >
+                Edit
+              </button>
+            `
+        }
+
+      </div>
+
+
+      <p
+        class="wiki-etymology-text"
+        data-role="etymology-text"
+      >
+        ${escapeHtml(wordEntry.etymologyText)}
       </p>
 
+
+      ${
+        existing
+          ? ""
+          : renderEtymologyEditor(
+              wordEntry
+            )
+      }
+
     </section>
+
+  `;
+
+}
+
+
+function renderEtymologyEditor(
+  wordEntry
+) {
+
+  return `
+
+    <div
+      class="wiki-etymology-editor"
+      data-role="etymology-editor"
+      hidden
+    >
+
+      <textarea
+        class="wiki-etymology-textarea"
+        data-role="etymology-textarea"
+        rows="8"
+        spellcheck="false"
+      >${escapeHtml(wordEntry.etymologyText)}</textarea>
+
+
+      <div
+        class="wiki-etymology-editor-actions"
+      >
+
+        <span
+          class="wiki-etymology-cache-note"
+        >
+          Draft saved on this device
+        </span>
+
+
+        <button
+          type="button"
+          class="wiki-etymology-done-button"
+          data-action="done-etymology"
+        >
+          Done
+        </button>
+
+      </div>
+
+    </div>
 
   `;
 
@@ -5924,6 +5766,12 @@ function wireWordCard(
   );
 
 
+  wireEtymologyControls(
+    card,
+    wordEntry
+  );
+
+
   wireAlternativeFormCheckboxes(
     card,
     wordEntry
@@ -5957,6 +5805,152 @@ function wireWordCard(
 
 
 /* =========================================================
+   ETYMOLOGY EVENTS
+   ========================================================= */
+
+function wireEtymologyControls(
+  card,
+  wordEntry
+) {
+
+  const checkbox =
+    card.querySelector(
+      'input[data-kind="etymology"]'
+    );
+
+
+  const editButton =
+    card.querySelector(
+      '[data-action="edit-etymology"]'
+    );
+
+
+  const doneButton =
+    card.querySelector(
+      '[data-action="done-etymology"]'
+    );
+
+
+  const editor =
+    card.querySelector(
+      '[data-role="etymology-editor"]'
+    );
+
+
+  const textarea =
+    card.querySelector(
+      '[data-role="etymology-textarea"]'
+    );
+
+
+  const textDisplay =
+    card.querySelector(
+      '[data-role="etymology-text"]'
+    );
+
+
+  if (checkbox) {
+
+    checkbox.addEventListener(
+      "change",
+      () => {
+
+        wordEntry.etymologySelected =
+          checkbox.checked;
+
+
+        card
+          .querySelector(
+            ".wiki-etymology-section"
+          )
+          ?.classList.toggle(
+            "wiki-etymology-not-selected",
+            !checkbox.checked
+          );
+
+      }
+    );
+
+  }
+
+
+  if (
+    editButton &&
+    editor &&
+    textarea
+  ) {
+
+    editButton.addEventListener(
+      "click",
+      () => {
+
+        editor.hidden =
+          false;
+
+
+        textarea.focus();
+
+
+        textarea.setSelectionRange(
+          textarea.value.length,
+          textarea.value.length
+        );
+
+      }
+    );
+
+  }
+
+
+  if (textarea) {
+
+    textarea.addEventListener(
+      "input",
+      () => {
+
+        wordEntry.etymologyText =
+          textarea.value;
+
+
+        cacheEtymologyText(
+          wordEntry
+        );
+
+
+        if (textDisplay) {
+
+          textDisplay.textContent =
+            wordEntry.etymologyText;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  if (
+    doneButton &&
+    editor
+  ) {
+
+    doneButton.addEventListener(
+      "click",
+      () => {
+
+        editor.hidden =
+          true;
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
    RESET WORD SELECTION
    ========================================================= */
 
@@ -5964,6 +5958,33 @@ function resetWordSelection(
   card,
   wordEntry
 ) {
+
+  wordEntry.etymologySelected =
+    true;
+
+
+  const etymologyCheckbox =
+    card.querySelector(
+      'input[data-kind="etymology"]'
+    );
+
+
+  if (etymologyCheckbox) {
+
+    etymologyCheckbox.checked =
+      true;
+
+  }
+
+
+  card
+    .querySelector(
+      ".wiki-etymology-section"
+    )
+    ?.classList.remove(
+      "wiki-etymology-not-selected"
+    );
+
 
   wordEntry.alternativeForms.forEach(
     (item) => {
@@ -6023,6 +6044,7 @@ function resetWordSelection(
 
   card
     .querySelectorAll(`
+      input[data-kind="etymology"],
       input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
@@ -6067,6 +6089,7 @@ function setInternalControlsDisabled(
 
   card
     .querySelectorAll(`
+      input[data-kind="etymology"],
       input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
@@ -6662,8 +6685,13 @@ function buildSelectedPayload(
             item
         ),
 
-    surfaceAnalysis:
-      wordEntry.surfaceAnalysis,
+    etymologyText:
+      wordEntry.etymologySelected &&
+      cleanText(
+        wordEntry.etymologyText
+      )
+        ? wordEntry.etymologyText
+        : null,
 
     pronunciation:
       wordEntry.pronunciation
