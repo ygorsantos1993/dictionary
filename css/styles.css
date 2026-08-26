@@ -2709,44 +2709,6 @@ input:checked +
 }
 
 
-.english-language-indicator {
-  width: 50px;
-  height: 50px;
-
-  display: grid;
-
-  place-items: center;
-
-  border:
-    1px solid
-    rgba(255, 255, 255, 0.43);
-
-  border-radius: 16px;
-
-  background:
-    rgba(48, 59, 69, 0.72);
-
-  backdrop-filter: blur(12px);
-
-  -webkit-backdrop-filter:
-    blur(12px);
-
-  box-shadow:
-    0 7px 20px
-    rgba(23, 31, 38, 0.16);
-}
-
-
-.english-language-indicator img {
-  width: 35px;
-  height: 24px;
-
-  object-fit: cover;
-
-  border-radius: 5px;
-}
-
-
 .english-shell {
   width: 100%;
 
