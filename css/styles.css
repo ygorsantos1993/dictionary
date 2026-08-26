@@ -2182,34 +2182,6 @@ input:not(:checked) + span {
   grid-row: 1;
 }
 
-
-/*
-  Pronoun declension uses the same generic Forms grid.
-
-  The parser emits each case as:
-  Case Singular
-  Case Plural
-
-  Singular stays on the left and the matching plural
-  goes on the right. Because the forms are emitted in
-  singular/plural pairs, CSS Grid naturally advances
-  to the next row for the next case.
-*/
-
-.wiki-form-group[
-  data-form-key$="_singular"
-] {
-  grid-column: 1;
-  grid-row: auto;
-}
-
-.wiki-form-group[
-  data-form-key$="_plural"
-] {
-  grid-column: 2;
-  grid-row: auto;
-}
-
 .wiki-form-group .wiki-etymology {
   margin: 0;
 }
@@ -2219,6 +2191,240 @@ input:not(:checked) + span {
   flex-direction: column;
   gap: 7px;
 }
+
+
+/* =========================================================
+   ETYMOLOGY EDITOR
+   ========================================================= */
+
+.wiki-etymology-section {
+  transition:
+    opacity 150ms ease;
+}
+
+
+.wiki-etymology-section-head {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 12px;
+}
+
+
+.wiki-etymology-title-wrap {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+}
+
+
+.wiki-etymology-title-wrap h3 {
+  margin: 0;
+}
+
+
+.wiki-etymology-toggle {
+  margin: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  cursor: pointer;
+}
+
+
+.wiki-etymology-toggle input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+
+.wiki-etymology-toggle
+input:checked +
+.wiki-custom-check {
+  background:
+    #b98545;
+
+  border-color:
+    #b98545;
+}
+
+
+.wiki-etymology-toggle
+input:checked +
+.wiki-custom-check::after {
+  content: "✓";
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 900;
+}
+
+
+.wiki-etymology-edit-button,
+.wiki-etymology-done-button {
+  flex: 0 0 auto;
+
+  min-height: 36px;
+
+  padding:
+    0
+    14px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.25);
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.56);
+
+  color:
+    #946a38;
+
+  font-size: 13px;
+
+  font-weight: 800;
+}
+
+
+.wiki-etymology-text {
+  margin: 0;
+
+  color:
+    #4d5053;
+
+  font-size: 14px;
+
+  line-height: 1.52;
+
+  white-space: pre-wrap;
+}
+
+
+.wiki-etymology-not-selected
+.wiki-etymology-text {
+  opacity: 0.42;
+}
+
+
+.wiki-etymology-editor[hidden] {
+  display: none;
+}
+
+
+.wiki-etymology-editor {
+  margin-top: 14px;
+
+  padding:
+    12px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.18);
+
+  border-radius: 15px;
+
+  background:
+    rgba(255, 255, 255, 0.52);
+}
+
+
+.wiki-etymology-textarea {
+  width: 100%;
+
+  min-height: 190px;
+
+  resize: vertical;
+
+  padding:
+    14px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.25);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 255, 255, 0.90);
+
+  color:
+    #2f353a;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  line-height: 1.55;
+
+  outline: none;
+}
+
+
+.wiki-etymology-textarea:focus {
+  border-color:
+    rgba(185, 139, 73, 0.58);
+
+  box-shadow:
+    0 0 0 4px
+    rgba(185, 139, 73, 0.10);
+}
+
+
+.wiki-etymology-editor-actions {
+  margin-top: 10px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+
+.wiki-etymology-cache-note {
+  color:
+    #7b746c;
+
+  font-size: 11px;
+
+  line-height: 1.35;
+}
+
+
+.wiki-etymology-done-button {
+  background:
+    linear-gradient(
+      135deg,
+      #d5ad6d,
+      #ac7938
+    );
+
+  color: white;
+}
+
 
 /* =========================================================
    MOBILE HUB
