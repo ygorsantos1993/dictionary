@@ -6,6 +6,26 @@ const backButton =
     "englishBackButton"
   );
 
+const languageButton =
+  document.getElementById(
+    "languageButton"
+  );
+
+const languageMenu =
+  document.getElementById(
+    "languageMenu"
+  );
+
+const languageOptions =
+  document.querySelectorAll(
+    ".language-option"
+  );
+
+const logoutButton =
+  document.getElementById(
+    "logoutButton"
+  );
+
 const searchForm =
   document.getElementById(
     "englishSearchForm"
@@ -20,6 +40,76 @@ const searchStatus =
   document.getElementById(
     "englishSearchStatus"
   );
+
+
+function openLanguageMenu() {
+
+  languageMenu.hidden =
+    false;
+
+  languageButton.setAttribute(
+    "aria-expanded",
+    "true"
+  );
+
+}
+
+
+function closeLanguageMenu() {
+
+  languageMenu.hidden =
+    true;
+
+  languageButton.setAttribute(
+    "aria-expanded",
+    "false"
+  );
+
+}
+
+
+function toggleLanguageMenu() {
+
+  if (
+    languageMenu.hidden
+  ) {
+
+    openLanguageMenu();
+
+  } else {
+
+    closeLanguageMenu();
+
+  }
+
+}
+
+
+function goToLanguage(
+  languageKey
+) {
+
+  if (
+    languageKey === "english"
+  ) {
+
+    closeLanguageMenu();
+
+    return;
+
+  }
+
+
+  localStorage.setItem(
+    "dictionary_language",
+    languageKey
+  );
+
+
+  window.location.href =
+    "./dictionary.html";
+
+}
 
 
 async function requireSession() {
@@ -49,6 +139,86 @@ backButton.addEventListener(
 
     window.location.href =
       "./dictionary.html";
+
+  }
+);
+
+
+languageButton.addEventListener(
+  "click",
+  (event) => {
+
+    event.stopPropagation();
+
+    toggleLanguageMenu();
+
+  }
+);
+
+
+languageOptions.forEach(
+  (option) => {
+
+    option.addEventListener(
+      "click",
+      () => {
+
+        goToLanguage(
+          option.dataset.language
+        );
+
+      }
+    );
+
+  }
+);
+
+
+document.addEventListener(
+  "click",
+  (event) => {
+
+    if (
+      !languageMenu.contains(
+        event.target
+      ) &&
+      !languageButton.contains(
+        event.target
+      )
+    ) {
+
+      closeLanguageMenu();
+
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      closeLanguageMenu();
+
+    }
+
+  }
+);
+
+
+logoutButton.addEventListener(
+  "click",
+  async () => {
+
+    await supabase.auth.signOut();
+
+    window.location.href =
+      "../index.html";
 
   }
 );
