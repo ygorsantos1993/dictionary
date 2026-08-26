@@ -702,6 +702,12 @@ function parseEtymologyGroup(
     etymologySelected:
       true,
 
+    baseWordText:
+      "",
+
+    baseWordId:
+      null,
+
     pronunciation:
       extractPronunciationsForEtymology(
         group
@@ -4793,6 +4799,14 @@ function renderWordCard(
 
 
     ${
+      renderBaseWord(
+        wordEntry,
+        existing
+      )
+    }
+
+
+    ${
       renderPronunciation(
         wordEntry,
         existing
@@ -5077,6 +5091,84 @@ function renderEtymologyEditor(
       </div>
 
     </div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   BASE WORD UI
+
+   Independent from Etymology.
+   Always shown for new entries.
+   ========================================================= */
+
+function renderBaseWord(
+  wordEntry,
+  existing
+) {
+
+  return `
+
+    <section
+      class="wiki-entry-section wiki-base-word-section"
+    >
+
+      <h3>
+        Base word
+      </h3>
+
+
+      ${
+        existing
+          ? `
+            <div
+              class="wiki-base-word-existing"
+            >
+              ${
+                wordEntry.baseWordText
+                  ? escapeHtml(wordEntry.baseWordText)
+                  : "—"
+              }
+            </div>
+          `
+          : `
+            <div
+              class="wiki-base-word-search-row"
+            >
+
+              <input
+                type="text"
+                class="wiki-base-word-input"
+                data-role="base-word-input"
+                value="${escapeAttribute(wordEntry.baseWordText || "")}"
+                placeholder="Type a base word"
+                autocomplete="off"
+                spellcheck="false"
+              />
+
+
+              <button
+                type="button"
+                class="wiki-base-word-search-button"
+                data-action="search-base-word"
+              >
+                Search
+              </button>
+
+            </div>
+
+
+            <div
+              class="wiki-base-word-results"
+              data-role="base-word-results"
+              hidden
+            ></div>
+          `
+      }
+
+    </section>
 
   `;
 
@@ -5772,6 +5864,12 @@ function wireWordCard(
   );
 
 
+  wireBaseWordControls(
+    card,
+    wordEntry
+  );
+
+
   wireAlternativeFormCheckboxes(
     card,
     wordEntry
@@ -5851,8 +5949,7 @@ function wireEtymologyControls(
 
   if (checkbox) {
 
-    checkbox.addEventListener(
-      "change",
+    const updateEtymologyEditState =
       () => {
 
         wordEntry.etymologySelected =
@@ -5868,8 +5965,35 @@ function wireEtymologyControls(
             !checkbox.checked
           );
 
-      }
+
+        if (editButton) {
+
+          editButton.disabled =
+            !checkbox.checked;
+
+        }
+
+
+        if (
+          !checkbox.checked &&
+          editor
+        ) {
+
+          editor.hidden =
+            true;
+
+        }
+
+      };
+
+
+    checkbox.addEventListener(
+      "change",
+      updateEtymologyEditState
     );
+
+
+    updateEtymologyEditState();
 
   }
 
@@ -5946,6 +6070,353 @@ function wireEtymologyControls(
     );
 
   }
+
+}
+
+
+/* =========================================================
+   BASE WORD EVENTS
+
+   Search currently checks entries already loaded in the
+   dictionary cache/state available to this page.
+
+   No base is inferred automatically.
+   ========================================================= */
+
+function wireBaseWordControls(
+  card,
+  wordEntry
+) {
+
+  const input =
+    card.querySelector(
+      '[data-role="base-word-input"]'
+    );
+
+
+  const searchButton =
+    card.querySelector(
+      '[data-action="search-base-word"]'
+    );
+
+
+  const results =
+    card.querySelector(
+      '[data-role="base-word-results"]'
+    );
+
+
+  if (input) {
+
+    input.addEventListener(
+      "input",
+      () => {
+
+        wordEntry.baseWordText =
+          normalizeSearchWord(
+            input.value
+          );
+
+
+        wordEntry.baseWordId =
+          null;
+
+      }
+    );
+
+  }
+
+
+  if (
+    searchButton &&
+    input &&
+    results
+  ) {
+
+    searchButton.addEventListener(
+      "click",
+      async () => {
+
+        const baseWord =
+          normalizeSearchWord(
+            input.value
+          );
+
+
+        input.value =
+          baseWord;
+
+
+        wordEntry.baseWordText =
+          baseWord;
+
+
+        wordEntry.baseWordId =
+          null;
+
+
+        if (!baseWord) {
+
+          results.hidden =
+            false;
+
+          results.innerHTML = `
+            <div
+              class="wiki-base-word-message"
+            >
+              Type a base word first.
+            </div>
+          `;
+
+          return;
+
+        }
+
+
+        searchButton.disabled =
+          true;
+
+        searchButton.textContent =
+          "Searching...";
+
+
+        try {
+
+          const {
+            data,
+            error
+          } = await supabase
+            .from("turkish_words")
+            .select(`
+              id,
+              word,
+              etymology,
+              turkish_meanings (
+                part_of_speech,
+                position,
+                meaning
+              )
+            `)
+            .eq(
+              "word",
+              baseWord
+            );
+
+
+          if (error) {
+
+            throw error;
+
+          }
+
+
+          renderBaseWordMatches(
+            results,
+            wordEntry,
+            data || []
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Could not search base word:",
+            error
+          );
+
+
+          results.hidden =
+            false;
+
+          results.innerHTML = `
+            <div
+              class="wiki-base-word-message"
+            >
+              Could not search My Dictionary.
+            </div>
+          `;
+
+        } finally {
+
+          searchButton.disabled =
+            false;
+
+          searchButton.textContent =
+            "Search";
+
+        }
+
+      }
+    );
+
+  }
+
+}
+
+
+function renderBaseWordMatches(
+  container,
+  wordEntry,
+  matches
+) {
+
+  container.hidden =
+    false;
+
+
+  if (
+    !matches.length
+  ) {
+
+    container.innerHTML = `
+      <div
+        class="wiki-base-word-message"
+      >
+        Not in My Dictionary.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const options =
+    [
+      `
+        <label
+          class="wiki-base-word-option"
+        >
+          <input
+            type="radio"
+            name="base-word-${escapeAttribute(wordEntry.word)}-${wordEntry.etymology}"
+            value=""
+            checked
+          />
+
+          <span
+            class="wiki-base-word-radio"
+          ></span>
+
+          <span>
+            <strong>
+              None of these
+            </strong>
+          </span>
+        </label>
+      `
+    ];
+
+
+  for (
+    const match
+    of matches
+  ) {
+
+    const meanings =
+      Array.isArray(
+        match.turkish_meanings
+      )
+        ? match.turkish_meanings
+        : [];
+
+
+    const firstMeaning =
+      meanings
+        .slice()
+        .sort(
+          (
+            a,
+            b
+          ) =>
+            Number(
+              a.position || 0
+            ) -
+            Number(
+              b.position || 0
+            )
+        )[0] || null;
+
+
+    options.push(`
+      <label
+        class="wiki-base-word-option"
+      >
+
+        <input
+          type="radio"
+          name="base-word-${escapeAttribute(wordEntry.word)}-${wordEntry.etymology}"
+          value="${match.id}"
+        />
+
+        <span
+          class="wiki-base-word-radio"
+        ></span>
+
+        <span
+          class="wiki-base-word-option-content"
+        >
+
+          <strong>
+            WORD ${match.etymology}
+            ${
+              firstMeaning?.part_of_speech
+                ? ` · ${escapeHtml(firstMeaning.part_of_speech)}`
+                : ""
+            }
+          </strong>
+
+          ${
+            firstMeaning?.meaning
+              ? `
+                <small>
+                  ${escapeHtml(firstMeaning.meaning)}
+                </small>
+              `
+              : ""
+          }
+
+        </span>
+
+      </label>
+    `);
+
+  }
+
+
+  container.innerHTML =
+    options.join("");
+
+
+  container
+    .querySelectorAll(
+      'input[type="radio"]'
+    )
+    .forEach(
+      (radio) => {
+
+        radio.addEventListener(
+          "change",
+          () => {
+
+            if (!radio.checked) {
+
+              return;
+
+            }
+
+
+            wordEntry.baseWordId =
+              radio.value
+                ? Number(
+                    radio.value
+                  )
+                : null;
+
+          }
+        );
+
+      }
+    );
 
 }
 
@@ -6045,6 +6516,7 @@ function resetWordSelection(
   card
     .querySelectorAll(`
       input[data-kind="etymology"],
+      input[data-role="base-word-input"],
       input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
@@ -6090,6 +6562,7 @@ function setInternalControlsDisabled(
   card
     .querySelectorAll(`
       input[data-kind="etymology"],
+      input[data-role="base-word-input"],
       input[data-kind="alternative-form"],
       input[data-kind="pronunciation"],
       input[data-kind="form"],
@@ -6101,6 +6574,29 @@ function setInternalControlsDisabled(
 
         inputElement.disabled =
           disabled;
+
+      }
+    );
+
+
+  card
+    .querySelectorAll(`
+      button[data-action="edit-etymology"],
+      button[data-action="done-etymology"],
+      button[data-action="search-base-word"]
+    `)
+    .forEach(
+      (buttonElement) => {
+
+        buttonElement.disabled =
+          disabled ||
+          (
+            buttonElement.dataset.action ===
+              "edit-etymology" &&
+            !card.querySelector(
+              'input[data-kind="etymology"]'
+            )?.checked
+          );
 
       }
     );
@@ -6692,6 +7188,16 @@ function buildSelectedPayload(
       )
         ? wordEntry.etymologyText
         : null,
+
+    baseWordText:
+      cleanText(
+        wordEntry.baseWordText
+      )
+        ? wordEntry.baseWordText
+        : null,
+
+    baseWordId:
+      wordEntry.baseWordId,
 
     pronunciation:
       wordEntry.pronunciation
