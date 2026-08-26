@@ -45,15 +45,128 @@
     </button>
 
 
-    <div
-      class="english-language-indicator"
-      aria-label="English"
-      title="English"
-    >
-      <img
-        src="../english-flag.png"
-        alt="English"
-      />
+    <div class="language-selector">
+
+      <button
+        id="languageButton"
+        class="hub-language-button"
+        type="button"
+        aria-label="Open language menu"
+        aria-expanded="false"
+      >
+        <img
+          id="currentLanguageFlag"
+          class="hub-language-flag"
+          src="../english-flag.png"
+          alt="English"
+        />
+
+        <svg
+          class="language-chevron"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M6 9l6 6 6-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+
+      <div
+        id="languageMenu"
+        class="language-menu"
+        hidden
+      >
+
+        <button
+          class="language-option"
+          type="button"
+          data-language="english"
+        >
+          <img
+            src="../english-flag.png"
+            alt=""
+          />
+
+          <span>English</span>
+        </button>
+
+
+        <button
+          class="language-option"
+          type="button"
+          data-language="chinese"
+        >
+          <img
+            src="../chinese-flag.png"
+            alt=""
+          />
+
+          <span>Chinese</span>
+        </button>
+
+
+        <button
+          class="language-option"
+          type="button"
+          data-language="msa"
+        >
+          <img
+            src="../arabic-flag.png"
+            alt=""
+          />
+
+          <span>Standard Arabic</span>
+        </button>
+
+
+        <button
+          class="language-option"
+          type="button"
+          data-language="turkish"
+        >
+          <img
+            src="../turkish-flag.png"
+            alt=""
+          />
+
+          <span>Turkish</span>
+        </button>
+
+
+        <div class="language-menu-divider"></div>
+
+
+        <button
+          id="logoutButton"
+          class="menu-signout"
+          type="button"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 17l5-5-5-5M15 12H3M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+
+          <span>Sign out</span>
+        </button>
+
+      </div>
+
     </div>
 
   </header>
