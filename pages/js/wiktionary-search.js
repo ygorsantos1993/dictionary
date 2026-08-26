@@ -2084,10 +2084,30 @@ function extractPronounCaseLabel(
     }
 
 
-    return capitalizeFirst(
+    const rawCaseLabel =
       cleanTableText(
         cell.text
-      )
+      );
+
+
+    const normalizedCase =
+      normalizeTableLabel(
+        rawCaseLabel
+      );
+
+
+    if (
+      normalizedCase === "definite accusative" ||
+      normalizedCase === "accusative"
+    ) {
+
+      return "Accusative";
+
+    }
+
+
+    return capitalizeFirst(
+      rawCaseLabel
     );
 
   }
