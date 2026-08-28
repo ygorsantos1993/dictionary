@@ -602,9 +602,9 @@ label {
 
   padding-top:
     clamp(
-      72px,
-      12vh,
-      142px
+      48px,
+      8vh,
+      104px
     );
 }
 
@@ -3038,7 +3038,7 @@ input:checked +
 
   .dictionary-hub {
     padding-top:
-      112px;
+      82px;
   }
 
 
