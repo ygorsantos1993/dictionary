@@ -338,8 +338,8 @@ label {
 
 
 .hub-top-button {
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
 
   display: grid;
 
@@ -351,10 +351,10 @@ label {
     1px solid
     rgba(255, 255, 255, 0.14);
 
-  border-radius: 17px;
+  border-radius: 50%;
 
   background:
-    rgba(43, 54, 67, 0.65);
+    rgba(43, 54, 67, 0.58);
 
   color:
     var(--gold-light);
@@ -365,6 +365,8 @@ label {
   box-shadow:
     0 8px 24px
     rgba(10, 20, 30, 0.14);
+
+  overflow: hidden;
 
   transition:
     transform 160ms ease,
@@ -379,8 +381,12 @@ label {
 
 
 .sync-icon {
-  width: 29px;
-  height: 29px;
+  width: 39px;
+  height: 39px;
+
+  display: block;
+
+  object-fit: contain;
 }
 
 
@@ -2993,22 +2999,22 @@ input:checked +
 
   .hub-top-button {
     width:
-      50px;
+      48px;
 
     height:
-      50px;
+      48px;
 
     border-radius:
-      16px;
+      50%;
   }
 
 
   .sync-icon {
     width:
-      27px;
+      38px;
 
     height:
-      27px;
+      38px;
   }
 
 
