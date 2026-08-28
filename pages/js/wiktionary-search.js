@@ -1,4 +1,4 @@
-/* DICTIONARY JS - SAVE VIEW FIX - 2026-08-28 */
+/* DICTIONARY JS - APPROVED WIKTIONARY UI + LOGIC - 2026-08-28 */
 
 import { supabase } from "../../js/supabase.js";
 
@@ -709,6 +709,9 @@ function parseEtymologyGroup(
 
     baseWordId:
       null,
+
+    baseWordSelected:
+      false,
 
     pronunciation:
       extractPronunciationsForEtymology(
@@ -2980,6 +2983,10 @@ function extractHeadwordForms(
     null;
 
 
+  let pendingQualifier =
+    null;
+
+
   for (
     const element
     of elements
@@ -2988,20 +2995,6 @@ function extractHeadwordForms(
     const tag =
       element.tagName;
 
-
-    /*
-      Italic text can be either:
-
-      - a grammatical label:
-        definite accusative
-        plural
-
-      - merely a connector:
-        or
-        and
-
-      Connectors MUST NEVER become form labels.
-    */
 
     if (
       tag === "I" ||
@@ -3021,7 +3014,7 @@ function extractHeadwordForms(
       }
 
 
-      const normalizedConnector =
+      const normalizedText =
         labelText
           .toLowerCase()
           .replace(
@@ -3031,24 +3024,43 @@ function extractHeadwordForms(
 
 
       if (
-        normalizedConnector === "or" ||
-        normalizedConnector === "and"
+        normalizedText === "or" ||
+        normalizedText === "and"
       ) {
 
         /*
-          IMPORTANT:
-          Do not clear currentLabel.
-
-          Example:
+          Connector:
+          keep the grammatical label.
 
           definite accusative
           kütübü
           or
           kütüpü
-
-          kütüpü still belongs to
-          definite accusative.
         */
+
+        continue;
+
+      }
+
+
+      if (
+        isParenthesizedHeadwordQualifier(
+          element
+        )
+      ) {
+
+        /*
+          Qualifier for the NEXT alternative form:
+
+          plural kitaplar
+          or (obsolete) kütüp
+
+          "obsolete" qualifies kütüp;
+          it does not replace "plural".
+        */
+
+        pendingQualifier =
+          labelText;
 
         continue;
 
@@ -3057,6 +3069,10 @@ function extractHeadwordForms(
 
       currentLabel =
         labelText;
+
+
+      pendingQualifier =
+        null;
 
 
       continue;
@@ -3114,6 +3130,12 @@ function extractHeadwordForms(
       );
 
 
+    const label =
+      pendingQualifier
+        ? `${normalized.label} · ${pendingQualifier}`
+        : normalized.label;
+
+
     addFormIfMissing(
       forms,
       {
@@ -3121,8 +3143,7 @@ function extractHeadwordForms(
         key:
           normalized.key,
 
-        label:
-          normalized.label,
+        label,
 
         value,
 
@@ -3135,10 +3156,70 @@ function extractHeadwordForms(
       }
     );
 
+
+    pendingQualifier =
+      null;
+
   }
 
 
   return forms;
+
+}
+
+
+function isParenthesizedHeadwordQualifier(
+  element
+) {
+
+  let wrapper =
+    element;
+
+
+  while (
+    wrapper.parentElement &&
+    wrapper.parentElement !==
+      element.closest(
+        ".headword-line"
+      )
+  ) {
+
+    if (
+      wrapper.parentElement.tagName ===
+        "A" ||
+      wrapper.parentElement.tagName ===
+        "SPAN"
+    ) {
+
+      wrapper =
+        wrapper.parentElement;
+
+      continue;
+
+    }
+
+
+    break;
+
+  }
+
+
+  const previousText =
+    cleanText(
+      wrapper.previousSibling?.textContent
+    );
+
+
+  const nextText =
+    cleanText(
+      wrapper.nextSibling?.textContent
+    );
+
+
+  return (
+    previousText.endsWith("(") &&
+    nextText.startsWith(")")
+  );
 
 }
 
@@ -4743,8 +4824,8 @@ function renderWordCard(
         >
           ${
             existing
-              ? `Already in My Dictionary · ID ${existing.id}`
-              : "Not in My Dictionary"
+              ? "Already saved"
+              : "New word"
           }
         </div>
 
@@ -4783,64 +4864,53 @@ function renderWordCard(
 
 
     ${
-      renderAlternativeForms(
-        wordEntry,
-        existing
-      )
-    }
-
-
-    ${
-      wordEntry.etymologyText
-        ? renderEtymology(
-            wordEntry,
-            existing
-          )
-        : ""
-    }
-
-
-    ${
-      renderBaseWord(
-        wordEntry,
-        existing
-      )
-    }
-
-
-    ${
-      renderPronunciation(
-        wordEntry,
-        existing
-      )
-    }
-
-
-    ${
-      wordEntry.partsOfSpeech
-        .map(
-          (pos) =>
-            renderPartOfSpeech(
-              pos,
-              existing
-            )
-        )
-        .join("")
-    }
-
-
-    ${
       existing
-        ? `
-          <button
-            class="wiki-library-placeholder"
-            type="button"
-            disabled
-          >
-            View in Library
-          </button>
+        ? renderExistingWordPreview(
+            wordEntry
+          )
+        : `
+          ${
+            renderAlternativeForms(
+              wordEntry,
+              false
+            )
+          }
+
+          ${
+            wordEntry.etymologyText
+              ? renderEtymology(
+                  wordEntry,
+                  false
+                )
+              : ""
+          }
+
+          ${
+            renderBaseWord(
+              wordEntry,
+              false
+            )
+          }
+
+          ${
+            renderPronunciation(
+              wordEntry,
+              false
+            )
+          }
+
+          ${
+            wordEntry.partsOfSpeech
+              .map(
+                (pos) =>
+                  renderPartOfSpeech(
+                    pos,
+                    false
+                  )
+              )
+              .join("")
+          }
         `
-        : ""
     }
 
   `;
@@ -4859,6 +4929,141 @@ function renderWordCard(
 
 
   return card;
+
+}
+
+
+/* =========================================================
+   EXISTING WORD PREVIEW
+
+   Already-saved words are read-only here.
+   Show only the first 3 meanings, if any.
+   ========================================================= */
+
+function renderExistingWordPreview(
+  wordEntry
+) {
+
+  const meanings = [];
+
+
+  for (
+    const pos
+    of wordEntry.partsOfSpeech
+  ) {
+
+    for (
+      const meaning
+      of pos.meanings
+    ) {
+
+      meanings.push({
+        pos:
+          pos.partOfSpeech,
+
+        ...meaning
+      });
+
+    }
+
+  }
+
+
+  const firstThree =
+    meanings
+      .slice(
+        0,
+        3
+      );
+
+
+  if (
+    !firstThree.length
+  ) {
+
+    return "";
+
+  }
+
+
+  return `
+
+    <section
+      class="wiki-pos-section wiki-existing-preview"
+    >
+
+      <div
+        class="wiki-pos-subsection wiki-meanings-section"
+      >
+
+        <h3>
+          Meanings
+        </h3>
+
+
+        <div
+          class="wiki-meaning-list"
+        >
+
+          ${
+            firstThree
+              .map(
+                (
+                  meaning,
+                  index
+                ) => `
+
+                  <div
+                    class="wiki-meaning-block"
+                  >
+
+                    <div
+                      class="wiki-meaning-row"
+                    >
+
+                      <span
+                        class="wiki-meaning-number"
+                      >
+                        ${index + 1}.
+                      </span>
+
+
+                      <span
+                        class="wiki-meaning-text"
+                      >
+
+                        ${
+                          meaning.usageLabel
+                            ? `
+                              <small
+                                class="wiki-usage-label"
+                              >
+                                ${escapeHtml(meaning.usageLabel)}
+                              </small>
+                            `
+                            : ""
+                        }
+
+                        ${escapeHtml(meaning.meaning)}
+
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                `
+              )
+              .join("")
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+  `;
 
 }
 
@@ -5075,11 +5280,13 @@ function renderEtymologyEditor(
         class="wiki-etymology-editor-actions"
       >
 
-        <span
-          class="wiki-etymology-cache-note"
+        <button
+          type="button"
+          class="wiki-etymology-cancel-button"
+          data-action="cancel-etymology"
         >
-          Draft saved on this device
-        </span>
+          Cancel
+        </button>
 
 
         <button
@@ -5376,13 +5583,6 @@ function renderForms(
                 >
 
                   <div
-                    class="wiki-etymology"
-                  >
-                    ${escapeHtml(group.label)}
-                  </div>
-
-
-                  <div
                     class="wiki-choice-list"
                   >
 
@@ -5395,7 +5595,7 @@ function renderForms(
                           }) => `
 
                             <label
-                              class="wiki-choice-row"
+                              class="wiki-form-chip"
                             >
 
                               ${
@@ -5409,17 +5609,15 @@ function renderForms(
                                       data-index="${index}"
                                       checked
                                     />
-
-                                    <span
-                                      class="wiki-custom-check"
-                                    ></span>
                                   `
                               }
 
 
-                              <span
-                                class="wiki-choice-content"
-                              >
+                              <span>
+
+                                <small>
+                                  ${escapeHtml(form.label)}
+                                </small>
 
                                 <strong>
                                   ${escapeHtml(form.value)}
@@ -5455,14 +5653,16 @@ function renderForms(
 /* =========================================================
    GROUP FORMS FOR UI
 
+   The grammatical key controls the column.
+   Each individual form keeps its own label/qualifier.
+
    Example:
 
-   Accusative
-   ☑ kütübü
-   ☑ kütüpü
+   accusative -> kütübü
+   accusative -> kütüpü
 
-   Plural
-   ☑ kütüpler
+   plural -> kitaplar
+   plural · obsolete -> kütüp
    ========================================================= */
 
 function groupFormsForRendering(
@@ -5481,13 +5681,9 @@ function groupFormsForRendering(
       index
     ) => {
 
-      const groupKey =
-        `${form.key}::${form.label}`;
-
-
       let group =
         byKey.get(
-          groupKey
+          form.key
         );
 
 
@@ -5498,9 +5694,6 @@ function groupFormsForRendering(
           key:
             form.key,
 
-          label:
-            form.label,
-
           items:
             []
 
@@ -5508,7 +5701,7 @@ function groupFormsForRendering(
 
 
         byKey.set(
-          groupKey,
+          form.key,
           group
         );
 
@@ -5839,6 +6032,13 @@ function wireWordCard(
           wordEntry
         );
 
+      } else {
+
+        resetWordSelection(
+          card,
+          wordEntry
+        );
+
       }
 
 
@@ -5931,6 +6131,12 @@ function wireEtymologyControls(
     );
 
 
+  const cancelButton =
+    card.querySelector(
+      '[data-action="cancel-etymology"]'
+    );
+
+
   const editor =
     card.querySelector(
       '[data-role="etymology-editor"]'
@@ -5947,6 +6153,10 @@ function wireEtymologyControls(
     card.querySelector(
       '[data-role="etymology-text"]'
     );
+
+
+  let editOriginalText =
+    wordEntry.etymologyText;
 
 
   if (checkbox) {
@@ -5984,6 +6194,14 @@ function wireEtymologyControls(
           editor.hidden =
             true;
 
+
+          if (editButton) {
+
+            editButton.hidden =
+              false;
+
+          }
+
         }
 
       };
@@ -6010,8 +6228,20 @@ function wireEtymologyControls(
       "click",
       () => {
 
+        editOriginalText =
+          wordEntry.etymologyText;
+
+
+        textarea.value =
+          wordEntry.etymologyText;
+
+
         editor.hidden =
           false;
+
+
+        editButton.hidden =
+          true;
 
 
         textarea.focus();
@@ -6068,6 +6298,62 @@ function wireEtymologyControls(
         editor.hidden =
           true;
 
+
+        if (editButton) {
+
+          editButton.hidden =
+            false;
+
+        }
+
+      }
+    );
+
+  }
+
+
+  if (
+    cancelButton &&
+    editor &&
+    textarea
+  ) {
+
+    cancelButton.addEventListener(
+      "click",
+      () => {
+
+        wordEntry.etymologyText =
+          editOriginalText;
+
+
+        textarea.value =
+          editOriginalText;
+
+
+        if (textDisplay) {
+
+          textDisplay.textContent =
+            editOriginalText;
+
+        }
+
+
+        cacheEtymologyText(
+          wordEntry
+        );
+
+
+        editor.hidden =
+          true;
+
+
+        if (editButton) {
+
+          editButton.hidden =
+            false;
+
+        }
+
       }
     );
 
@@ -6123,6 +6409,10 @@ function wireBaseWordControls(
         wordEntry.baseWordId =
           null;
 
+
+        wordEntry.baseWordSelected =
+          false;
+
       }
     );
 
@@ -6155,6 +6445,10 @@ function wireBaseWordControls(
 
         wordEntry.baseWordId =
           null;
+
+
+        wordEntry.baseWordSelected =
+          false;
 
 
         if (!baseWord) {
@@ -6265,89 +6559,24 @@ function renderBaseWordMatches(
     false;
 
 
+  const radioName =
+    `base-word-${escapeAttribute(wordEntry.word)}-${wordEntry.etymology}`;
+
+
   if (
     !matches.length
   ) {
 
     container.innerHTML = `
-      <div
-        class="wiki-base-word-message"
-      >
-        Not in My Dictionary.
-      </div>
-    `;
 
-    return;
-
-  }
-
-
-  const options =
-    [
-      `
-        <label
-          class="wiki-base-word-option"
-        >
-          <input
-            type="radio"
-            name="base-word-${escapeAttribute(wordEntry.word)}-${wordEntry.etymology}"
-            value=""
-            checked
-          />
-
-          <span
-            class="wiki-base-word-radio"
-          ></span>
-
-          <span>
-            <strong>
-              None of these
-            </strong>
-          </span>
-        </label>
-      `
-    ];
-
-
-  for (
-    const match
-    of matches
-  ) {
-
-    const meanings =
-      Array.isArray(
-        match.turkish_meanings
-      )
-        ? match.turkish_meanings
-        : [];
-
-
-    const firstMeaning =
-      meanings
-        .slice()
-        .sort(
-          (
-            a,
-            b
-          ) =>
-            Number(
-              a.position || 0
-            ) -
-            Number(
-              b.position || 0
-            )
-        )[0] || null;
-
-
-    options.push(`
       <label
-        class="wiki-base-word-option"
+        class="wiki-base-word-option wiki-base-word-manual-option"
       >
 
         <input
-          type="radio"
-          name="base-word-${escapeAttribute(wordEntry.word)}-${wordEntry.etymology}"
-          value="${match.id}"
+          type="checkbox"
+          name="${radioName}"
+          data-base-word-manual="true"
         />
 
         <span
@@ -6359,66 +6588,219 @@ function renderBaseWordMatches(
         >
 
           <strong>
-            WORD ${match.etymology}
-            ${
-              firstMeaning?.part_of_speech
-                ? ` · ${escapeHtml(firstMeaning.part_of_speech)}`
-                : ""
-            }
+            ${escapeHtml(wordEntry.baseWordText)}
           </strong>
 
-          ${
-            firstMeaning?.meaning
-              ? `
-                <small>
-                  ${escapeHtml(firstMeaning.meaning)}
-                </small>
-              `
-              : ""
-          }
+          <small
+            class="wiki-base-word-not-found"
+          >
+            Not found
+          </small>
 
         </span>
 
       </label>
-    `);
+
+    `;
+
+  } else {
+
+    const options = [];
+
+
+    for (
+      const match
+      of matches
+    ) {
+
+      const meanings =
+        Array.isArray(
+          match.turkish_meanings
+        )
+          ? match.turkish_meanings
+          : [];
+
+
+      const firstThree =
+        meanings
+          .slice()
+          .sort(
+            (
+              a,
+              b
+            ) => {
+
+              const posCompare =
+                String(
+                  a.part_of_speech || ""
+                )
+                  .localeCompare(
+                    String(
+                      b.part_of_speech || ""
+                    )
+                  );
+
+
+              if (
+                posCompare !== 0
+              ) {
+
+                return posCompare;
+
+              }
+
+
+              return (
+                Number(
+                  a.position || 0
+                ) -
+                Number(
+                  b.position || 0
+                )
+              );
+
+            }
+          )
+          .slice(
+            0,
+            3
+          );
+
+
+      options.push(`
+
+        <label
+          class="wiki-base-word-option"
+        >
+
+          <input
+            type="checkbox"
+            name="${radioName}"
+            value="${match.id}"
+            data-base-word-id="${match.id}"
+          />
+
+          <span
+            class="wiki-base-word-radio"
+          ></span>
+
+          <span
+            class="wiki-base-word-option-content"
+          >
+
+            <strong>
+              WORD ${match.etymology} · ID ${match.id}
+            </strong>
+
+            ${
+              firstThree.length
+                ? `
+                  <span
+                    class="wiki-base-word-meaning-list"
+                  >
+                    ${
+                      firstThree
+                        .map(
+                          (
+                            meaning,
+                            index
+                          ) => `
+                            <small
+                              class="wiki-base-word-meaning"
+                            >
+                              ${index + 1}. ${escapeHtml(meaning.meaning)}
+                            </small>
+                          `
+                        )
+                        .join("")
+                    }
+                  </span>
+                `
+                : `
+                  <small
+                    class="wiki-base-word-no-meanings"
+                  >
+                    No meanings available
+                  </small>
+                `
+            }
+
+          </span>
+
+        </label>
+
+      `);
+
+    }
+
+
+    container.innerHTML =
+      options.join("");
 
   }
 
 
-  container.innerHTML =
-    options.join("");
+  const choices =
+    Array.from(
+      container.querySelectorAll(
+        'input[type="checkbox"]'
+      )
+    );
 
 
-  container
-    .querySelectorAll(
-      'input[type="radio"]'
-    )
-    .forEach(
-      (radio) => {
+  choices.forEach(
+    (choice) => {
 
-        radio.addEventListener(
-          "change",
-          () => {
+      choice.addEventListener(
+        "change",
+        () => {
 
-            if (!radio.checked) {
+          if (
+            choice.checked
+          ) {
 
-              return;
+            choices
+              .filter(
+                (other) =>
+                  other !== choice
+              )
+              .forEach(
+                (other) => {
 
-            }
+                  other.checked =
+                    false;
+
+                }
+              );
+
+
+            wordEntry.baseWordSelected =
+              true;
 
 
             wordEntry.baseWordId =
-              radio.value
+              choice.dataset.baseWordId
                 ? Number(
-                    radio.value
+                    choice.dataset.baseWordId
                   )
                 : null;
 
-          }
-        );
+          } else {
 
-      }
-    );
+            wordEntry.baseWordSelected =
+              false;
+
+
+            wordEntry.baseWordId =
+              null;
+
+          }
+
+        }
+      );
+
+    }
+  );
 
 }
 
@@ -6434,6 +6816,31 @@ function resetWordSelection(
 
   wordEntry.etymologySelected =
     true;
+
+
+  wordEntry.baseWordSelected =
+    false;
+
+
+  wordEntry.baseWordId =
+    null;
+
+
+  const baseWordResults =
+    card.querySelector(
+      '[data-role="base-word-results"]'
+    );
+
+
+  if (baseWordResults) {
+
+    baseWordResults.hidden =
+      true;
+
+    baseWordResults.innerHTML =
+      "";
+
+  }
 
 
   const etymologyCheckbox =
@@ -6584,6 +6991,7 @@ function setInternalControlsDisabled(
   card
     .querySelectorAll(`
       button[data-action="edit-etymology"],
+      button[data-action="cancel-etymology"],
       button[data-action="done-etymology"],
       button[data-action="search-base-word"]
     `)
@@ -6924,6 +7332,12 @@ function automaticallyDisableWord(
 
   wordEntry.selected =
     false;
+
+
+  resetWordSelection(
+    card,
+    wordEntry
+  );
 
 
   if (
@@ -7456,6 +7870,7 @@ function buildSelectedPayload(
         : null,
 
     baseWordText:
+      wordEntry.baseWordSelected &&
       cleanText(
         wordEntry.baseWordText
       )
@@ -7463,7 +7878,9 @@ function buildSelectedPayload(
         : null,
 
     baseWordId:
-      wordEntry.baseWordId,
+      wordEntry.baseWordSelected
+        ? wordEntry.baseWordId
+        : null,
 
     pronunciation:
       wordEntry.pronunciation
