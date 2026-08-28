@@ -1,3 +1,5 @@
+/* DICTIONARY JS - SAVE VIEW FIX - 2026-08-28 */
+
 import { supabase } from "../../js/supabase.js";
 
 
@@ -7055,16 +7057,11 @@ function findPosByName(
 function updateSelectedCount() {
 
   const count =
-    parsedWords.filter(
-      (wordEntry) =>
-        wordEntry.selected &&
-        hasAnySelectedMeaning(
-          wordEntry
-        ) &&
-        !findExistingWord(
-          wordEntry
-        )
-    ).length;
+    entriesContainer
+      .querySelectorAll(
+        ".wiki-entry-main-checkbox:checked"
+      )
+      .length;
 
 
   updateSaveButton(
@@ -7084,7 +7081,12 @@ function renderSaveButtonContent(
     <span
       class="wiki-save-icon"
       aria-hidden="true"
-    ></span>
+    >
+      <img
+        src="../save.png"
+        alt=""
+      />
+    </span>
 
     <span
       class="wiki-save-divider"
@@ -7113,20 +7115,15 @@ function updateSaveButton(
   count
 ) {
 
-  const hasItems =
-    count > 0;
-
-
-  saveButton.classList.toggle(
-    "has-save-items",
-    hasItems
-  );
-
-
-  if (!hasItems) {
+  if (
+    count <= 0
+  ) {
 
     saveButton.disabled =
       true;
+
+    saveButton.style.display =
+      "none";
 
     saveButton.innerHTML =
       "";
@@ -7135,6 +7132,9 @@ function updateSaveButton(
 
   }
 
+
+  saveButton.style.display =
+    "inline-flex";
 
   saveButton.disabled =
     false;
@@ -7196,13 +7196,11 @@ saveButton.addEventListener(
       );
 
 
+    saveButton.style.display =
+      "inline-flex";
+
     saveButton.disabled =
       true;
-
-
-    saveButton.classList.add(
-      "has-save-items"
-    );
 
 
     renderSaveButtonContent(
@@ -7675,6 +7673,9 @@ function clearResults() {
 
   saveButton.disabled =
     true;
+
+  saveButton.style.display =
+    "none";
 
   saveButton.innerHTML =
     "";
