@@ -1,4 +1,4 @@
-/* DICTIONARY JS - APPROVED WIKTIONARY UI + LOGIC - 2026-08-28 */
+/* DICTIONARY JS - APPROVED UI + SEARCH ON WIKTIONARY - 2026-08-28 */
 
 import { supabase } from "../../js/supabase.js";
 
@@ -8065,7 +8065,7 @@ function setLoading(
   searchButton.textContent =
     loading
       ? "Searching..."
-      : "Search";
+      : "Search on Wiktionary";
 
 }
 
