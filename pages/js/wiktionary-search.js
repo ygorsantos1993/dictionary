@@ -7074,19 +7074,62 @@ function updateSelectedCount() {
 }
 
 
+function renderSaveButtonContent(
+  count,
+  saving = false
+) {
+
+  saveButton.innerHTML = `
+
+    <span
+      class="wiki-save-icon"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="wiki-save-divider"
+      aria-hidden="true"
+    ></span>
+
+    <span
+      class="wiki-save-label"
+    >
+      ${saving ? "Saving" : "Save"}
+    </span>
+
+    <span
+      class="wiki-save-count"
+      aria-label="${count} ${count === 1 ? "word" : "words"}"
+    >
+      ${count}
+    </span>
+
+  `;
+
+}
+
+
 function updateSaveButton(
   count
 ) {
 
-  if (
-    count <= 0
-  ) {
+  const hasItems =
+    count > 0;
+
+
+  saveButton.classList.toggle(
+    "has-save-items",
+    hasItems
+  );
+
+
+  if (!hasItems) {
 
     saveButton.disabled =
       true;
 
-    saveButton.textContent =
-      "💾 Save";
+    saveButton.innerHTML =
+      "";
 
     return;
 
@@ -7097,10 +7140,9 @@ function updateSaveButton(
     false;
 
 
-  saveButton.textContent =
-    count === 1
-      ? "💾 Save 1 word"
-      : `💾 Save ${count} words`;
+  renderSaveButtonContent(
+    count
+  );
 
 }
 
@@ -7157,10 +7199,16 @@ saveButton.addEventListener(
     saveButton.disabled =
       true;
 
-    saveButton.textContent =
-      selected.length === 1
-        ? "💾 Saving 1 word..."
-        : `💾 Saving ${selected.length} words...`;
+
+    saveButton.classList.add(
+      "has-save-items"
+    );
+
+
+    renderSaveButtonContent(
+      selected.length,
+      true
+    );
 
 
     try {
@@ -7628,8 +7676,8 @@ function clearResults() {
   saveButton.disabled =
     true;
 
-  saveButton.textContent =
-    "💾 Save";
+  saveButton.innerHTML =
+    "";
 
 
   hideStatus();
