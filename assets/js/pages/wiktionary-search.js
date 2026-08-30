@@ -166,9 +166,129 @@ function normalizeSearchWord(value) {
 }
 
 
+/*
+  Wiktionary titles are case-sensitive.
+  Try lowercase first, then first letter uppercase
+  (ankara → Ankara) for proper nouns.
+*/
+function capitalizeFirstLetter(value) {
+
+  const word =
+    normalizeSearchWord(
+      value
+    );
+
+  if (!word) {
+
+    return "";
+
+  }
+
+
+  return (
+    word
+      .charAt(0)
+      .toLocaleUpperCase("tr-TR") +
+    word.slice(1)
+  );
+
+}
+
+
+function getWiktionaryTitleCandidates(word) {
+
+  const lower =
+    normalizeSearchWord(
+      word
+    );
+
+  const capitalized =
+    capitalizeFirstLetter(
+      lower
+    );
+
+  const candidates = [
+    lower
+  ];
+
+
+  if (
+    capitalized &&
+    capitalized !== lower
+  ) {
+
+    candidates.push(
+      capitalized
+    );
+
+  }
+
+
+  return candidates;
+
+}
+
+
 /* =========================================================
    FETCH
    ========================================================= */
+
+async function fetchWiktionaryHtml(word) {
+
+  const url =
+    `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/with_html`;
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        headers: {
+          Accept: "application/json"
+        }
+      }
+    );
+
+
+  if (
+    response.status === 404
+  ) {
+
+    return null;
+
+  }
+
+
+  if (!response.ok) {
+
+    throw new Error(
+      `Wiktionary returned HTTP ${response.status}.`
+    );
+
+  }
+
+
+  const data =
+    await response.json();
+
+
+  if (
+    !data ||
+    typeof data.html !== "string" ||
+    !data.html.trim()
+  ) {
+
+    throw new Error(
+      "Wiktionary returned no HTML."
+    );
+
+  }
+
+
+  return data.html;
+
+}
+
 
 async function searchWiktionary(word) {
 
@@ -179,70 +299,59 @@ async function searchWiktionary(word) {
 
   try {
 
-    const url =
-      `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/with_html`;
-
-
-    const response =
-      await fetch(
-        url,
-        {
-          headers: {
-            Accept: "application/json"
-          }
-        }
-      );
-
-
-    if (
-      response.status === 404
-    ) {
-
-      showStatus(
-        `No entry found for “${word}”.`,
-        "empty"
-      );
-
-      return;
-
-    }
-
-
-    if (!response.ok) {
-
-      throw new Error(
-        `Wiktionary returned HTTP ${response.status}.`
-      );
-
-    }
-
-
-    const data =
-      await response.json();
-
-
-    if (
-      !data ||
-      typeof data.html !== "string" ||
-      !data.html.trim()
-    ) {
-
-      throw new Error(
-        "Wiktionary returned no HTML."
-      );
-
-    }
-
-
-    currentWord =
-      word;
-
-
-    parsedWords =
-      parseTurkishWords(
-        data.html,
+    const candidates =
+      getWiktionaryTitleCandidates(
         word
       );
+
+    let matchedWord = "";
+    let foundAnyPage = false;
+
+
+    for (
+      const candidate
+      of candidates
+    ) {
+
+      const html =
+        await fetchWiktionaryHtml(
+          candidate
+        );
+
+
+      if (!html) {
+
+        continue;
+
+      }
+
+
+      foundAnyPage =
+        true;
+
+
+      const parsed =
+        parseTurkishWords(
+          html,
+          candidate
+        );
+
+
+      if (
+        parsed.length
+      ) {
+
+        matchedWord =
+          candidate;
+
+        parsedWords =
+          parsed;
+
+        break;
+
+      }
+
+    }
 
 
     console.log(
@@ -256,7 +365,9 @@ async function searchWiktionary(word) {
     ) {
 
       showStatus(
-        `No Turkish entry found for “${word}”.`,
+        foundAnyPage
+          ? `No Turkish entry found for “${word}”.`
+          : `No entry found for “${word}”.`,
         "empty"
       );
 
@@ -265,9 +376,13 @@ async function searchWiktionary(word) {
     }
 
 
+    currentWord =
+      matchedWord;
+
+
     existingWords =
       await loadExistingWords(
-        word
+        matchedWord
       );
 
 

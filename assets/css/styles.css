@@ -1233,6 +1233,15 @@ label {
 }
 
 
+.wiki-entry-list {
+  display: grid;
+
+  gap: 20px;
+
+  padding-top: 12px;
+}
+
+
 .wiktionary-search-heading {
   display: flex;
 
@@ -1526,15 +1535,6 @@ label {
   font-size: 17px;
 
   font-weight: 400;
-}
-
-
-.wiki-entry-list {
-  display: grid;
-
-  gap: 20px;
-
-  padding-top: 12px;
 }
 
 
@@ -3556,106 +3556,10 @@ input:checked +
 
 
 /* =========================================================
-   WIKTIONARY MOBILE — FIXED SEARCH, RESULTS-ONLY SCROLL
-   + READABILITY
+   WIKTIONARY MOBILE — READABILITY
    ========================================================= */
 
 @media (max-width: 768px) {
-
-  html,
-  body.wiktionary-page {
-    height: 100%;
-
-    overflow: hidden;
-  }
-
-
-  body.wiktionary-page {
-    min-height: 100dvh;
-
-    display: flex;
-
-    flex-direction: column;
-  }
-
-
-  .wiktionary-topbar {
-    position: relative;
-
-    top: auto;
-
-    flex: 0 0 auto;
-
-    margin-bottom: 14px;
-  }
-
-
-  .wiktionary-shell {
-    flex: 1 1 auto;
-
-    min-height: 0;
-
-    display: flex;
-
-    flex-direction: column;
-  }
-
-
-  .wiktionary-search-heading,
-  .wiktionary-search-form,
-  .wiki-status,
-  .wiki-results-header {
-    flex: 0 0 auto;
-  }
-
-
-  .wiktionary-search-heading {
-    padding-bottom: 14px;
-  }
-
-
-  .wiktionary-search-form {
-    margin-bottom: 10px;
-  }
-
-
-  .wiki-results-header {
-    padding:
-      14px
-      8px
-      14px;
-  }
-
-
-  .wiki-entry-list {
-    flex: 1 1 auto;
-
-    min-height: 0;
-
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-
-    overscroll-behavior: contain;
-
-    scrollbar-width: none;
-
-    padding:
-      10px
-      0
-      max(
-        30px,
-        env(safe-area-inset-bottom)
-      );
-  }
-
-
-  .wiki-entry-list::-webkit-scrollbar {
-    display: none;
-  }
-
-
-  /* Readability: approximately 25–30% larger for body content. */
 
   .wiktionary-page {
     font-size: 17px;
