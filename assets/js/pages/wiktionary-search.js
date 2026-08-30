@@ -7497,7 +7497,7 @@ function renderSaveButtonContent(
       aria-hidden="true"
     >
       <img
-        src="../../images/save.png"
+        src="../assets/images/save.png"
         alt=""
       />
     </span>
