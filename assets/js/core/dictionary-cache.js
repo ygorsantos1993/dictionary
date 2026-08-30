@@ -55,3 +55,34 @@ export async function cacheEntries(language, entries) {
 
 export const findCachedBaseWords = (word) =>
   findCachedEntries("turkish", word);
+
+export async function clearCachedEntries(language) {
+  const database = await openDatabase();
+  const readTransaction = database.transaction(
+    ENTRIES_STORE,
+    "readonly"
+  );
+  const request = readTransaction.objectStore(ENTRIES_STORE)
+    .index("language").getAll(language);
+  const entries = await new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error);
+  });
+  const transaction = database.transaction(
+    ENTRIES_STORE,
+    "readwrite"
+  );
+  const store = transaction.objectStore(ENTRIES_STORE);
+  entries.forEach((entry) => store.delete(entry.cacheKey));
+
+  return new Promise((resolve, reject) => {
+    transaction.oncomplete = () => {
+      database.close();
+      resolve();
+    };
+    transaction.onerror = () => {
+      database.close();
+      reject(transaction.error);
+    };
+  });
+}

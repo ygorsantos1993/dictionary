@@ -115,3 +115,21 @@ $$;
 
 grant execute on function public.save_turkish_words_batch(jsonb)
 to authenticated;
+
+create or replace function public.delete_all_turkish_words()
+returns void
+language plpgsql
+security invoker
+set search_path = public
+as $$
+begin
+  delete from public.turkish_words;
+
+  update public.settings
+  set turkish_words_total = 0
+  where id = 1;
+end;
+$$;
+
+grant execute on function public.delete_all_turkish_words()
+to authenticated;

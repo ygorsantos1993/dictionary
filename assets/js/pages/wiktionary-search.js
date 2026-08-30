@@ -7816,7 +7816,13 @@ saveButton.addEventListener(
 
 
       input.value = "";
-      clearResults();
+
+      existingWords =
+        await loadExistingWords(
+          currentWord
+        );
+
+      renderWords();
 
     } catch (error) {
 

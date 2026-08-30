@@ -1589,6 +1589,36 @@ label {
   margin: 14px 0;
 }
 
+.library-entry-card summary {
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.library-entry-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.library-entry-card summary strong {
+  color: #4c5661;
+  font-size: 22px;
+}
+
+.library-entry-card summary small {
+  color: #a5763b;
+  font-size: 12px;
+}
+
+.library-entry-card summary span {
+  color: #77716b;
+  font-size: 13px;
+}
+
+.library-entry-details {
+  margin-top: 18px;
+}
+
 
 .wiki-entry-card.entry-not-selected {
   opacity: 0.58;
