@@ -3733,8 +3733,7 @@ function extractCoreFormsFromDeclensionTable(
 
 
   if (
-    columns.singular === null ||
-    columns.plural === null
+    columns.singular === null
   ) {
 
     return results;
@@ -3802,7 +3801,8 @@ function extractCoreFormsFromDeclensionTable(
 
 
   if (
-    needPlural
+    needPlural &&
+    columns.plural !== null
   ) {
 
     const nominativeRow =
