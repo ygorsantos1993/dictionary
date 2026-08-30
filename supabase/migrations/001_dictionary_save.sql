@@ -66,6 +66,7 @@ begin
       id, word, etymology, pronunciation, forms, notes, analysis,
       base_word_text, base_word_id, alternative_forms
     )
+    overriding system value
     values (
       (select coalesce(max(id), 0) + 1 from public.turkish_words),
       v_word ->> 'word',
@@ -97,6 +98,18 @@ begin
       );
     end loop;
   end loop;
+
+  perform setval(
+    pg_get_serial_sequence(
+      'public.turkish_words',
+      'id'
+    ),
+    coalesce(
+      (select max(id) from public.turkish_words),
+      1
+    ),
+    true
+  );
 
   select count(*)::integer into v_total from public.turkish_words;
   insert into public.settings (id, turkish_words_total)
