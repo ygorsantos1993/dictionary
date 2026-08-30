@@ -7815,23 +7815,8 @@ saveButton.addEventListener(
       );
 
 
-      showStatus(
-        `${selected.length} ${
-          selected.length === 1
-            ? "word was"
-            : "words were"
-        } saved to My Dictionary.`,
-        "success"
-      );
-
-
-      existingWords =
-        await loadExistingWords(
-          currentWord
-        );
-
-
-      renderWords();
+      input.value = "";
+      clearResults();
 
     } catch (error) {
 

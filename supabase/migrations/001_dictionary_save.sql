@@ -99,18 +99,6 @@ begin
     end loop;
   end loop;
 
-  perform setval(
-    pg_get_serial_sequence(
-      'public.turkish_words',
-      'id'
-    ),
-    coalesce(
-      (select max(id) from public.turkish_words),
-      1
-    ),
-    true
-  );
-
   select count(*)::integer into v_total from public.turkish_words;
   insert into public.settings (id, turkish_words_total)
   values (1, v_total)

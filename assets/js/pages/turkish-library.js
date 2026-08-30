@@ -20,22 +20,30 @@ function render() {
     .sort((a, b) => descending ? b.id - a.id : a.id - b.id);
 
   count.textContent = `${visible.length} word${visible.length === 1 ? "" : "s"}`;
-  entries.innerHTML = visible.map((word) => `
-    <article class="wiki-entry-card">
-      <div class="wiki-entry-top">
-        <div>
-          <div class="wiki-etymology">ID ${word.id} · WORD ${word.etymology}</div>
-          <h2>${escapeHtml(word.word)}</h2>
+  entries.innerHTML = visible.map((word) => {
+    const meanings = word.turkish_meanings || [];
+    const firstMeaning = meanings[0]?.meaning || "";
+    return `
+      <details class="wiki-entry-card library-entry-card">
+        <summary>
+          <strong>${escapeHtml(word.word)}</strong>
+          <span>${escapeHtml(firstMeaning)}</span>
+        </summary>
+        <div class="library-entry-details">
+          <small>ID ${word.id} · WORD ${word.etymology}</small>
+          ${meanings.map((meaning) => `
+            <section class="wiki-entry-section">
+              <h3>${escapeHtml(meaning.part_of_speech || "")}</h3>
+              <p>${escapeHtml(meaning.meaning || "")}</p>
+            </section>
+          `).join("")}
+          <small>Forms: ${escapeHtml(JSON.stringify(word.forms || []))}</small>
+          <small>Analysis: ${escapeHtml(word.analysis || "")}</small>
+          <small>Base word: ${escapeHtml(word.base_word_text || "")}</small>
         </div>
-      </div>
-      ${(word.turkish_meanings || []).slice(0, 3).map((meaning) => `
-        <section class="wiki-entry-section">
-          <h3>${escapeHtml(meaning.part_of_speech || "")}</h3>
-          <p>${escapeHtml(meaning.meaning || "")}</p>
-        </section>
-      `).join("")}
-    </article>
-  `).join("") || "<p>No word found.</p>";
+      </details>
+    `;
+  }).join("") || "<p>No word found.</p>";
 }
 
 function escapeHtml(value) {
@@ -52,13 +60,14 @@ form.addEventListener("submit", (event) => {
 
 sortButton.addEventListener("click", () => {
   descending = !descending;
-  sortButton.textContent = `ID: ${descending ? "newest" : "oldest"} first`;
+  sortButton.textContent =
+    descending ? "Newest first" : "Oldest first";
   render();
 });
 
 const { data, error } = await supabase
   .from("turkish_words")
-  .select("id, word, etymology, turkish_meanings(part_of_speech, meaning)")
+  .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_text, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
   .order("id", { ascending: false });
 
 if (error) {
