@@ -4105,18 +4105,25 @@ function findSingularPluralColumns(
 
     if (
       rowSingular !== null &&
-      rowPlural !== null &&
-      rowSingular !== rowPlural
+      singular === null
     ) {
-
       singular =
         rowSingular;
+    }
 
+    if (
+      rowPlural !== null &&
+      plural === null
+    ) {
       plural =
         rowPlural;
+    }
 
+    if (
+      singular !== null &&
+      plural !== null
+    ) {
       break;
-
     }
 
   }
