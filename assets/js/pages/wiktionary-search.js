@@ -760,84 +760,30 @@ function findPosSectionsInGroup(
 ) {
 
   const result = [];
+  const seen = new Set();
 
-  const seen =
-    new Set();
+  for (const root of group.sections) {
+    const sections = [
+      root,
+      ...root.querySelectorAll("section")
+    ];
 
-
-  for (
-    const section
-    of group.sections
-  ) {
-
-    const title =
-      getSectionTitle(
-        section
-      );
-
-
-    if (
-      POS_NAMES.has(
-        title
-      )
-    ) {
-
-      seen.add(
-        section
-      );
-
-      result.push(
-        section
-      );
-
-    }
-
-
-    const descendants =
-      section.querySelectorAll(
-        "section"
-      );
-
-
-    for (
-      const descendant
-      of descendants
-    ) {
-
-      const descendantTitle =
-        getSectionTitle(
-          descendant
-        );
-
+    for (const section of sections) {
+      const title = getSectionTitle(section);
 
       if (
-        POS_NAMES.has(
-          descendantTitle
-        ) &&
-        !seen.has(
-          descendant
-        )
+        POS_NAMES.has(title) &&
+        !seen.has(section)
       ) {
-
-        seen.add(
-          descendant
-        );
-
-        result.push(
-          descendant
-        );
-
+        seen.add(section);
+        result.push(section);
       }
-
     }
-
   }
-
 
   return result;
 
 }
-
 
 /* =========================================================
    PARSE POS
