@@ -427,6 +427,29 @@ function parseTurkishWords(
 
   }
 
+  /*
+    Some Wiktionary entries use a section layout that does not
+    fit the normal etymology grouping. Keep the whole Turkish
+    section as a fallback so valid POS entries such as Ankara
+    are not discarded just because their section nesting differs.
+  */
+  if (!results.length) {
+    const fallback = parseEtymologyGroup(
+      {
+        etymology: 1,
+        etymologySection: null,
+        sections: [turkishSection],
+        sharedPronunciationSections: [],
+        sharedAlternativeFormSections: []
+      },
+      searchedWord
+    );
+
+    if (fallback) {
+      results.push(fallback);
+    }
+  }
+
 
   return results;
 
