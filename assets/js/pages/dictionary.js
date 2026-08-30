@@ -375,6 +375,12 @@ dictionarySearchCard.addEventListener(
 libraryCard.addEventListener(
   "click",
   () => {
+    if (currentLanguage !== "turkish") {
+      return;
+    }
+
+    window.location.href =
+      "./turkish-library.html";
   }
 );
 

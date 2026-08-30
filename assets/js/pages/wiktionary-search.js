@@ -1,6 +1,10 @@
 /* DICTIONARY JS - APPROVED UI + SEARCH ON WIKTIONARY - 2026-08-28 */
 
 import { supabase } from "../core/supabase.js";
+import {
+  findCachedBaseWords,
+  cacheEntries
+} from "../core/dictionary-cache.js";
 
 
 /* =========================================================
@@ -6623,38 +6627,36 @@ function wireBaseWordControls(
 
         try {
 
-          const {
-            data,
-            error
-          } = await supabase
-            .from("turkish_words")
-            .select(`
-              id,
-              word,
-              etymology,
-              turkish_meanings (
-                part_of_speech,
-                position,
-                meaning
-              )
-            `)
-            .eq(
-              "word",
-              baseWord
+          let cachedMatches = [];
+
+          try {
+            cachedMatches =
+              await findCachedBaseWords(
+                baseWord
+              );
+          } catch (cacheError) {
+            console.warn(
+              "Dictionary cache unavailable:",
+              cacheError
             );
-
-
-          if (error) {
-
-            throw error;
-
           }
 
+          if (
+            cachedMatches.length
+          ) {
+            renderBaseWordMatches(
+              results,
+              wordEntry,
+              cachedMatches
+            );
+
+            return;
+          }
 
           renderBaseWordMatches(
             results,
             wordEntry,
-            data || []
+            []
           );
 
         } catch (error) {
@@ -7795,6 +7797,23 @@ saveButton.addEventListener(
         data
       );
 
+      await cacheEntries(
+        "turkish",
+        rpcPayload.map(
+          (entry, index) => ({
+            id:
+              data?.word_ids?.[index] ||
+              null,
+            ...entry,
+            turkish_meanings:
+              entry.meanings
+          })
+        ).filter(
+          (entry) =>
+            entry.id
+        )
+      );
+
 
       showStatus(
         `${selected.length} ${
@@ -7955,7 +7974,7 @@ function buildAtomicSaveWordPayload(
       The UI currently presents it as editable "Etymology".
     */
 
-    surface_analysis:
+    analysis:
       payload.etymologyText,
 
     base_word_text:

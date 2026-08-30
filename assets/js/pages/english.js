@@ -41,6 +41,8 @@ const searchStatus =
     "englishSearchStatus"
   );
 
+const results = document.getElementById("englishResults");
+
 
 function openLanguageMenu() {
 
@@ -226,41 +228,82 @@ logoutButton.addEventListener(
 
 searchForm.addEventListener(
   "submit",
-  (event) => {
-
+  async (event) => {
     event.preventDefault();
-
-
-    const word =
-      searchInput.value.trim();
-
+    const word = searchInput.value.trim();
 
     if (!word) {
-
-      searchStatus.textContent =
-        "Enter an English word.";
-
-      searchStatus.hidden =
-        false;
-
+      searchStatus.textContent = "Enter an English word.";
+      searchStatus.hidden = false;
       return;
-
     }
 
+    searchStatus.hidden = true;
+    results.hidden = false;
+    results.textContent = "Searching...";
 
-    /*
-      English → Turkish / Standard Arabic / Chinese
-      search will be implemented in the next step.
-    */
+    try {
+      const response = await fetch(
+        `https://en.wiktionary.org/w/rest.php/v1/page/${encodeURIComponent(word)}/with_html`,
+        { headers: { Accept: "application/json" } }
+      );
+      if (response.status === 404) throw new Error("Word not found.");
+      if (!response.ok) throw new Error(`Wiktionary returned HTTP ${response.status}.`);
 
-    searchStatus.textContent =
-      "English search will be added next.";
+      const data = await response.json();
+      const doc = new DOMParser().parseFromString(data.html, "text/html");
+      const english = [...doc.querySelectorAll("h2")]
+        .find((heading) => heading.textContent.trim() === "English")
+        ?.closest("section");
+      const senses = extractTurkishTranslationSenses(english);
 
-    searchStatus.hidden =
-      false;
-
+      results.innerHTML = senses.length
+        ? `<h3>${escapeHtml(word)}</h3>
+           ${senses.map((sense) => `
+             <article class="english-translation-sense">
+               <h4>${escapeHtml(sense.sense)}</h4>
+               <p>${sense.translations.map(escapeHtml).join(", ")}</p>
+             </article>
+           `).join("")}`
+        : `<h3>${escapeHtml(word)}</h3>
+           <p>No Turkish translation found.</p>`;
+    } catch (error) {
+      results.textContent = error.message;
+    }
   }
 );
+
+function extractTurkishTranslationSenses(englishSection) {
+  if (!englishSection) {
+    return [];
+  }
+
+  return [...englishSection.querySelectorAll(".NavFrame[id^='Translations-']")]
+    .map((frame) => {
+      const sense = frame.id
+        .replace(/^Translations-/, "")
+        .replace(/_/g, " ")
+        .trim();
+      const translations = [...frame.querySelectorAll("tr")]
+        .filter((row) => /\bTurkish\b/i.test(row.textContent))
+        .flatMap((row) => [
+          ...row.querySelectorAll("a[lang='tr'], a[href*='#Turkish']")
+        ].map((link) => link.textContent.trim()))
+        .filter((value, index, list) =>
+          value && list.indexOf(value) === index
+        );
+
+      return { sense, translations };
+    })
+    .filter((item) => item.translations.length);
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  }[char]));
+}
 
 
 requireSession();

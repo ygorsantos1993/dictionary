@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Turkish Library</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body class="wiktionary-page">
+  <header class="wiktionary-topbar">
+    <button id="backButton" class="wiki-round-button" type="button"
+      aria-label="Go back">←</button>
+    <h1>Turkish Library</h1>
+    <span></span>
+  </header>
+
+  <main class="wiktionary-shell library-shell">
+    <form id="librarySearchForm" class="wiktionary-search-form">
+      <input id="librarySearchInput" type="search"
+        placeholder="Search one word..." autocomplete="off" />
+      <button type="submit" class="wiki-search-button">Search</button>
+    </form>
+    <div class="library-toolbar">
+      <span id="libraryCount"></span>
+      <button id="sortButton" type="button">ID: newest first</button>
+    </div>
+    <section id="libraryEntries" class="wiki-entry-list"></section>
+  </main>
+  <script type="module" src="../assets/js/pages/turkish-library.js"></script>
+</body>
+</html>
