@@ -3130,7 +3130,7 @@ input:checked +
    MOBILE HUB
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 520px) {
 
   .dictionary-page {
     padding-left:
@@ -3560,7 +3560,7 @@ input:checked +
    + READABILITY
    ========================================================= */
 
-@media (max-width: 520px) {
+@media (max-width: 768px) {
 
   html,
   body.wiktionary-page {

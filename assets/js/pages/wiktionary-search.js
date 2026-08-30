@@ -450,6 +450,60 @@ function parseTurkishWords(
     }
   }
 
+  if (!results.length) {
+    const partsOfSpeech = [];
+    const seen = new Set();
+
+    for (
+      const heading
+      of turkishSection.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6"
+      )
+    ) {
+      const partOfSpeech = cleanText(
+        heading.textContent
+      );
+      const posSection = heading.closest("section");
+
+      if (
+        POS_NAMES.has(partOfSpeech) &&
+        posSection &&
+        !seen.has(posSection)
+      ) {
+        seen.add(posSection);
+        partsOfSpeech.push(
+          parsePartOfSpeech(
+            posSection,
+            partOfSpeech,
+            searchedWord,
+            {
+              etymology: 1,
+              sections: [turkishSection],
+              sharedPronunciationSections: [],
+              sharedAlternativeFormSections: []
+            }
+          )
+        );
+      }
+    }
+
+    if (partsOfSpeech.length) {
+      results.push({
+        word: searchedWord,
+        etymology: 1,
+        alternativeForms: [],
+        etymologyText: "",
+        etymologySelected: true,
+        baseWordText: "",
+        baseWordId: null,
+        baseWordSelected: false,
+        pronunciation: [],
+        partsOfSpeech,
+        selected: true
+      });
+    }
+  }
+
 
   return results;
 
