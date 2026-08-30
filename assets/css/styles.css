@@ -97,7 +97,7 @@ input {
   padding: 24px;
 
   background:
-    url("../background.jpg");
+    url("../images/background.jpg");
 
   background-size: cover;
   background-position: center;
@@ -121,7 +121,7 @@ input {
       rgba(255, 255, 255, 0.45),
       rgba(255, 255, 255, 0.45)
     ),
-    url("../background.jpg");
+    url("../images/background.jpg");
 
   background-size: cover;
   background-position: center;
@@ -292,7 +292,7 @@ label {
   overflow-x: hidden;
 
   background:
-    url("../turkey.png");
+    url("../images/turkey.png");
 
   background-size: cover;
 
@@ -942,7 +942,7 @@ label {
       rgba(248, 239, 225, 0.33),
       rgba(248, 239, 225, 0.23)
     ),
-    url("../turkey.png");
+    url("../images/turkey.png");
 
   background-size: cover;
 
@@ -2822,7 +2822,7 @@ input:checked +
       rgba(248, 239, 225, 0.33),
       rgba(248, 239, 225, 0.23)
     ),
-    url("../background.jpg");
+    url("../images/background.jpg");
 
   background-size: cover;
 

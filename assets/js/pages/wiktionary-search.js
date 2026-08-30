@@ -1,6 +1,6 @@
 /* DICTIONARY JS - APPROVED UI + SEARCH ON WIKTIONARY - 2026-08-28 */
 
-import { supabase } from "../../js/supabase.js";
+import { supabase } from "../core/supabase.js";
 
 
 /* =========================================================
@@ -7497,7 +7497,7 @@ function renderSaveButtonContent(
       aria-hidden="true"
     >
       <img
-        src="../save.png"
+        src="../../images/save.png"
         alt=""
       />
     </span>

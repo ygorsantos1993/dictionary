@@ -1,4 +1,4 @@
-import { supabase } from "../../js/supabase.js";
+import { supabase } from "../core/supabase.js";
 
 
 const syncButton =
@@ -43,19 +43,19 @@ const languages = {
   turkish: {
     name: "Turkish",
     title: "TURKISH",
-    flag: "../turkish-flag.png"
+    flag: "../../images/turkish-flag.png"
   },
 
   msa: {
     name: "Standard Arabic",
     title: "STANDARD ARABIC",
-    flag: "../arabic-flag.png"
+    flag: "../../images/arabic-flag.png"
   },
 
   chinese: {
     name: "Chinese",
     title: "CHINESE",
-    flag: "../chinese-flag.png"
+    flag: "../../images/chinese-flag.png"
   }
 
 };

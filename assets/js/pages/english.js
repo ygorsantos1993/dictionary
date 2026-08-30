@@ -1,4 +1,4 @@
-import { supabase } from "../../js/supabase.js";
+import { supabase } from "../core/supabase.js";
 
 
 const backButton =
