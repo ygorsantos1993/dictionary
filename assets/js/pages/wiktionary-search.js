@@ -1504,6 +1504,7 @@ function extractEtymologyText(
 
 
   const parts = [];
+  let insideEtymologyTree = false;
 
 
   for (
@@ -1517,8 +1518,19 @@ function extractEtymologyText(
       )
     ) {
 
+      insideEtymologyTree =
+        /etymology\s+tree/i.test(
+          cleanText(
+            child.textContent
+          )
+        );
+
       continue;
 
+    }
+
+    if (insideEtymologyTree) {
+      continue;
     }
 
 
