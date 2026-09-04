@@ -1082,6 +1082,11 @@ function getSectionTitle(
     of section.children
   ) {
 
+    const childText =
+      cleanText(
+        child.textContent
+      );
+
     if (
       /^H[1-6]$/.test(
         child.tagName
@@ -1504,7 +1509,7 @@ function extractEtymologyText(
 
 
   const parts = [];
-  let insideEtymologyTree = false;
+  let sawEtymologyTree = false;
 
 
   for (
@@ -1518,19 +1523,34 @@ function extractEtymologyText(
       )
     ) {
 
-      insideEtymologyTree =
+      sawEtymologyTree =
         /etymology\s+tree/i.test(
-          cleanText(
-            child.textContent
-          )
+          childText
         );
 
       continue;
 
     }
 
-    if (insideEtymologyTree) {
+    if (
+      /etymology\s+tree/i.test(
+        childText
+      )
+    ) {
+      sawEtymologyTree = true;
       continue;
+    }
+
+    if (sawEtymologyTree) {
+      if (
+        /^(inherited|borrowed|derived|from|ultimately|compare[d]? with)\b/i.test(
+          childText
+        )
+      ) {
+        sawEtymologyTree = false;
+      } else {
+        continue;
+      }
     }
 
 

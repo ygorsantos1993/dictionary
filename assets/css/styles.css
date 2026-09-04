@@ -2422,9 +2422,9 @@ input:not(:checked) + span {
   transition:
     opacity 150ms ease;
 
-  margin-top: 6px;
+  margin-top: 2px;
 
-  padding-top: 0;
+  padding-top: 4px;
 }
 
 
@@ -2437,7 +2437,7 @@ input:not(:checked) + span {
 
   gap: 14px;
 
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 
@@ -3696,9 +3696,9 @@ input:checked +
 
 
   .wiki-etymology-section {
-    margin-top: 6px;
+    margin-top: 2px;
 
-    padding-top: 0;
+    padding-top: 4px;
   }
 
 
@@ -3719,7 +3719,7 @@ input:checked +
 
   .wiki-etymology-section
   .wiki-etymology-section-head {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
 
