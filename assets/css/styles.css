@@ -2422,22 +2422,14 @@ input:not(:checked) + span {
   transition:
     opacity 150ms ease;
 
-  margin-top: 10px;
+  margin-top: 6px;
 
-  padding-top: 4px;
+  padding-top: 0;
 }
 
 
 .wiki-etymology-section-head {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: 14px;
-
-  margin-bottom: 12px;
+  display: none;
 }
 
 
@@ -2531,6 +2523,10 @@ input:checked +
 
 .wiki-etymology-text {
   margin: 0;
+
+  padding: 0;
+
+  text-align: left;
 
   color:
     #4d5053;
@@ -3692,9 +3688,9 @@ input:checked +
 
 
   .wiki-etymology-section {
-    margin-top: 10px;
+    margin-top: 6px;
 
-    padding-top: 4px;
+    padding-top: 0;
   }
 
 
