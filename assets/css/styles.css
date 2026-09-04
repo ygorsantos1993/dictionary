@@ -2421,6 +2421,10 @@ input:not(:checked) + span {
 .wiki-etymology-section {
   transition:
     opacity 150ms ease;
+
+  margin-top: 10px;
+
+  padding-top: 4px;
 }
 
 
@@ -2449,7 +2453,7 @@ input:not(:checked) + span {
 
 
 .wiki-etymology-title-wrap h3 {
-  margin: 0;
+  margin: 0 !important;
 }
 
 
@@ -2458,14 +2462,9 @@ input:not(:checked) + span {
 
   display: flex;
 
-  align-items: flex-start;
+  align-items: center;
 
   cursor: pointer;
-}
-
-
-.wiki-etymology-toggle .wiki-custom-check {
-  margin-top: 1px;
 }
 
 
@@ -3498,9 +3497,9 @@ input:checked +
    ========================================================= */
 
 .wiki-etymology-section {
-  margin-top: 16px;
+  margin-top: 10px;
 
-  padding-top: 12px;
+  padding-top: 4px;
 }
 
 
@@ -3693,9 +3692,9 @@ input:checked +
 
 
   .wiki-etymology-section {
-    margin-top: 16px;
+    margin-top: 10px;
 
-    padding-top: 12px;
+    padding-top: 4px;
   }
 
 
