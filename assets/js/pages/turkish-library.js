@@ -1,4 +1,4 @@
-import { supabase } from "../core/supabase.js";
+import { turkishDb } from "../core/supabase.js";
 import { clearCachedEntries } from "../core/dictionary-cache.js";
 
 const entries = document.getElementById("libraryEntries");
@@ -82,7 +82,7 @@ deleteAllButton.addEventListener("click", async () => {
   }
 
   deleteAllButton.disabled = true;
-  const { error } = await supabase.rpc(
+  const { error } = await turkishDb.rpc(
     "delete_all_turkish_words"
   );
 
@@ -132,7 +132,7 @@ sortButton.addEventListener("click", () => {
   render();
 });
 
-const { data, error } = await supabase
+const { data, error } = await turkishDb
   .from("turkish_words")
   .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_text, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
   .order("id", { ascending: false });

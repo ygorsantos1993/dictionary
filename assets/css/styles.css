@@ -1233,6 +1233,15 @@ label {
 }
 
 
+.wiki-results-scroll {
+  max-height: calc(100dvh - 250px);
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+
 .wiki-entry-list {
   display: grid;
 

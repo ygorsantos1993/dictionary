@@ -10,3 +10,6 @@ export const supabase = createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
+
+export const turkishDb =
+  supabase.schema("turkish");

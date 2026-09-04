@@ -1,6 +1,6 @@
 /* DICTIONARY JS - APPROVED UI + SEARCH ON WIKTIONARY - 2026-08-28 */
 
-import { supabase } from "../core/supabase.js";
+import { supabase, turkishDb } from "../core/supabase.js";
 import {
   findCachedBaseWords,
   cacheEntries
@@ -147,9 +147,7 @@ form.addEventListener(
     }
 
 
-    input.value =
-      word;
-
+    input.value = "";
 
     await searchWiktionary(
       word
@@ -432,7 +430,7 @@ async function loadExistingWords(word) {
   const {
     data,
     error
-  } = await supabase
+  } = await turkishDb
     .from("turkish_words")
     .select(`
       id,
@@ -7775,7 +7773,7 @@ saveButton.addEventListener(
       const {
         data,
         error
-      } = await supabase
+      } = await turkishDb
         .rpc(
           "save_turkish_words_batch",
           {

@@ -34,3 +34,10 @@ Depois, acesse `http://localhost:8000`.
 
 O login e o salvamento das palavras usam o Supabase, e as consultas são feitas
 na API do Wiktionary.
+
+## Schemas do Supabase
+
+Os objetos específicos do dicionário turco ficam no schema `turkish`:
+`turkish.turkish_words`, `turkish.turkish_meanings` e as funções de escrita.
+Depois de aplicar as migrations, adicione `turkish` em
+**Supabase → Project Settings → API → Exposed schemas**.
