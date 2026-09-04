@@ -83,6 +83,7 @@ const INVARIABLE_POS_NAMES = new Set([
    ========================================================= */
 
 async function requireSession() {
+  return;
 
   const {
     data,

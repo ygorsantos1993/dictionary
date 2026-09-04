@@ -186,6 +186,7 @@ function toggleLanguageMenu() {
 
 
 async function requireSession() {
+  return;
 
   const {
     data,

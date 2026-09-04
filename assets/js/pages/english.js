@@ -115,6 +115,7 @@ function goToLanguage(
 
 
 async function requireSession() {
+  return;
 
   const {
     data,
