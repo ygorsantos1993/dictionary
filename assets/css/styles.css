@@ -1467,9 +1467,9 @@ label {
 
 .wiki-results-header {
   padding:
-    34px
+    18px
     8px
-    12px;
+    8px;
 
   text-align: center;
 }
@@ -1505,7 +1505,7 @@ label {
 
 
 .wiki-header-ornament {
-  margin-top: 19px;
+  margin-top: 12px;
 
   display: flex;
 
@@ -1650,6 +1650,14 @@ label {
 
 .wiki-word-heading {
   min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
 }
 
 
@@ -1726,7 +1734,7 @@ input:checked + span::after {
 
 
 .wiki-entry-status {
-  margin-top: 10px;
+  margin-top: 0;
 
   display: inline-flex;
 
@@ -1847,7 +1855,7 @@ input:checked + span::after {
 
   display: flex;
 
-  align-items: center;
+  align-items: flex-start;
 
   gap: 10px;
 
@@ -1887,6 +1895,8 @@ input:checked + span::after {
 
   background:
     rgba(255, 255, 255, 0.57);
+
+  margin-top: 3px;
 }
 
 
@@ -2448,9 +2458,14 @@ input:not(:checked) + span {
 
   display: flex;
 
-  align-items: center;
+  align-items: flex-start;
 
   cursor: pointer;
+}
+
+
+.wiki-etymology-toggle .wiki-custom-check {
+  margin-top: 1px;
 }
 
 
