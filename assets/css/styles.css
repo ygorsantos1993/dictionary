@@ -1236,6 +1236,9 @@ label {
 .wiki-results-scroll {
   max-height: calc(100dvh - 250px);
 
+  margin-top: 18px;
+  padding: 4px 4px 0;
+
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
@@ -1844,7 +1847,7 @@ input:checked + span::after {
 
   display: flex;
 
-  align-items: flex-start;
+  align-items: center;
 
   gap: 10px;
 
@@ -2758,7 +2761,7 @@ input:checked +
 
   display: flex;
 
-  align-items: flex-start;
+  align-items: center;
 
   gap: 10px;
 
