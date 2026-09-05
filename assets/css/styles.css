@@ -1767,15 +1767,38 @@ label {
 
 
 #libraryCount {
-  color:
-    #77716b;
+  min-height: 34px;
 
-  font-size: 13px;
+  padding:
+    0
+    12px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.22);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 250, 244, 0.82);
+
+  color:
+    #4d5053;
+
+  font-size: 14px;
 
   font-weight: 600;
 
   letter-spacing:
-    0.03em;
+    0.02em;
+
+  box-shadow:
+    0 4px 12px
+    rgba(38, 45, 51, 0.06);
 }
 
 
@@ -1811,7 +1834,7 @@ label {
   position: absolute;
 
   top: 44px;
-  right: 0;
+  left: 0;
 
   z-index: 10;
 
@@ -1864,12 +1887,28 @@ label {
     rgba(185, 139, 73, 0.12);
 }
 
+.library-entry-card {
+  padding:
+    14px
+    15px
+    16px;
+}
+
+
 .library-entry-card summary {
   display: grid;
-  gap: 4px;
+  gap: 6px;
   cursor: pointer;
   list-style: none;
 }
+
+.library-summary-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 
 .library-entry-card summary::-webkit-details-marker {
   display: none;
@@ -1894,6 +1933,7 @@ label {
   color: #8b6233;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
+  white-space: nowrap;
 }
 
 
@@ -1970,6 +2010,53 @@ label {
   margin-top: 2px;
 
   font-style: normal;
+}
+
+
+.library-form-list {
+  display: grid;
+
+  gap: 8px;
+
+  text-align: left;
+}
+
+
+.library-form-row {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 12px;
+}
+
+
+.library-form-row small {
+  min-width: 90px;
+
+  color:
+    #9a703f;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+
+.library-form-row strong {
+  color:
+    #33393d;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 18px;
+
+  font-weight: 500;
 }
 
 

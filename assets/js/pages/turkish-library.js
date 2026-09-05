@@ -61,23 +61,29 @@ function render() {
         .join(" · ")
       : "";
     const formGroups = Array.isArray(word.forms) ? word.forms : [];
+    const hasForms = formGroups.some(
+      (group) =>
+        Array.isArray(group.forms) &&
+        group.forms.length > 0
+    );
     return `
       <details
         class="wiki-entry-card library-entry-card"
         data-library-word="${escapeHtml(word.word)}"
       >
         <summary>
-          <strong>${escapeHtml(word.word)}</strong>
-          ${
-            pronunciation
-              ? `<small class="library-pronunciation">${escapeHtml(pronunciation)}</small>`
-              : ""
-          }
+          <span class="library-summary-heading">
+            <strong>${escapeHtml(word.word)}</strong>
+            ${
+              pronunciation
+                ? `<small class="library-pronunciation">${escapeHtml(pronunciation)}</small>`
+                : ""
+            }
+          </span>
           <span class="library-meaning-preview">
             ${
               previewMeanings.map((meaning) => `
                 <span>
-                  <em>(${escapeHtml(meaning.part_of_speech || "")})</em>
                   ${escapeHtml(meaning.meaning || "")}
                 </span>
               `).join("")
@@ -85,19 +91,8 @@ function render() {
           </span>
         </summary>
         <div class="library-entry-details">
-          ${meanings.length ? `
-            <section class="wiki-entry-section">
-              <h3>Meanings</h3>
-              ${meanings.map((meaning) => `
-                <p class="library-meaning-detail">
-                  <em>(${escapeHtml(meaning.part_of_speech || "")})</em>
-                  ${escapeHtml(meaning.meaning || "")}
-                </p>
-                ${formatExamples(meaning.examples)}
-              `).join("")}
-            </section>
-          ` : ""}
-          ${formGroups.length ? `<section class="wiki-entry-section">
+          ${renderSavedMeanings(meanings)}
+          ${hasForms ? `<section class="wiki-entry-section">
             <h3>Forms</h3>
             <p>${formatForms(formGroups)}</p>
           </section>` : ""}
@@ -191,19 +186,65 @@ entries.addEventListener("click", (event) => {
   }
 });
 
+function renderSavedMeanings(meanings) {
+  if (!meanings.length) {
+    return "";
+  }
+
+  const groups = meanings.reduce(
+    (result, meaning) => {
+      const key =
+        meaning.part_of_speech || "Other";
+      (result[key] ||= []).push(meaning);
+      return result;
+    },
+    {}
+  );
+
+  return Object.entries(groups).map(
+    ([partOfSpeech, groupMeanings]) => `
+      <section class="wiki-pos-section">
+        <div class="wiki-pos-title">
+          ${escapeHtml(partOfSpeech)}
+        </div>
+        <div class="wiki-pos-subsection wiki-meanings-section">
+          <h3>Meanings</h3>
+          ${groupMeanings.map((meaning) => `
+            <div class="wiki-meaning-block">
+              <div class="wiki-meaning-row">
+                <span class="wiki-meaning-number">
+                  ${meaning.position || ""}
+                </span>
+                <span class="wiki-meaning-text">
+                  ${escapeHtml(meaning.meaning || "")}
+                </span>
+              </div>
+              ${formatExamples(meaning.examples)}
+            </div>
+          `).join("")}
+        </div>
+      </section>
+    `
+  ).join("");
+}
+
 function formatForms(forms) {
   if (!Array.isArray(forms) || !forms.length) {
     return "—";
   }
 
-  return forms.map((group) => {
-    const values = (group.forms || [])
-      .map((form) =>
-        `${form.label || ""}: ${form.value || ""}`
-      )
-      .join(" · ");
-    return `${group.part_of_speech || ""}: ${values}`;
-  }).map(escapeHtml).join("<br />");
+  return `
+    <div class="library-form-list">
+      ${forms.flatMap((group) =>
+        (group.forms || []).map((form) => `
+          <div class="library-form-row">
+            <small>${escapeHtml(form.label || "")}</small>
+            <strong>${escapeHtml(form.value || "")}</strong>
+          </div>
+        `)
+      ).join("")}
+    </div>
+  `;
 }
 
 function formatExamples(examples) {
