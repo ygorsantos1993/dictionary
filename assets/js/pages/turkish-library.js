@@ -8,6 +8,8 @@ const toolbar = document.getElementById("libraryToolbar");
 const filterButton = document.getElementById("filterButton");
 const filterMenu = document.getElementById("filterMenu");
 const backButton = document.getElementById("backButton");
+const previewLibraryButton =
+  document.getElementById("previewLibraryButton");
 let words = [];
 let sortMode = "newest";
 let activeQuery = "";
@@ -15,6 +17,11 @@ let libraryScrollY = 0;
 
 backButton.addEventListener("click", () => {
   window.location.href = "./dictionary.html";
+});
+
+previewLibraryButton.addEventListener("click", () => {
+  window.location.href =
+    "./turkish-library.html?preview=15";
 });
 
 function render() {
@@ -37,9 +44,12 @@ function render() {
     });
 
   count.textContent =
-    activeQuery && !visible.length
-      ? ""
-      : `${visible.length} word${visible.length === 1 ? "" : "s"}`;
+    `${visible.length} ${
+      visible.length === 0 || visible.length === 1
+        ? "word"
+        : "words"
+    }`;
+
   entries.innerHTML = visible.length
     ? visible.map((word) => {
     const meanings = word.turkish_meanings || [];

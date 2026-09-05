@@ -1280,6 +1280,39 @@ label {
 }
 
 
+.library-preview-button {
+  display: block;
+
+  margin:
+    0
+    auto
+    12px;
+
+  padding:
+    7px
+    12px;
+
+  border:
+    1px dashed
+    rgba(169, 122, 63, 0.42);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 250, 244, 0.62);
+
+  color:
+    #9a703f;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing:
+    0.04em;
+}
+
+
 .library-empty-state {
   position: relative;
 
@@ -1716,7 +1749,7 @@ label {
 .library-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 12px;
   margin: 14px 0;
 }
@@ -1730,6 +1763,19 @@ label {
   align-items: center;
 
   gap: 8px;
+}
+
+
+#libraryCount {
+  color:
+    #77716b;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  letter-spacing:
+    0.03em;
 }
 
 
