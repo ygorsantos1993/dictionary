@@ -1935,11 +1935,39 @@ label {
 
 
 .library-entry-list {
+  height:
+    calc(100dvh - 285px);
+
+  min-height: 120px;
+
   gap: 12px;
 
   max-height: none;
 
-  overflow: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding:
+    2px
+    4px
+    24px
+    0;
+
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+
+.library-page {
+  overflow: hidden;
+}
+
+
+.wiktionary-page .library-entry-card {
+  padding:
+    5px
+    12px
+    6px;
 }
 
 
@@ -2008,6 +2036,22 @@ label {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 16px;
   white-space: nowrap;
+}
+
+
+.library-summary-flag {
+  width: 42px;
+  height: 25px;
+
+  display: block;
+
+  object-fit: cover;
+
+  border-radius: 4px;
+
+  box-shadow:
+    0 2px 7px
+    rgba(38, 45, 51, 0.14);
 }
 
 

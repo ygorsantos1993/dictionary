@@ -1,5 +1,11 @@
 import { getCachedEntries } from "../core/dictionary-cache.js";
 
+const turkishFlagPath =
+  new URL(
+    "../../images/turkish-flag.png",
+    import.meta.url
+  ).href;
+
 const entries = document.getElementById("libraryEntries");
 const input = document.getElementById("librarySearchInput");
 const form = document.getElementById("librarySearchForm");
@@ -100,7 +106,13 @@ function render() {
             ${
               pronunciation
                 ? `<small class="library-pronunciation">${escapeHtml(pronunciation)}</small>`
-                : ""
+                : `
+                  <img
+                    class="library-summary-flag"
+                    src="${turkishFlagPath}"
+                    alt="Turkish"
+                  />
+                `
             }
           </span>
           <span class="library-meaning-preview">
@@ -201,7 +213,7 @@ entries.addEventListener("click", (event) => {
     input.value = "";
     render();
     window.requestAnimationFrame(
-      () => window.scrollTo(
+      () => entries.scrollTo(
         0,
         libraryScrollY
       )
@@ -377,7 +389,7 @@ function createPreviewWords() {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  libraryScrollY = window.scrollY;
+  libraryScrollY = entries.scrollTop;
   activeQuery =
     input.value
       .trim()
@@ -388,8 +400,8 @@ form.addEventListener("submit", (event) => {
 
   if (
     activeQuery &&
-    document.documentElement.scrollHeight >
-      window.innerHeight + 1
+    entries.scrollHeight >
+      entries.clientHeight + 1
   ) {
     window.requestAnimationFrame(
       () => {
@@ -419,7 +431,7 @@ clearSearchButton.addEventListener("click", () => {
   clearSearchButton.hidden = true;
   render();
   window.requestAnimationFrame(
-    () => window.scrollTo(0, libraryScrollY)
+    () => entries.scrollTo(0, libraryScrollY)
   );
 });
 
