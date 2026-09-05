@@ -5416,9 +5416,7 @@ function renderEtymology(
       <p
         class="wiki-etymology-text"
         data-role="etymology-text"
-      >
-        ${escapeHtml(wordEntry.etymologyText)}
-      </p>
+      >${escapeHtml(wordEntry.etymologyText)}</p>
 
 
       ${
