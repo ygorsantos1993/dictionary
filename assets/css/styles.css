@@ -1928,9 +1928,9 @@ label {
   align-self: start;
 
   padding:
-    9px
+    5px
     12px
-    10px;
+    6px;
 }
 
 
@@ -1945,7 +1945,7 @@ label {
 
 .library-entry-card summary {
   display: grid;
-  gap: 3px;
+  gap: 10px;
   cursor: pointer;
   list-style: none;
 }
@@ -1960,6 +1960,27 @@ label {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
+}
+
+
+.library-word-label {
+  display: inline-flex;
+
+  align-items: baseline;
+
+  gap: 8px;
+}
+
+
+.library-dominant-pos {
+  color:
+    #9a703f;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  text-transform: lowercase;
 }
 
 

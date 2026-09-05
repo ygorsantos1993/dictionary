@@ -56,6 +56,19 @@ function render() {
     ? visible.map((word) => {
     const meanings = word.turkish_meanings || [];
     const previewMeanings = meanings.slice(0, 3);
+    const meaningCounts = meanings.reduce(
+      (counts, meaning) => {
+        const partOfSpeech =
+          meaning.part_of_speech || "other";
+        counts[partOfSpeech] =
+          (counts[partOfSpeech] || 0) + 1;
+        return counts;
+      },
+      {}
+    );
+    const dominantPartOfSpeech =
+      Object.entries(meaningCounts)
+        .sort((a, b) => b[1] - a[1])[0]?.[0] || "";
     const pronunciation = Array.isArray(word.pronunciation)
       ? word.pronunciation
         .map((item) => item.ipa || "")
@@ -76,7 +89,14 @@ function render() {
       >
         <summary>
           <span class="library-summary-heading">
-            <strong>${escapeHtml(word.word)}</strong>
+            <span class="library-word-label">
+              <strong>${escapeHtml(word.word)}</strong>
+              ${
+                dominantPartOfSpeech
+                  ? `<small class="library-dominant-pos">(${escapeHtml(dominantPartOfSpeech)})</small>`
+                  : ""
+              }
+            </span>
             ${
               pronunciation
                 ? `<small class="library-pronunciation">${escapeHtml(pronunciation)}</small>`
