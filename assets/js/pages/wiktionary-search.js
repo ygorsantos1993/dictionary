@@ -1082,11 +1082,6 @@ function getSectionTitle(
     of section.children
   ) {
 
-    const childText =
-      cleanText(
-        child.textContent
-      );
-
     if (
       /^H[1-6]$/.test(
         child.tagName
@@ -1516,6 +1511,11 @@ function extractEtymologyText(
     const child
     of etymologySection.children
   ) {
+
+    const childText =
+      cleanText(
+        child.textContent
+      );
 
     if (
       /^H[1-6]$/.test(
