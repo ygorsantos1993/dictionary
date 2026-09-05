@@ -1963,6 +1963,14 @@ label {
 }
 
 
+.library-entry-list.is-empty {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+
 .wiktionary-page .library-entry-card {
   padding:
     5px
@@ -2090,6 +2098,109 @@ label {
 
 .library-entry-details {
   margin-top: 18px;
+}
+
+
+.library-edit-button {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: #9a703f;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+.word-editor-form {
+  display: grid;
+
+  gap: 14px;
+
+  padding: 18px;
+
+  border-radius: 22px;
+
+  background: rgba(255, 250, 244, 0.86);
+  box-shadow: 0 11px 30px rgba(38, 45, 51, 0.12);
+}
+
+
+.word-editor-form label,
+.editor-base-word legend {
+  color: #8b6233;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+
+.word-editor-form input,
+.word-editor-form textarea {
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(169, 122, 63, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #30363a;
+  font: inherit;
+  resize: vertical;
+}
+
+
+.editor-base-word {
+  padding: 12px;
+  border: 1px solid rgba(169, 122, 63, 0.22);
+  border-radius: 14px;
+}
+
+
+.editor-base-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+.editor-base-row input {
+  flex: 1;
+}
+
+
+.editor-base-row button,
+.word-editor-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: rgba(185, 139, 73, 0.16);
+  color: #765128;
+}
+
+
+.editor-base-results {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+
+.editor-base-results button {
+  padding: 9px;
+  border-radius: 9px;
+  background: rgba(185, 139, 73, 0.12);
+  color: #4d5053;
+  text-align: left;
+}
+
+
+.word-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 

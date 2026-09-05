@@ -35,6 +35,10 @@ previewLibraryButton.addEventListener("click", () => {
 function render() {
   const query = activeQuery;
   toolbar.hidden = !words.length;
+  entries.classList.toggle(
+    "is-empty",
+    !words.length
+  );
   const visible = words
     .filter((word) => !query || word.word.toLocaleLowerCase("tr-TR") === query)
     .sort((a, b) => {
@@ -126,6 +130,12 @@ function render() {
           </span>
         </summary>
         <div class="library-entry-details">
+          <a
+            class="library-edit-button"
+            href="./turkish-edit.html?id=${word.id}"
+          >
+            Edit
+          </a>
           ${hasForms ? `<section class="wiki-entry-section">
             <h3>Forms</h3>
             <p>${formatForms(formGroups)}</p>

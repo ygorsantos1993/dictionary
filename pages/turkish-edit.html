@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Turkish Word</title>
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body class="wiktionary-page">
+  <header class="wiktionary-topbar">
+    <button id="backButton" class="wiki-round-button" type="button" aria-label="Go back">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <h1 class="library-topbar-title">Edit word</h1>
+    <div class="wiki-language-indicator" aria-label="Turkish">
+      <img src="../assets/images/turkish-flag.png" alt="Turkish" />
+    </div>
+  </header>
+
+  <main class="wiktionary-shell editor-shell">
+    <form id="wordEditorForm" class="word-editor-form">
+      <label>Word<input id="wordInput" readonly /></label>
+      <label>Etymology<textarea id="analysisInput" rows="3"></textarea></label>
+      <label>Pronunciation<textarea id="pronunciationInput" rows="2"
+        placeholder="One pronunciation per line"></textarea></label>
+      <label>Forms<textarea id="formsInput" rows="3"
+        placeholder="label=value, one per line"></textarea></label>
+      <label>Notes<textarea id="notesInput" rows="3"
+        placeholder="One note per line"></textarea></label>
+      <label>Meanings<textarea id="meaningsInput" rows="7"
+        placeholder="part of speech | meaning, one per line"></textarea></label>
+
+      <fieldset class="editor-base-word">
+        <legend>Base word</legend>
+        <div class="editor-base-row">
+          <input id="baseWordInput" placeholder="Search exact word in cache" />
+          <button id="baseWordSearchButton" type="button">Search</button>
+        </div>
+        <div id="baseWordResults" class="editor-base-results"></div>
+      </fieldset>
+
+      <div class="word-editor-actions">
+        <button id="cancelButton" type="button">Cancel</button>
+        <button class="wiki-search-button" type="submit">Save changes</button>
+      </div>
+      <p id="editorStatus" class="wiki-status" hidden></p>
+    </form>
+  </main>
+  <script type="module" src="../assets/js/pages/turkish-edit.js"></script>
+</body>
+</html>
