@@ -1711,6 +1711,103 @@ label {
   margin: 14px 0;
 }
 
+
+.library-toolbar > div {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+.library-filter-button {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.28);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 250, 244, 0.86);
+
+  color:
+    #9a703f;
+}
+
+
+.library-filter-button svg {
+  width: 21px;
+  height: 21px;
+}
+
+
+.library-filter-menu {
+  position: absolute;
+
+  top: 44px;
+  right: 0;
+
+  z-index: 10;
+
+  min-width: 150px;
+
+  padding: 6px;
+
+  display: grid;
+
+  gap: 3px;
+
+  border:
+    1px solid
+    rgba(169, 122, 63, 0.20);
+
+  border-radius: 12px;
+
+  background:
+    rgba(255, 250, 244, 0.98);
+
+  box-shadow:
+    0 10px 24px
+    rgba(38, 45, 51, 0.14);
+}
+
+
+.library-filter-menu[hidden] {
+  display: none;
+}
+
+
+.library-filter-menu button {
+  padding:
+    8px
+    10px;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color:
+    #4d5053;
+
+  text-align: left;
+}
+
+
+.library-filter-menu button:hover {
+  background:
+    rgba(185, 139, 73, 0.12);
+}
+
 .library-entry-card summary {
   display: grid;
   gap: 4px;
@@ -1737,8 +1834,86 @@ label {
   font-size: 13px;
 }
 
+.library-entry-card summary .library-pronunciation {
+  color: #8b6233;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+}
+
+
+.library-meaning-preview {
+  display: grid;
+  gap: 4px;
+}
+
+
+.library-meaning-preview span {
+  color: #33393d;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+
+.library-meaning-preview em {
+  color: #9a703f;
+  font-style: normal;
+  font-weight: 700;
+}
+
+
 .library-entry-details {
   margin-top: 18px;
+}
+
+
+.library-meaning-detail {
+  margin:
+    0
+    0
+    12px;
+
+  color:
+    #33393d;
+
+  line-height: 1.5;
+}
+
+
+.library-meaning-detail em {
+  color:
+    #9a703f;
+
+  font-style: normal;
+
+  font-weight: 700;
+}
+
+
+.library-examples {
+  margin:
+    -4px
+    0
+    16px
+    18px;
+
+  color:
+    #5f625f;
+
+  font-style: italic;
+}
+
+
+.library-examples p {
+  margin: 4px 0;
+}
+
+
+.library-examples small {
+  display: block;
+
+  margin-top: 2px;
+
+  font-style: normal;
 }
 
 

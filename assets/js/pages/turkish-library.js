@@ -5,12 +5,14 @@ const entries = document.getElementById("libraryEntries");
 const input = document.getElementById("librarySearchInput");
 const form = document.getElementById("librarySearchForm");
 const count = document.getElementById("libraryCount");
-const sortButton = document.getElementById("sortButton");
+const filterButton = document.getElementById("filterButton");
+const filterMenu = document.getElementById("filterMenu");
 const deleteAllButton = document.getElementById("deleteAllButton");
 const backButton = document.getElementById("backButton");
 let words = [];
-let descending = true;
+let sortMode = "newest";
 let activeQuery = "";
+let libraryScrollY = 0;
 
 backButton.addEventListener("click", () => {
   window.location.href = "./dictionary.html";
@@ -20,30 +22,71 @@ function render() {
   const query = activeQuery;
   const visible = words
     .filter((word) => !query || word.word.toLocaleLowerCase("tr-TR") === query)
-    .sort((a, b) => descending ? b.id - a.id : a.id - b.id);
+    .sort((a, b) => {
+      if (sortMode === "alphabetical") {
+        return a.word.localeCompare(
+          b.word,
+          "tr",
+          { sensitivity: "base" }
+        );
+      }
 
-  count.textContent = `${visible.length} word${visible.length === 1 ? "" : "s"}`;
+      return sortMode === "newest"
+        ? b.id - a.id
+        : a.id - b.id;
+    });
+
+  count.textContent =
+    activeQuery && !visible.length
+      ? ""
+      : `${visible.length} word${visible.length === 1 ? "" : "s"}`;
   entries.innerHTML = visible.length
     ? visible.map((word) => {
     const meanings = word.turkish_meanings || [];
-    const firstMeaning = meanings[0]?.meaning || "";
+    const previewMeanings = meanings.slice(0, 3);
+    const pronunciation = Array.isArray(word.pronunciation)
+      ? word.pronunciation
+        .map((item) => item.ipa || "")
+        .filter(Boolean)
+        .join(" · ")
+      : "";
     const formGroups = Array.isArray(word.forms) ? word.forms : [];
     return `
-      <details class="wiki-entry-card library-entry-card">
+      <details
+        class="wiki-entry-card library-entry-card"
+        data-library-word="${escapeHtml(word.word)}"
+      >
         <summary>
           <strong>${escapeHtml(word.word)}</strong>
-          <small>ID ${word.id}</small>
-          <span>${escapeHtml(meanings[0]?.part_of_speech || "")}</span>
-          <span>${escapeHtml(firstMeaning)}</span>
+          ${
+            pronunciation
+              ? `<small class="library-pronunciation">${escapeHtml(pronunciation)}</small>`
+              : ""
+          }
+          <span class="library-meaning-preview">
+            ${
+              previewMeanings.map((meaning) => `
+                <span>
+                  <em>(${escapeHtml(meaning.part_of_speech || "")})</em>
+                  ${escapeHtml(meaning.meaning || "")}
+                </span>
+              `).join("")
+            }
+          </span>
         </summary>
         <div class="library-entry-details">
-          <div class="wiki-etymology">WORD ${word.etymology} · ID ${word.id}</div>
-          ${meanings.map((meaning) => `
+          ${meanings.length ? `
             <section class="wiki-entry-section">
-              <h3>${escapeHtml(meaning.part_of_speech || "")}</h3>
-              <p>${escapeHtml(meaning.meaning || "")}</p>
+              <h3>Meanings</h3>
+              ${meanings.map((meaning) => `
+                <p class="library-meaning-detail">
+                  <em>(${escapeHtml(meaning.part_of_speech || "")})</em>
+                  ${escapeHtml(meaning.meaning || "")}
+                </p>
+                ${formatExamples(meaning.examples)}
+              `).join("")}
             </section>
-          `).join("")}
+          ` : ""}
           ${formGroups.length ? `<section class="wiki-entry-section">
             <h3>Forms</h3>
             <p>${formatForms(formGroups)}</p>
@@ -115,7 +158,14 @@ entries.addEventListener("click", (event) => {
 
   if (clearButton) {
     activeQuery = "";
+    input.value = "";
     render();
+    window.requestAnimationFrame(
+      () => window.scrollTo(
+        0,
+        libraryScrollY
+      )
+    );
   }
 });
 
@@ -156,6 +206,34 @@ function formatForms(forms) {
   }).map(escapeHtml).join("<br />");
 }
 
+function formatExamples(examples) {
+  if (!Array.isArray(examples) || !examples.length) {
+    return "";
+  }
+
+  return `
+    <div class="library-examples">
+      ${examples.map((example) => {
+        const source =
+          typeof example === "string"
+            ? example
+            : example?.source || "";
+        const translation =
+          typeof example === "string"
+            ? ""
+            : example?.translation || "";
+
+        return `
+          <p>
+            ${escapeHtml(source)}
+            ${translation ? `<small>${escapeHtml(translation)}</small>` : ""}
+          </p>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;",
@@ -163,31 +241,165 @@ function escapeHtml(value) {
   }[char]));
 }
 
+function createPreviewWords() {
+  const samples = [
+    ["akarsu", "stream", "noun", "akarsuya"],
+    ["belik", "small sign", "noun", "belikler"],
+    ["çevrik", "turned over", "adjective", "çevrik"],
+    ["düşünmek", "to think", "verb", "düşünüyor"],
+    ["esinti", "breeze", "noun", "esintiler"],
+    ["gölgeli", "shaded", "adjective", "gölgeli"],
+    ["ışımak", "to shine", "verb", "ışıyor"],
+    ["kıyıdaş", "coastal neighbor", "noun", "kıyıdaşlar"],
+    ["meraklı", "curious", "adjective", "meraklı"],
+    ["oynak", "playful", "adjective", "oynak"],
+    ["pırıltı", "sparkle", "noun", "pırıltılar"],
+    ["serinlik", "coolness", "noun", "serinlik"],
+    ["tınlamak", "to sound", "verb", "tınlıyor"],
+    ["uyumlu", "harmonious", "adjective", "uyumlu"],
+    ["yolculuk", "journey", "noun", "yolculuklar"]
+  ];
+
+  return samples.map(
+    ([word, meaning, partOfSpeech, plural], index) => ({
+      id: index + 1,
+      word,
+      etymology: 1,
+      pronunciation: [
+        { ipa: `/${word}/` }
+      ],
+      forms: [
+        {
+          part_of_speech: partOfSpeech,
+          forms: [
+            { label: "plural", value: plural }
+          ]
+        }
+      ],
+      notes: [
+        { text: "Preview note only" }
+      ],
+      analysis: `Preview etymology for ${word}.`,
+      base_word_id: null,
+      alternative_forms: null,
+      turkish_meanings: [
+        {
+          part_of_speech: partOfSpeech,
+          position: 1,
+          meaning,
+          examples: [
+            {
+              source: `Bu bir ${word} örneğidir.`,
+              translation: `This is a ${word} example.`
+            }
+          ]
+        },
+        {
+          part_of_speech: partOfSpeech,
+          position: 2,
+          meaning: `A second preview meaning of ${word}.`,
+          examples: []
+        },
+        {
+          part_of_speech: partOfSpeech,
+          position: 3,
+          meaning: `A third preview meaning of ${word}.`,
+          examples: []
+        }
+      ]
+    })
+  );
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  libraryScrollY = window.scrollY;
   activeQuery =
     input.value
       .trim()
       .toLocaleLowerCase("tr-TR");
   input.value = "";
   render();
+
+  if (
+    activeQuery &&
+    document.documentElement.scrollHeight >
+      window.innerHeight + 1
+  ) {
+    window.requestAnimationFrame(
+      () => {
+        const matchingCard =
+          Array.from(
+            entries.querySelectorAll(
+              "[data-library-word]"
+            )
+          ).find(
+            (card) =>
+              card.dataset.libraryWord ===
+              activeQuery
+          );
+
+        matchingCard?.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
+    );
+  }
 });
 
-sortButton.addEventListener("click", () => {
-  descending = !descending;
-  sortButton.textContent =
-    descending ? "Newest first" : "Oldest first";
+filterButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  filterMenu.hidden = !filterMenu.hidden;
+  filterButton.setAttribute(
+    "aria-expanded",
+    String(!filterMenu.hidden)
+  );
+});
+
+filterMenu.addEventListener("click", (event) => {
+  const option = event.target.closest("[data-sort]");
+  if (!option) {
+    return;
+  }
+
+  sortMode = option.dataset.sort;
+  filterMenu.hidden = true;
+  filterButton.setAttribute("aria-expanded", "false");
   render();
 });
 
-const { data, error } = await turkishDb
+document.addEventListener("click", () => {
+  filterMenu.hidden = true;
+  filterButton.setAttribute("aria-expanded", "false");
+});
+
+const previewLimit = Number(
+  new URLSearchParams(
+    window.location.search
+  ).get("preview")
+);
+
+let libraryQuery = turkishDb
   .from("turkish_words")
   .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
   .order("id", { ascending: false });
 
-if (error) {
-  entries.textContent = error.message;
+if (previewLimit > 0) {
+  libraryQuery =
+    libraryQuery.limit(
+      Math.min(previewLimit, 15)
+    );
+}
+
+const result =
+  previewLimit > 0
+    ? { data: createPreviewWords(), error: null }
+    : await libraryQuery;
+
+if (result.error) {
+  entries.textContent = result.error.message;
 } else {
-  words = data || [];
+  words = result.data || [];
   render();
 }

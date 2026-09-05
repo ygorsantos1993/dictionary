@@ -71,7 +71,33 @@
     <div class="library-toolbar">
       <span id="libraryCount"></span>
       <div>
-        <button id="sortButton" type="button">Newest first</button>
+        <button
+          id="filterButton"
+          class="library-filter-button"
+          type="button"
+          aria-label="Change library order"
+          aria-expanded="false"
+          title="Change order"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 6h16M7 12h10M10 18h4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+        <div
+          id="filterMenu"
+          class="library-filter-menu"
+          hidden
+        >
+          <button type="button" data-sort="newest">Newest first</button>
+          <button type="button" data-sort="oldest">Oldest first</button>
+          <button type="button" data-sort="alphabetical">Alphabetical</button>
+        </div>
         <button id="deleteAllButton" type="button">Delete all</button>
       </div>
     </div>
