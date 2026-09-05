@@ -68,6 +68,16 @@
           spellcheck="false"
           placeholder="Search a saved Turkish word..."
         />
+        <button
+          id="libraryClearSearchButton"
+          class="library-search-clear"
+          type="button"
+          aria-label="Clear library search"
+          title="Show all saved words"
+          hidden
+        >
+          ×
+        </button>
       </div>
       <button
         type="submit"
@@ -111,7 +121,10 @@
         </div>
       </div>
     </div>
-    <section id="libraryEntries" class="wiki-entry-list"></section>
+    <section
+      id="libraryEntries"
+      class="wiki-entry-list library-entry-list"
+    ></section>
   </main>
   <script type="module" src="../assets/js/pages/turkish-library.js"></script>
 </body>

@@ -3,6 +3,8 @@ import { getCachedEntries } from "../core/dictionary-cache.js";
 const entries = document.getElementById("libraryEntries");
 const input = document.getElementById("librarySearchInput");
 const form = document.getElementById("librarySearchForm");
+const clearSearchButton =
+  document.getElementById("libraryClearSearchButton");
 const count = document.getElementById("libraryCount");
 const toolbar = document.getElementById("libraryToolbar");
 const filterButton = document.getElementById("filterButton");
@@ -66,6 +68,7 @@ function render() {
         Array.isArray(group.forms) &&
         group.forms.length > 0
     );
+    const savedMeanings = renderSavedMeanings(meanings);
     return `
       <details
         class="wiki-entry-card library-entry-card"
@@ -91,7 +94,6 @@ function render() {
           </span>
         </summary>
         <div class="library-entry-details">
-          ${renderSavedMeanings(meanings)}
           ${hasForms ? `<section class="wiki-entry-section">
             <h3>Forms</h3>
             <p>${formatForms(formGroups)}</p>
@@ -114,6 +116,7 @@ function render() {
               <p>${escapeHtml(word.analysis)}</p>
             </section>
           ` : ""}
+          ${savedMeanings}
         </div>
       </details>
     `;
@@ -360,6 +363,7 @@ form.addEventListener("submit", (event) => {
       .trim()
       .toLocaleLowerCase("tr-TR");
   input.value = "";
+  clearSearchButton.hidden = !activeQuery;
   render();
 
   if (
@@ -387,6 +391,16 @@ form.addEventListener("submit", (event) => {
       }
     );
   }
+});
+
+clearSearchButton.addEventListener("click", () => {
+  activeQuery = "";
+  input.value = "";
+  clearSearchButton.hidden = true;
+  render();
+  window.requestAnimationFrame(
+    () => window.scrollTo(0, libraryScrollY)
+  );
 });
 
 filterButton.addEventListener("click", (event) => {
