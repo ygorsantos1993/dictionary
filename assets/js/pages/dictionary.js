@@ -1,4 +1,5 @@
 import { supabase } from "../core/supabase.js";
+import { clearCachedEntries } from "../core/dictionary-cache.js";
 
 
 const syncButton =
@@ -6,6 +7,9 @@ const syncButton =
 
 const syncToast =
   document.getElementById("syncToast");
+
+const clearLibraryButton =
+  document.getElementById("clearLibraryButton");
 
 const languageButton =
   document.getElementById("languageButton");
@@ -31,9 +35,6 @@ const wiktionaryDirection =
 const wiktionaryCard =
   document.getElementById("wiktionaryCard");
 
-const dictionarySearchCard =
-  document.getElementById("dictionarySearchCard");
-
 const libraryCard =
   document.getElementById("libraryCard");
 
@@ -43,19 +44,19 @@ const languages = {
   turkish: {
     name: "Turkish",
     title: "TURKISH",
-    flag: "../../images/turkish-flag.png"
+    flag: "../../assets/images/turkish-flag.png"
   },
 
   msa: {
     name: "Standard Arabic",
     title: "STANDARD ARABIC",
-    flag: "../../images/arabic-flag.png"
+    flag: "../../assets/images/arabic-flag.png"
   },
 
   chinese: {
     name: "Chinese",
     title: "CHINESE",
-    flag: "../../images/chinese-flag.png"
+    flag: "../../assets/images/chinese-flag.png"
   }
 
 };
@@ -229,6 +230,51 @@ function showSyncToast(message) {
 }
 
 
+clearLibraryButton.addEventListener(
+  "click",
+  async () => {
+    if (
+      !confirm(
+        "Clear the entire test library?"
+      )
+    ) {
+      return;
+    }
+
+    clearLibraryButton.disabled = true;
+
+    const { error } = await supabase.rpc(
+      "truncate_all_except_settings"
+    );
+
+    if (error) {
+      showSyncToast(
+        `Could not clear library: ${error.message}`
+      );
+      clearLibraryButton.disabled = false;
+      return;
+    }
+
+    await Promise.all(
+      [
+        "turkish",
+        "english",
+        "msa",
+        "chinese"
+      ].map(
+        (language) =>
+          clearCachedEntries(language)
+      )
+    );
+
+    showSyncToast(
+      "Test library cleared"
+    );
+    clearLibraryButton.disabled = false;
+  }
+);
+
+
 languageButton.addEventListener(
   "click",
   (event) => {
@@ -362,13 +408,6 @@ wiktionaryCard.addEventListener(
     window.location.href =
       "./wiktionary-search.html";
 
-  }
-);
-
-
-dictionarySearchCard.addEventListener(
-  "click",
-  () => {
   }
 );
 

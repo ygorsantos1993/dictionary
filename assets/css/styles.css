@@ -382,6 +382,24 @@ label {
 }
 
 
+.clear-library-button {
+  color:
+    #ef9b8d;
+
+  font-size: 31px;
+
+  line-height: 1;
+}
+
+
+.clear-library-button span {
+  display: block;
+
+  transform:
+    translateY(-2px);
+}
+
+
 .sync-icon {
   width: 39px;
   height: 39px;
@@ -3282,13 +3300,13 @@ input:checked +
 
   .dictionary-hub {
     padding-top:
-      82px;
+      38px;
   }
 
 
   .hub-title-section {
     margin-bottom:
-      60px;
+      30px;
   }
 
 
@@ -3316,17 +3334,17 @@ input:checked +
 
   .hub-menu {
     gap:
-      14px;
+      10px;
   }
 
 
   .hub-card {
     min-height:
-      113px;
+      91px;
 
     padding:
-      14px
-      16px;
+      10px
+      14px;
 
     grid-template-columns:
       74px
@@ -3334,7 +3352,7 @@ input:checked +
       25px;
 
     gap:
-      13px;
+      10px;
 
     border-radius:
       22px;
@@ -3343,19 +3361,19 @@ input:checked +
 
   .hub-card-icon-wrap {
     width:
-      72px;
+      60px;
 
     height:
-      72px;
+      60px;
   }
 
 
   .hub-card-icon {
     width:
-      70px;
+      58px;
 
     height:
-      70px;
+      58px;
   }
 
 
