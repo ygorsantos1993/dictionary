@@ -400,6 +400,16 @@ label {
 }
 
 
+.preview-library-button {
+  color:
+    #a9d3c0;
+
+  font-size: 22px;
+
+  line-height: 1;
+}
+
+
 .sync-icon {
   width: 39px;
   height: 39px;

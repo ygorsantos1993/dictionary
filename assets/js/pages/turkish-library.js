@@ -1,13 +1,12 @@
-import { turkishDb } from "../core/supabase.js";
-import { clearCachedEntries } from "../core/dictionary-cache.js";
+import { getCachedEntries } from "../core/dictionary-cache.js";
 
 const entries = document.getElementById("libraryEntries");
 const input = document.getElementById("librarySearchInput");
 const form = document.getElementById("librarySearchForm");
 const count = document.getElementById("libraryCount");
+const toolbar = document.getElementById("libraryToolbar");
 const filterButton = document.getElementById("filterButton");
 const filterMenu = document.getElementById("filterMenu");
-const deleteAllButton = document.getElementById("deleteAllButton");
 const backButton = document.getElementById("backButton");
 let words = [];
 let sortMode = "newest";
@@ -20,6 +19,7 @@ backButton.addEventListener("click", () => {
 
 function render() {
   const query = activeQuery;
+  toolbar.hidden = !words.length;
   const visible = words
     .filter((word) => !query || word.word.toLocaleLowerCase("tr-TR") === query)
     .sort((a, b) => {
@@ -115,13 +115,24 @@ function render() {
       }).join("")
     : `
       <div class="library-empty-state">
-        <p>
-          No saved word found for
-          <em>${escapeHtml(query)}</em>.
-        </p>
-        <small>
-          Search this word on Wiktionary to add it to your library.
-        </small>
+        ${
+          query
+            ? `
+              <p>
+                No saved word found for
+                <em>${escapeHtml(query)}</em>.
+              </p>
+              <small>
+                Search this word on Wiktionary to add it to your library.
+              </small>
+            `
+            : `
+              <p>Your library is empty.</p>
+              <small>
+                Search a word on Wiktionary to add it to your library.
+              </small>
+            `
+        }
         <button
           type="button"
           class="wiki-search-button library-wiktionary-button"
@@ -136,6 +147,7 @@ function render() {
           data-clear-library-search
           aria-label="Clear library search"
           title="Clear search"
+          ${query ? "" : "hidden"}
         >
           ×
         </button>
@@ -167,28 +179,6 @@ entries.addEventListener("click", (event) => {
       )
     );
   }
-});
-
-deleteAllButton.addEventListener("click", async () => {
-  if (!words.length || !confirm("Delete all Turkish words?")) {
-    return;
-  }
-
-  deleteAllButton.disabled = true;
-  const { error } = await turkishDb.rpc(
-    "delete_all_turkish_words"
-  );
-
-  if (error) {
-    alert(error.message);
-    deleteAllButton.disabled = false;
-    return;
-  }
-
-  await clearCachedEntries("turkish");
-  words = [];
-  render();
-  deleteAllButton.disabled = false;
 });
 
 function formatForms(forms) {
@@ -380,22 +370,13 @@ const previewLimit = Number(
   ).get("preview")
 );
 
-let libraryQuery = turkishDb
-  .from("turkish_words")
-  .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
-  .order("id", { ascending: false });
-
-if (previewLimit > 0) {
-  libraryQuery =
-    libraryQuery.limit(
-      Math.min(previewLimit, 15)
-    );
-}
-
 const result =
   previewLimit > 0
     ? { data: createPreviewWords(), error: null }
-    : await libraryQuery;
+    : {
+        data: await getCachedEntries("turkish"),
+        error: null
+      };
 
 if (result.error) {
   entries.textContent = result.error.message;

@@ -18,6 +18,9 @@ const syncToast =
 const clearLibraryButton =
   document.getElementById("clearLibraryButton");
 
+const previewLibraryButton =
+  document.getElementById("previewLibraryButton");
+
 const languageButton =
   document.getElementById("languageButton");
 
@@ -278,6 +281,15 @@ clearLibraryButton.addEventListener(
       "Test library cleared"
     );
     clearLibraryButton.disabled = false;
+  }
+);
+
+
+previewLibraryButton.addEventListener(
+  "click",
+  () => {
+    window.location.href =
+      "./pages/turkish-library.html?preview=15";
   }
 );
 

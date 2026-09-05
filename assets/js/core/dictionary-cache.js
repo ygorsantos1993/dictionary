@@ -56,6 +56,27 @@ export async function cacheEntries(language, entries) {
 export const findCachedBaseWords = (word) =>
   findCachedEntries("turkish", word);
 
+export async function getCachedEntries(language) {
+  const database = await openDatabase();
+  const request = database.transaction(
+    ENTRIES_STORE,
+    "readonly"
+  ).objectStore(ENTRIES_STORE)
+    .index("language")
+    .getAll(language);
+
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => {
+      database.close();
+      resolve(request.result || []);
+    };
+    request.onerror = () => {
+      database.close();
+      reject(request.error);
+    };
+  });
+}
+
 export async function clearCachedEntries(language) {
   const database = await openDatabase();
   const readTransaction = database.transaction(
