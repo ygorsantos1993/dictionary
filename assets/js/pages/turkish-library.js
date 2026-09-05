@@ -10,13 +10,14 @@ const deleteAllButton = document.getElementById("deleteAllButton");
 const backButton = document.getElementById("backButton");
 let words = [];
 let descending = true;
+let activeQuery = "";
 
 backButton.addEventListener("click", () => {
   window.location.href = "./dictionary.html";
 });
 
 function render() {
-  const query = input.value.trim().toLocaleLowerCase("tr-TR");
+  const query = activeQuery;
   const visible = words
     .filter((word) => !query || word.word.toLocaleLowerCase("tr-TR") === query)
     .sort((a, b) => descending ? b.id - a.id : a.id - b.id);
@@ -84,7 +85,16 @@ function render() {
           data-search-wiktionary="${escapeHtml(query)}"
           ${query ? "" : "hidden"}
         >
-          Search <em>${escapeHtml(query || "a word")}</em> on Wiktionary
+          Search on Wiktionary
+        </button>
+        <button
+          type="button"
+          class="library-clear-search-button"
+          data-clear-library-search
+          aria-label="Clear library search"
+          title="Clear search"
+        >
+          ×
         </button>
       </div>
     `;
@@ -93,13 +103,20 @@ function render() {
 entries.addEventListener("click", (event) => {
   const button =
     event.target.closest("[data-search-wiktionary]");
-  if (!button) {
+  const clearButton =
+    event.target.closest("[data-clear-library-search]");
+
+  if (button) {
+    const word = button.dataset.searchWiktionary;
+    window.location.href =
+      `./wiktionary-search.html?word=${encodeURIComponent(word)}`;
     return;
   }
 
-  const word = button.dataset.searchWiktionary;
-  window.location.href =
-    `./wiktionary-search.html?word=${encodeURIComponent(word)}`;
+  if (clearButton) {
+    activeQuery = "";
+    render();
+  }
 });
 
 deleteAllButton.addEventListener("click", async () => {
@@ -148,6 +165,11 @@ function escapeHtml(value) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  activeQuery =
+    input.value
+      .trim()
+      .toLocaleLowerCase("tr-TR");
+  input.value = "";
   render();
 });
 

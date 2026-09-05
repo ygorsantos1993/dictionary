@@ -1,6 +1,13 @@
 import { supabase } from "../core/supabase.js";
 import { clearCachedEntries } from "../core/dictionary-cache.js";
 
+const imagePath =
+  (file) =>
+    new URL(
+      `../../images/${file}`,
+      import.meta.url
+    ).href;
+
 
 const syncButton =
   document.getElementById("syncButton");
@@ -44,19 +51,19 @@ const languages = {
   turkish: {
     name: "Turkish",
     title: "TURKISH",
-    flag: "../../images/turkish-flag.png"
+    flag: imagePath("turkish-flag.png")
   },
 
   msa: {
     name: "Standard Arabic",
     title: "STANDARD ARABIC",
-    flag: "../../images/arabic-flag.png"
+    flag: imagePath("arabic-flag.png")
   },
 
   chinese: {
     name: "Chinese",
     title: "CHINESE",
-    flag: "../../images/chinese-flag.png"
+    flag: imagePath("chinese-flag.png")
   }
 
 };

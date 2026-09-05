@@ -1271,6 +1271,8 @@ label {
 
 
 .library-empty-state {
+  position: relative;
+
   padding:
     28px
     20px;
@@ -1317,6 +1319,33 @@ label {
   padding:
     0
     18px;
+}
+
+
+.library-clear-search-button {
+  width: 34px;
+  height: 34px;
+
+  position: absolute;
+
+  top: 12px;
+  right: 12px;
+
+  border:
+    1px solid
+    rgba(100, 107, 113, 0.28);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.68);
+
+  color:
+    #646b71;
+
+  font-size: 24px;
+
+  line-height: 1;
 }
 
 
