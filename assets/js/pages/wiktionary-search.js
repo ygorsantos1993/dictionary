@@ -612,7 +612,6 @@ function parseTurkishWords(
         alternativeForms: [],
         etymologyText: "",
         etymologySelected: true,
-        baseWordText: "",
         baseWordId: null,
         baseWordSelected: false,
         pronunciation: [],
@@ -898,9 +897,6 @@ function parseEtymologyGroup(
 
     etymologySelected:
       true,
-
-    baseWordText:
-      "",
 
     baseWordId:
       null,
@@ -5503,29 +5499,14 @@ function renderBaseWord(
       </h3>
 
 
-      ${
-        existing
-          ? `
-            <div
-              class="wiki-base-word-existing"
-            >
-              ${
-                wordEntry.baseWordText
-                  ? escapeHtml(wordEntry.baseWordText)
-                  : "—"
-              }
-            </div>
-          `
-          : `
-            <div
-              class="wiki-base-word-search-row"
-            >
+      <div
+        class="wiki-base-word-search-row"
+      >
 
               <input
                 type="text"
                 class="wiki-base-word-input"
                 data-role="base-word-input"
-                value="${escapeAttribute(wordEntry.baseWordText || "")}"
                 placeholder="Type a base word"
                 autocomplete="off"
                 spellcheck="false"
@@ -5540,16 +5521,14 @@ function renderBaseWord(
                 Search
               </button>
 
-            </div>
+      </div>
 
 
-            <div
-              class="wiki-base-word-results"
-              data-role="base-word-results"
-              hidden
-            ></div>
-          `
-      }
+      <div
+        class="wiki-base-word-results"
+        data-role="base-word-results"
+        hidden
+      ></div>
 
     </section>
 
@@ -6564,12 +6543,6 @@ function wireBaseWordControls(
       "input",
       () => {
 
-        wordEntry.baseWordText =
-          normalizeSearchWord(
-            input.value
-          );
-
-
         wordEntry.baseWordId =
           null;
 
@@ -6600,11 +6573,7 @@ function wireBaseWordControls(
 
 
         input.value =
-          baseWord;
-
-
-        wordEntry.baseWordText =
-          baseWord;
+          "";
 
 
         wordEntry.baseWordId =
@@ -6662,7 +6631,8 @@ function wireBaseWordControls(
             renderBaseWordMatches(
               results,
               wordEntry,
-              cachedMatches
+              cachedMatches,
+              baseWord
             );
 
             return;
@@ -6671,7 +6641,8 @@ function wireBaseWordControls(
           renderBaseWordMatches(
             results,
             wordEntry,
-            []
+            [],
+            baseWord
           );
 
         } catch (error) {
@@ -6714,7 +6685,8 @@ function wireBaseWordControls(
 function renderBaseWordMatches(
   container,
   wordEntry,
-  matches
+  matches,
+  searchedWord
 ) {
 
   container.hidden =
@@ -6730,38 +6702,9 @@ function renderBaseWordMatches(
   ) {
 
     container.innerHTML = `
-
-      <label
-        class="wiki-base-word-option wiki-base-word-manual-option"
-      >
-
-        <input
-          type="checkbox"
-          name="${radioName}"
-          data-base-word-manual="true"
-        />
-
-        <span
-          class="wiki-base-word-radio"
-        ></span>
-
-        <span
-          class="wiki-base-word-option-content"
-        >
-
-          <strong>
-            ${escapeHtml(wordEntry.baseWordText)}
-          </strong>
-
-          <small
-            class="wiki-base-word-not-found"
-          >
-            Not found
-          </small>
-
-        </span>
-
-      </label>
+      <div class="wiki-base-word-message">
+        A palavra <em>${escapeHtml(searchedWord)}</em> não consta na nossa biblioteca.
+      </div>
 
     `;
 
@@ -6836,7 +6779,7 @@ function renderBaseWordMatches(
         >
 
           <input
-            type="checkbox"
+            type="radio"
             name="${radioName}"
             value="${match.id}"
             data-base-word-id="${match.id}"
@@ -6851,7 +6794,7 @@ function renderBaseWordMatches(
           >
 
             <strong>
-              WORD ${match.etymology} · ID ${match.id}
+              ${escapeHtml(match.word)}
             </strong>
 
             ${
@@ -6905,7 +6848,7 @@ function renderBaseWordMatches(
   const choices =
     Array.from(
       container.querySelectorAll(
-        'input[type="checkbox"]'
+        'input[type="radio"][data-base-word-id]'
       )
     );
 
@@ -7983,9 +7926,6 @@ function buildAtomicSaveWordPayload(
     analysis:
       payload.etymologyText,
 
-    base_word_text:
-      payload.baseWordText,
-
     base_word_id:
       payload.baseWordId,
 
@@ -8037,14 +7977,6 @@ function buildSelectedPayload(
         wordEntry.etymologyText
       )
         ? wordEntry.etymologyText
-        : null,
-
-    baseWordText:
-      wordEntry.baseWordSelected &&
-      cleanText(
-        wordEntry.baseWordText
-      )
-        ? wordEntry.baseWordText
         : null,
 
     baseWordId:

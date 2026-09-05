@@ -64,12 +64,6 @@ function render() {
               <p>${escapeHtml(word.analysis)}</p>
             </section>
           ` : ""}
-          ${word.base_word_text ? `
-            <section class="wiki-entry-section">
-              <h3>Base word</h3>
-              <p>${escapeHtml(word.base_word_text)}</p>
-            </section>
-          ` : ""}
         </div>
       </details>
     `;
@@ -134,7 +128,7 @@ sortButton.addEventListener("click", () => {
 
 const { data, error } = await turkishDb
   .from("turkish_words")
-  .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_text, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
+  .select("id, word, etymology, pronunciation, forms, notes, analysis, base_word_id, alternative_forms, turkish_meanings(part_of_speech, position, usage_label, meaning, examples)")
   .order("id", { ascending: false });
 
 if (error) {
