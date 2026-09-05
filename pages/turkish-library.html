@@ -8,8 +8,26 @@
 </head>
 <body class="wiktionary-page">
   <header class="wiktionary-topbar">
-    <button id="backButton" class="wiki-round-button" type="button"
-      aria-label="Go back">←</button>
+    <button
+      id="backButton"
+      class="wiki-round-button"
+      type="button"
+      aria-label="Go back"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 18l-6-6 6-6"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </button>
     <h1 class="library-topbar-title">Turkish Library</h1>
     <div class="wiki-language-indicator" aria-label="Turkish">
       <img src="../assets/images/turkish-flag.png" alt="Turkish" />
@@ -17,10 +35,38 @@
   </header>
 
   <main class="wiktionary-shell library-shell">
-    <form id="librarySearchForm" class="wiktionary-search-form">
-      <input id="librarySearchInput" type="search"
-        placeholder="Search one word..." autocomplete="off" />
-      <button type="submit" class="wiki-search-button">Search</button>
+    <form
+      id="librarySearchForm"
+      class="wiktionary-search-form"
+    >
+      <div class="wiki-search-input-wrap">
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15a7.5 7.5 0 0 1 0 15Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        <input
+          id="librarySearchInput"
+          type="search"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+          placeholder="Search a saved Turkish word..."
+        />
+      </div>
+      <button
+        type="submit"
+        class="wiki-search-button"
+      >
+        Search in my library
+      </button>
     </form>
     <div class="library-toolbar">
       <span id="libraryCount"></span>
