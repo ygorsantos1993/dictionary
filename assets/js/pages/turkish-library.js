@@ -22,7 +22,8 @@ function render() {
     .sort((a, b) => descending ? b.id - a.id : a.id - b.id);
 
   count.textContent = `${visible.length} word${visible.length === 1 ? "" : "s"}`;
-  entries.innerHTML = visible.map((word) => {
+  entries.innerHTML = visible.length
+    ? visible.map((word) => {
     const meanings = word.turkish_meanings || [];
     const firstMeaning = meanings[0]?.meaning || "";
     const formGroups = Array.isArray(word.forms) ? word.forms : [];
@@ -67,8 +68,39 @@ function render() {
         </div>
       </details>
     `;
-  }).join("") || "<p>No word found.</p>";
+      }).join("")
+    : `
+      <div class="library-empty-state">
+        <p>
+          No saved word found for
+          <em>${escapeHtml(query)}</em>.
+        </p>
+        <small>
+          Search this word on Wiktionary to add it to your library.
+        </small>
+        <button
+          type="button"
+          class="wiki-search-button library-wiktionary-button"
+          data-search-wiktionary="${escapeHtml(query)}"
+          ${query ? "" : "hidden"}
+        >
+          Search <em>${escapeHtml(query || "a word")}</em> on Wiktionary
+        </button>
+      </div>
+    `;
 }
+
+entries.addEventListener("click", (event) => {
+  const button =
+    event.target.closest("[data-search-wiktionary]");
+  if (!button) {
+    return;
+  }
+
+  const word = button.dataset.searchWiktionary;
+  window.location.href =
+    `./wiktionary-search.html?word=${encodeURIComponent(word)}`;
+});
 
 deleteAllButton.addEventListener("click", async () => {
   if (!words.length || !confirm("Delete all Turkish words?")) {

@@ -158,6 +158,24 @@ form.addEventListener(
 );
 
 
+const initialSearchWord =
+  new URLSearchParams(
+    window.location.search
+  ).get("word");
+
+if (initialSearchWord) {
+  input.value =
+    normalizeSearchWord(
+      initialSearchWord
+    );
+
+  window.setTimeout(
+    () => form.requestSubmit(),
+    0
+  );
+}
+
+
 function normalizeSearchWord(value) {
 
   return String(value || "")
