@@ -6522,17 +6522,7 @@ function wireEtymologyControls(
           wordEntry
         );
 
-
-        editor.hidden =
-          true;
-
-
-        if (editButton) {
-
-          editButton.hidden =
-            false;
-
-        }
+        renderWords();
 
       }
     );
