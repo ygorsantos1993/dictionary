@@ -2561,10 +2561,9 @@ input:checked +
 
 
 .wiki-etymology-editor {
-  margin-top: 14px;
+  margin-top: 8px;
 
-  padding:
-    12px;
+  padding: 8px;
 
   border:
     1px solid
@@ -2585,7 +2584,7 @@ input:checked +
   resize: vertical;
 
   padding:
-    14px;
+    10px;
 
   border:
     1px solid
@@ -2607,6 +2606,8 @@ input:checked +
   font-size: 18px;
 
   line-height: 1.55;
+
+  text-align: left;
 
   outline: none;
 }
