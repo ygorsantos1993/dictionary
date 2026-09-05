@@ -4991,10 +4991,6 @@ function renderWordCard(
 
       <div class="wiki-word-heading">
 
-        <div class="wiki-etymology">
-          WORD ${wordEntry.etymology}
-        </div>
-
         <div
           class="wiki-entry-status ${
             existing

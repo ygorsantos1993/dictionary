@@ -1674,6 +1674,8 @@ label {
   letter-spacing:
     0.08em;
 
+  line-height: 1.35;
+
   text-transform:
     uppercase;
 }
@@ -1765,21 +1767,14 @@ input:checked + span {
 
   font-size: 12px;
 
-  font-weight: 750;
+  font-weight: 800;
+
+  letter-spacing:
+    0.08em;
+
+  line-height: 1.35;
 
   text-transform: uppercase;
-}
-
-
-.wiki-entry-status::before {
-  content: "·";
-
-  color:
-    currentColor;
-
-  font-size: 17px;
-
-  line-height: 1;
 }
 
 
@@ -3710,7 +3705,12 @@ input:checked +
 
 
   .wiki-entry-status {
-    font-size: 15px;
+    font-size: 14px;
+  }
+
+
+  .wiki-etymology {
+    font-size: 14px;
   }
 
 
