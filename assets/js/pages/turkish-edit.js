@@ -11,11 +11,12 @@ const id =
   );
 
 const wordInput = document.getElementById("wordInput");
+const wordDisplay = document.getElementById("wordDisplay");
 const analysisInput = document.getElementById("analysisInput");
-const pronunciationInput = document.getElementById("pronunciationInput");
-const formsInput = document.getElementById("formsInput");
-const notesInput = document.getElementById("notesInput");
-const meaningsInput = document.getElementById("meaningsInput");
+const pronunciationFields = document.getElementById("pronunciationFields");
+const formsFields = document.getElementById("formsFields");
+const notesFields = document.getElementById("notesFields");
+const meaningsFields = document.getElementById("meaningsFields");
 const baseWordInput = document.getElementById("baseWordInput");
 const baseWordSearchButton = document.getElementById("baseWordSearchButton");
 const baseWordResults = document.getElementById("baseWordResults");
@@ -31,88 +32,65 @@ function showStatus(message, type = "") {
   status.hidden = false;
 }
 
-function parseLines(value) {
-  return String(value || "")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+function addField(container, values, fields, placeholders) {
+  const row = document.createElement("div");
+  row.className = "editor-item-row";
+  row.innerHTML = fields.map((field, index) =>
+    `<input data-field="${field}" placeholder="${placeholders[index] || ""}"
+      value="${String(values?.[field] || "").replaceAll('"', "&quot;")}" />`
+  ).join("");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = true;
+  checkbox.className = "editor-item-enabled";
+  row.prepend(checkbox);
+  container.appendChild(row);
+  return row;
 }
 
-function parseMeanings(value) {
-  return parseLines(value).map((line, index) => {
-    const separator = line.indexOf("|");
-    const partOfSpeech =
-      separator >= 0
-        ? line.slice(0, separator).trim()
-        : "other";
-    const meaning =
-      separator >= 0
-        ? line.slice(separator + 1).trim()
-        : line;
-
-    return {
-      part_of_speech: partOfSpeech || "other",
-      position: index + 1,
-      usage_label: null,
-      meaning,
-      examples: null
-    };
-  });
+function enabledRows(container) {
+  return [...container.querySelectorAll(".editor-item-row")]
+    .filter((row) => row.querySelector(".editor-item-enabled").checked);
 }
 
-function parseForms(value) {
-  const groups = {};
-
-  parseLines(value).forEach((line) => {
-    const separator = line.indexOf("=");
-    if (separator < 1) {
-      return;
-    }
-
-    const label = line.slice(0, separator).trim();
-    const formValue = line.slice(separator + 1).trim();
-    const partOfSpeech = "general";
-
-    groups[partOfSpeech] ||= [];
-    groups[partOfSpeech].push({
-      label,
-      value: formValue,
-      selected: true
+function readFieldRows(container, fields) {
+  return enabledRows(container).map((row) => {
+    const result = {};
+    fields.forEach((field) => {
+      result[field] = row.querySelector(`[data-field="${field}"]`).value.trim();
     });
+    return result;
   });
-
-  return Object.entries(groups).map(
-    ([partOfSpeech, forms]) => ({
-      part_of_speech: partOfSpeech,
-      forms
-    })
-  );
 }
 
 function fillEditor(word) {
   currentWord = word;
   wordInput.value = word.word || "";
+  wordDisplay.textContent = word.word || "";
   analysisInput.value = word.analysis || "";
-  pronunciationInput.value = (word.pronunciation || [])
-    .map((item) => item.ipa || "")
-    .filter(Boolean)
-    .join("\n");
-  formsInput.value = (word.forms || [])
-    .flatMap((group) => group.forms || [])
-    .map((item) => `${item.label || ""}=${item.value || ""}`)
-    .join("\n");
-  notesInput.value = (word.notes || [])
-    .map((item) => item.text || "")
-    .filter(Boolean)
-    .join("\n");
-  meaningsInput.value = (word.turkish_meanings || [])
-    .map((meaning) =>
-      `${meaning.part_of_speech || "other"} | ${meaning.meaning || ""}`
-    )
-    .join("\n");
+  (word.pronunciation || []).forEach((item) =>
+    addField(pronunciationFields, item, ["ipa"], ["IPA"]));
+  (word.forms || []).flatMap((group) => group.forms || []).forEach((item) =>
+    addField(formsFields, item, ["label", "value"], ["Form", "Value"]));
+  (word.notes || []).forEach((item) =>
+    addField(notesFields, item, ["text"], ["Note"]));
+  (word.turkish_meanings || []).forEach((item) =>
+    addField(meaningsFields, item,
+      ["part_of_speech", "meaning", "examples"],
+      ["Part of speech", "Meaning", "Example"]));
   baseWordId = word.base_word_id || null;
   baseWordInput.value = "";
 }
+
+document.querySelector("[data-add-pronunciation]").onclick = () =>
+  addField(pronunciationFields, {}, ["ipa"], ["IPA"]);
+document.querySelector("[data-add-form]").onclick = () =>
+  addField(formsFields, {}, ["label", "value"], ["Form", "Value"]);
+document.querySelector("[data-add-note]").onclick = () =>
+  addField(notesFields, {}, ["text"], ["Note"]);
+document.querySelector("[data-add-meaning]").onclick = () =>
+  addField(meaningsFields, {}, ["part_of_speech", "meaning", "examples"],
+    ["Part of speech", "Meaning", "Example"]);
 
 baseWordSearchButton.addEventListener("click", async () => {
   const query = baseWordInput.value.trim();
@@ -153,7 +131,15 @@ document.getElementById("cancelButton").addEventListener("click", () => {
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const meanings = parseMeanings(meaningsInput.value);
+  const meanings = readFieldRows(meaningsFields,
+    ["part_of_speech", "meaning", "examples"])
+    .filter((item) => item.meaning)
+    .map((item, index) => ({
+      ...item,
+      position: index + 1,
+      usage_label: null,
+      examples: item.examples ? [{ text: item.examples }] : null
+    }));
 
   if (!meanings.length) {
     showStatus("At least one meaning is required.", "error");
@@ -163,11 +149,15 @@ form.addEventListener("submit", async (event) => {
   const payload = {
     id,
     word: wordInput.value.trim(),
-    pronunciation: parseLines(pronunciationInput.value)
-      .map((ipa) => ({ ipa })),
-    forms: parseForms(formsInput.value),
-    notes: parseLines(notesInput.value)
-      .map((text) => ({ text })),
+    pronunciation: readFieldRows(pronunciationFields, ["ipa"])
+      .filter((item) => item.ipa),
+    forms: [{
+      part_of_speech: "general",
+      forms: readFieldRows(formsFields, ["label", "value"])
+        .filter((item) => item.label && item.value)
+    }],
+    notes: readFieldRows(notesFields, ["text"])
+      .filter((item) => item.text),
     analysis: analysisInput.value.trim() || null,
     base_word_id: baseWordId,
     alternative_forms: currentWord?.alternative_forms || null,

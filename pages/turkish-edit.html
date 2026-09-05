@@ -6,7 +6,7 @@
   <title>Edit Turkish Word</title>
   <link rel="stylesheet" href="../assets/css/styles.css" />
 </head>
-<body class="wiktionary-page">
+<body class="wiktionary-page editor-page">
   <header class="wiktionary-topbar">
     <button id="backButton" class="wiki-round-button" type="button" aria-label="Go back">
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -22,26 +22,51 @@
 
   <main class="wiktionary-shell editor-shell">
     <form id="wordEditorForm" class="word-editor-form">
-      <label>Word<input id="wordInput" readonly /></label>
-      <label>Etymology<textarea id="analysisInput" rows="3"></textarea></label>
-      <label>Pronunciation<textarea id="pronunciationInput" rows="2"
-        placeholder="One pronunciation per line"></textarea></label>
-      <label>Forms<textarea id="formsInput" rows="3"
-        placeholder="label=value, one per line"></textarea></label>
-      <label>Notes<textarea id="notesInput" rows="3"
-        placeholder="One note per line"></textarea></label>
-      <label>Meanings<textarea id="meaningsInput" rows="7"
-        placeholder="part of speech | meaning, one per line"></textarea></label>
-
-      <fieldset class="editor-base-word">
-        <legend>Base word</legend>
-        <div class="editor-base-row">
-          <input id="baseWordInput" placeholder="Search exact word in cache" />
-          <button id="baseWordSearchButton" type="button">Search</button>
+      <section class="editor-card">
+        <div class="editor-word-heading">
+          <span class="editor-label">Word</span>
+          <strong id="wordDisplay"></strong>
         </div>
-        <div id="baseWordResults" class="editor-base-results"></div>
-      </fieldset>
+        <input id="wordInput" type="hidden" />
 
+        <section class="editor-section">
+          <h2>Etymology</h2>
+          <textarea id="analysisInput" rows="3"
+            placeholder="Add etymology"></textarea>
+        </section>
+        <section class="editor-section">
+          <h2>Pronunciation</h2>
+          <div id="pronunciationFields" class="editor-items"></div>
+          <button class="editor-add-button" type="button"
+            data-add-pronunciation>+ Add pronunciation</button>
+        </section>
+        <section class="editor-section">
+          <h2>Forms</h2>
+          <div id="formsFields" class="editor-items"></div>
+          <button class="editor-add-button" type="button"
+            data-add-form>+ Add form</button>
+        </section>
+        <section class="editor-section">
+          <h2>Notes</h2>
+          <div id="notesFields" class="editor-items"></div>
+          <button class="editor-add-button" type="button"
+            data-add-note>+ Add note</button>
+        </section>
+        <section class="editor-section">
+          <h2>Meanings</h2>
+          <div id="meaningsFields" class="editor-items"></div>
+          <button class="editor-add-button" type="button"
+            data-add-meaning>+ Add meaning</button>
+        </section>
+        <section class="editor-section">
+          <h2>Base word</h2>
+          <div class="editor-base-row">
+            <input id="baseWordInput" placeholder="Search exact word in cache" />
+            <button id="baseWordSearchButton" type="button">Search</button>
+          </div>
+          <div id="baseWordResults" class="editor-base-results"></div>
+        </section>
+      </section>
       <div class="word-editor-actions">
         <button id="cancelButton" type="button">Cancel</button>
         <button class="wiki-search-button" type="submit">Save changes</button>

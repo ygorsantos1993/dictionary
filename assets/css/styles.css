@@ -1260,6 +1260,20 @@ label {
   margin: 0 auto;
 }
 
+.editor-page {
+  overflow: hidden;
+}
+
+.editor-page .editor-shell {
+  height: calc(100vh - 76px);
+  overflow-y: auto;
+  padding: 12px 0 28px;
+}
+
+.editor-page .word-editor-form {
+  min-height: 100%;
+}
+
 
 .library-topbar-title {
   margin: 0;
@@ -2102,15 +2116,18 @@ label {
 
 
 .library-edit-button {
-  display: inline-block;
-
-  margin-bottom: 10px;
-
-  color: #9a703f;
-
-  font-size: 13px;
-
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  margin-bottom: 12px;
+  padding: 0 14px;
+  border: 1px solid rgba(169, 122, 63, 0.3);
+  border-radius: 999px;
+  background: rgba(185, 139, 73, 0.14);
+  color: #765128;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 
@@ -2119,14 +2136,77 @@ label {
 
   gap: 14px;
 
-  padding: 18px;
+  padding: 0 0 24px;
 
   border-radius: 22px;
 
+  background: transparent;
+  box-shadow: none;
+}
+
+.editor-card {
+  padding: 18px;
+  border-radius: 22px;
   background: rgba(255, 250, 244, 0.86);
   box-shadow: 0 11px 30px rgba(38, 45, 51, 0.12);
 }
 
+.editor-word-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.editor-word-heading strong {
+  font-size: 28px;
+}
+
+.editor-label {
+  color: #9a703f;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.editor-section {
+  margin-top: 18px;
+}
+
+.editor-section h2 {
+  margin: 0 0 8px;
+  color: #765128;
+  font-size: 15px;
+}
+
+.editor-items {
+  display: grid;
+  gap: 8px;
+}
+
+.editor-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-item-row > .editor-item-enabled {
+  flex: 0 0 auto;
+  width: 16px;
+  margin: 0;
+}
+
+.editor-item-row input:not(.editor-item-enabled) {
+  margin-top: 0;
+}
+
+.editor-add-button {
+  margin-top: 8px;
+  padding: 5px 0;
+  background: none;
+  color: #9a703f;
+  font-weight: 800;
+}
 
 .word-editor-form label,
 .editor-base-word legend {
@@ -2149,6 +2229,10 @@ label {
   color: #30363a;
   font: inherit;
   resize: vertical;
+}
+
+.word-editor-form textarea {
+  min-height: 68px;
 }
 
 
