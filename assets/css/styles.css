@@ -1674,14 +1674,6 @@ label {
     opacity 160ms ease;
 }
 
-.library-shell h1 {
-  margin: 0;
-  color: #4c5661;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 28px;
-  font-weight: 500;
-}
-
 .library-toolbar {
   display: flex;
   align-items: center;

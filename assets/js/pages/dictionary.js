@@ -44,19 +44,19 @@ const languages = {
   turkish: {
     name: "Turkish",
     title: "TURKISH",
-    flag: "../../images/turkish-flag.png"
+    flag: "/assets/images/turkish-flag.png"
   },
 
   msa: {
     name: "Standard Arabic",
     title: "STANDARD ARABIC",
-    flag: "../../images/arabic-flag.png"
+    flag: "/assets/images/arabic-flag.png"
   },
 
   chinese: {
     name: "Chinese",
     title: "CHINESE",
-    flag: "../../images/chinese-flag.png"
+    flag: "/assets/images/chinese-flag.png"
   }
 
 };
