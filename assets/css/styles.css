@@ -1986,9 +1986,9 @@ input:checked +
 /* POS INSIDE WORD */
 
 .wiki-pos-section {
-  margin-top: 38px;
+  margin-top: 22px;
 
-  padding-top: 25px;
+  padding-top: 14px;
 
   border-top:
     1px solid
@@ -2000,7 +2000,7 @@ input:checked +
   margin:
     0
     0
-    27px;
+    18px;
 
   font-family:
     Georgia,
@@ -2010,7 +2010,7 @@ input:checked +
   color:
     #343b40;
 
-  font-size: 25px;
+  font-size: 22px;
 
   font-weight: 500;
 
@@ -3779,21 +3779,21 @@ input:checked +
 
 
   .wiki-pos-section {
-    margin-top: 44px;
+    margin-top: 26px;
 
-    padding-top: 30px;
+    padding-top: 16px;
   }
 
 
   .wiki-pos-title {
     margin-bottom: 34px;
 
-    font-size: 28px;
+    font-size: 24px;
   }
 
 
   .wiki-pos-subsection {
-    margin-top: 40px;
+    margin-top: 26px;
   }
 
 
